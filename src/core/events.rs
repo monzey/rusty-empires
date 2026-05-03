@@ -18,6 +18,18 @@ pub enum Event {
     UnitDefeated {
         unit_id: UnitId,
     },
+    BuildingDamaged {
+        camp: Camp,
+        kind: BuildingKind,
+        position: GridPosition,
+        amount: i32,
+        remaining_health: i32,
+    },
+    BuildingDestroyed {
+        camp: Camp,
+        kind: BuildingKind,
+        position: GridPosition,
+    },
     UnitRecruited {
         unit_id: UnitId,
         camp: Camp,
@@ -38,6 +50,29 @@ pub enum Event {
         camp: Camp,
         amount: i32,
         total: i32,
+    },
+    TechnologyProduced {
+        camp: Camp,
+        amount: i32,
+        total: i32,
+    },
+    GoldTradedForFood {
+        camp: Camp,
+        gold_spent: i32,
+        food_gained: i32,
+        gold_total: i32,
+        food_total: i32,
+    },
+    FoodTradedForGold {
+        camp: Camp,
+        food_spent: i32,
+        gold_gained: i32,
+        food_total: i32,
+        gold_total: i32,
+    },
+    TechnologyResearched {
+        camp: Camp,
+        name: &'static str,
     },
     TurnChanged {
         from: Camp,

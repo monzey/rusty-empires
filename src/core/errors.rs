@@ -5,7 +5,23 @@ pub enum GameError {
     Combat(CombatError),
     Build(BuildError),
     Recruit(RecruitError),
+    Trade(TradeError),
+    Research(ResearchError),
     Turn(TurnError),
+}
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub enum ResearchError {
+    NoUniversity,
+    NotEnoughTechnologyPoints,
+}
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub enum TradeError {
+    NoMarket,
+    InvalidAmount,
+    NotEnoughGold,
+    NotEnoughFood,
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
@@ -15,6 +31,7 @@ pub enum RecruitError {
     NotOwnerTurn,
     Occupied,
     NotEnoughFood,
+    NotEnoughGold,
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]

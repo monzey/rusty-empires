@@ -1,4 +1,4 @@
-use crate::core::buildings::BuildingState;
+use crate::core::buildings::{health_for_kind, BuildingState};
 use crate::core::geometry::distance;
 use crate::core::{BuildError, BuildingKind, Event, Game, NaturalResource, UnitId, UnitKind};
 
@@ -28,6 +28,14 @@ pub(crate) fn build_forum(game: &mut Game, unit_id: UnitId) -> Result<Vec<Event>
 
 pub(crate) fn build_barracks(game: &mut Game, unit_id: UnitId) -> Result<Vec<Event>, BuildError> {
     build_non_resource_building(game, unit_id, BuildingKind::Barracks, true)
+}
+
+pub(crate) fn build_market(game: &mut Game, unit_id: UnitId) -> Result<Vec<Event>, BuildError> {
+    build_non_resource_building(game, unit_id, BuildingKind::Market, true)
+}
+
+pub(crate) fn build_university(game: &mut Game, unit_id: UnitId) -> Result<Vec<Event>, BuildError> {
+    build_non_resource_building(game, unit_id, BuildingKind::University, true)
 }
 
 fn build_on_resource(
@@ -74,6 +82,7 @@ fn build_on_resource(
         camp,
         kind: building_kind,
         position,
+        health: health_for_kind(building_kind),
     });
     game.units[unit_index].has_acted = true;
 
@@ -134,6 +143,7 @@ fn build_non_resource_building(
         camp,
         kind: building_kind,
         position,
+        health: health_for_kind(building_kind),
     });
     game.units[unit_index].has_acted = true;
 

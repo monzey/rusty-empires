@@ -1,5 +1,5 @@
 use crate::core::geometry::distance;
-use crate::core::{CombatError, Event, Game, UnitId};
+use crate::core::{CombatError, Event, Game, GridPosition, UnitId};
 
 pub(crate) fn attack_unit(
     game: &mut Game,
@@ -60,5 +60,77 @@ pub(crate) fn attack_unit(
     if let Some(camp) = game.winner() {
         events.push(Event::GameWon { camp });
     }
+    Ok(events)
+}
+
+pub(crate) fn attack_building(
+    game: &mut Game,
+    attacker_id: UnitId,
+    target_position: GridPosition,
+) -> Result<Vec<Event>, CombatError> {
+    let attacker_index = game
+        .units
+        .iter()
+        .position(|unit| unit.id == attacker_id)
+        .ok_or(CombatError::NoAttacker)?;
+    let building_index = game
+        .buildings
+        .iter()
+        .position(|building| building.position == target_position)
+        .ok_or(CombatError::NoTarget)?;
+
+    let attacker = &game.units[attacker_index];
+    let building = &game.buildings[building_index];
+
+    if attacker.camp != game.current_turn {
+        return Err(CombatError::NotAttackerTurn);
+    }
+
+    if attacker.has_acted {
+        return Err(CombatError::AlreadyActed);
+    }
+
+    if attacker.camp == building.camp {
+        return Err(CombatError::FriendlyTarget);
+    }
+
+    if distance(attacker.position, building.position) > attacker.attack_range {
+        return Err(CombatError::OutOfRange);
+    }
+
+    let damage = attacker.attack;
+    let remaining_health = (building.health - damage).max(0);
+    let destroyed = remaining_health == 0;
+
+    game.units[attacker_index].has_acted = true;
+    game.buildings[building_index].health = remaining_health;
+
+    let camp = game.buildings[building_index].camp;
+    let kind = game.buildings[building_index].kind;
+    let position = game.buildings[building_index].position;
+    let mut events = vec![Event::BuildingDamaged {
+        camp,
+        kind,
+        position,
+        amount: damage,
+        remaining_health,
+    }];
+
+    if destroyed {
+        game.buildings.remove(building_index);
+        events.push(Event::BuildingDestroyed {
+            camp,
+            kind,
+            position,
+        });
+    }
+
+    events.push(Event::UnitActed {
+        unit_id: attacker_id,
+    });
+    if let Some(camp) = game.winner() {
+        events.push(Event::GameWon { camp });
+    }
+
     Ok(events)
 }

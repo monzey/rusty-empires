@@ -35,6 +35,63 @@ fn soldier_can_be_recruited_on_empty_allied_barracks() {
 }
 
 #[test]
+fn archer_can_be_recruited_on_empty_allied_barracks_with_food_and_gold() {
+    let mut game = Game::new_single_player_vs_ai(10, 8);
+    let barracks_position = prepare_empty_human_barracks_with_food_and_gold(&mut game);
+    let food_before = game.food(Camp::Human);
+    let gold_before = game.gold(Camp::Human);
+
+    let events = game
+        .apply(Action::RecruitArcher {
+            building_position: barracks_position,
+        })
+        .expect("archer should be recruitable on an empty allied barracks with food and gold");
+
+    assert_eq!(
+        events,
+        vec![Event::UnitRecruited {
+            unit_id: rusty_empires::UnitId(5),
+            camp: Camp::Human,
+            kind: UnitKind::Archer,
+            position: barracks_position,
+        }]
+    );
+    assert_eq!(game.food(Camp::Human), food_before - 10);
+    assert_eq!(game.gold(Camp::Human), gold_before - 5);
+    assert_eq!(
+        game.unit_position(rusty_empires::UnitId(5)),
+        Some(barracks_position)
+    );
+    assert_eq!(
+        game.unit_kind(rusty_empires::UnitId(5)),
+        Some(UnitKind::Archer)
+    );
+}
+
+#[test]
+fn archer_cannot_be_recruited_without_food_or_gold() {
+    let mut game = Game::new_single_player_vs_ai(10, 8);
+    let barracks_position = prepare_empty_human_barracks(&mut game, false);
+
+    assert_eq!(
+        game.apply(Action::RecruitArcher {
+            building_position: barracks_position,
+        }),
+        Err(GameError::Recruit(RecruitError::NotEnoughFood))
+    );
+
+    let mut game = Game::new_single_player_vs_ai(10, 8);
+    let barracks_position = prepare_empty_human_barracks(&mut game, true);
+
+    assert_eq!(
+        game.apply(Action::RecruitArcher {
+            building_position: barracks_position,
+        }),
+        Err(GameError::Recruit(RecruitError::NotEnoughGold))
+    );
+}
+
+#[test]
 fn soldier_cannot_be_recruited_without_food() {
     let mut game = Game::new_single_player_vs_ai(10, 8);
     let barracks_position = prepare_empty_human_barracks(&mut game, false);
@@ -196,6 +253,20 @@ fn prepare_empty_human_barracks(game: &mut Game, with_food: bool) -> GridPositio
     .expect("villager should be able to move away from the barracks onto the forum");
 
     barracks_position
+}
+
+fn prepare_empty_human_barracks_with_food_and_gold(game: &mut Game) -> GridPosition {
+    let human_villager = game
+        .villager_id(Camp::Human)
+        .expect("human villager should exist");
+
+    game.apply(Action::BuildGoldMine {
+        unit_id: human_villager,
+    })
+    .expect("villager should be able to build a gold mine");
+    pass_turn_back_to_human(game);
+
+    prepare_empty_human_barracks(game, true)
 }
 
 fn prepare_empty_human_forum(game: &mut Game, with_food: bool) -> GridPosition {

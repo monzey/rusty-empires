@@ -7,6 +7,7 @@ pub struct UnitId(pub u32);
 pub enum UnitKind {
     Villager,
     Soldier,
+    Archer,
 }
 
 pub(crate) const VILLAGER_HEALTH: i32 = 6;
@@ -20,6 +21,12 @@ pub(crate) const SOLDIER_ATTACK: i32 = 6;
 pub(crate) const SOLDIER_DEFENSE: i32 = 2;
 pub(crate) const SOLDIER_ATTACK_RANGE: i32 = 1;
 pub(crate) const SOLDIER_MOVE_RANGE: i32 = 3;
+
+pub(crate) const ARCHER_HEALTH: i32 = 7;
+pub(crate) const ARCHER_ATTACK: i32 = 4;
+pub(crate) const ARCHER_DEFENSE: i32 = 1;
+pub(crate) const ARCHER_ATTACK_RANGE: i32 = 2;
+pub(crate) const ARCHER_MOVE_RANGE: i32 = 3;
 
 #[derive(Debug, Clone)]
 pub(crate) struct UnitState {

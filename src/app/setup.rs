@@ -81,7 +81,7 @@ pub(super) fn setup(mut commands: Commands, game: Res<GameState>) {
             .expect("AI soldier should exist at game start"),
     );
 
-    info!("Boucle initiale: clic sur une unite pour la selectionner, clic sur une case libre pour bouger, clic sur une unite ennemie a portee pour attaquer, B mine, F ferme, T forum, R caserne, S recruter soldat depuis caserne, V recruter villageois depuis forum, Espace/Entree pour finir le tour.");
+    info!("Boucle initiale: clic sur une unite pour la selectionner, clic sur une case libre pour bouger, clic sur une unite ennemie a portee pour attaquer, B mine, F ferme, T forum, R caserne, M marche, U universite, S recruter soldat depuis caserne, A recruter archer depuis caserne, V recruter villageois depuis forum, G echanger or vers nourriture depuis marche, N echanger nourriture vers or depuis marche, Y rechercher entrainement militaire depuis universite, Espace/Entree pour finir le tour.");
 }
 
 pub(super) fn spawn_unit(
@@ -94,6 +94,7 @@ pub(super) fn spawn_unit(
     let size = match kind {
         UnitKind::Villager => TILE_SIZE * 0.62,
         UnitKind::Soldier => TILE_SIZE * 0.72,
+        UnitKind::Archer => TILE_SIZE * 0.66,
     };
     commands.spawn((
         SpriteBundle {

@@ -1,6 +1,6 @@
 use bevy::{ecs::query::QueryFilter, prelude::*};
 
-use super::components::{MapPosition, Unit};
+use super::components::{Building, MapPosition, Unit};
 use super::grid::grid_to_world;
 use super::setup::spawn_unit;
 use crate::Event;
@@ -41,6 +41,23 @@ pub(super) fn apply_game_events<F: QueryFilter>(
     }
 }
 
+pub(super) fn apply_building_events<F: QueryFilter>(
+    events: &[Event],
+    commands: &mut Commands,
+    buildings: &Query<(Entity, &MapPosition, &Building), F>,
+) {
+    for event in events {
+        if let Event::BuildingDestroyed { position, .. } = *event {
+            if let Some((entity, _, _)) = buildings
+                .iter()
+                .find(|(_, building_position, _)| building_position.0 == position)
+            {
+                commands.entity(entity).despawn();
+            }
+        }
+    }
+}
+
 pub(super) fn log_resource_events(events: &[Event]) {
     for event in events {
         match *event {
@@ -60,6 +77,43 @@ pub(super) fn log_resource_events(events: &[Event]) {
                     "{:?} produit {} nourriture (total: {}).",
                     camp, amount, total
                 );
+            }
+            Event::TechnologyProduced {
+                camp,
+                amount,
+                total,
+            } => {
+                info!(
+                    "{:?} produit {} technologie (total: {}).",
+                    camp, amount, total
+                );
+            }
+            Event::GoldTradedForFood {
+                camp,
+                gold_spent,
+                food_gained,
+                gold_total,
+                food_total,
+            } => {
+                info!(
+                    "{:?} echange {} or contre {} nourriture (or: {}, nourriture: {}).",
+                    camp, gold_spent, food_gained, gold_total, food_total
+                );
+            }
+            Event::FoodTradedForGold {
+                camp,
+                food_spent,
+                gold_gained,
+                food_total,
+                gold_total,
+            } => {
+                info!(
+                    "{:?} echange {} nourriture contre {} or (nourriture: {}, or: {}).",
+                    camp, food_spent, gold_gained, food_total, gold_total
+                );
+            }
+            Event::TechnologyResearched { camp, name } => {
+                info!("{:?} recherche {}.", camp, name);
             }
             _ => {}
         }

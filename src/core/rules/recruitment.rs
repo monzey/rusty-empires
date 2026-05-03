@@ -1,11 +1,14 @@
 use crate::core::units::{
-    UnitState, SOLDIER_ATTACK, SOLDIER_ATTACK_RANGE, SOLDIER_DEFENSE, SOLDIER_HEALTH,
+    UnitState, ARCHER_ATTACK, ARCHER_ATTACK_RANGE, ARCHER_DEFENSE, ARCHER_HEALTH,
+    ARCHER_MOVE_RANGE, SOLDIER_ATTACK, SOLDIER_ATTACK_RANGE, SOLDIER_DEFENSE, SOLDIER_HEALTH,
     SOLDIER_MOVE_RANGE, VILLAGER_ATTACK, VILLAGER_ATTACK_RANGE, VILLAGER_DEFENSE, VILLAGER_HEALTH,
     VILLAGER_MOVE_RANGE,
 };
 use crate::core::{BuildingKind, Camp, Event, Game, GridPosition, RecruitError, UnitId, UnitKind};
 
 const SOLDIER_FOOD_COST: i32 = 10;
+const ARCHER_FOOD_COST: i32 = 10;
+const ARCHER_GOLD_COST: i32 = 5;
 const VILLAGER_FOOD_COST: i32 = 10;
 
 pub(crate) fn recruit_soldier(
@@ -53,6 +56,65 @@ pub(crate) fn recruit_soldier(
         unit_id,
         camp,
         kind: UnitKind::Soldier,
+        position: building_position,
+    }])
+}
+
+pub(crate) fn recruit_archer(
+    game: &mut Game,
+    building_position: GridPosition,
+) -> Result<Vec<Event>, RecruitError> {
+    let Some((camp, BuildingKind::Barracks)) = game.building_at(building_position) else {
+        return Err(RecruitError::NoBarracks);
+    };
+
+    if camp != game.current_turn {
+        return Err(RecruitError::NotOwnerTurn);
+    }
+
+    if game
+        .units
+        .iter()
+        .any(|unit| unit.position == building_position)
+    {
+        return Err(RecruitError::Occupied);
+    }
+
+    let stockpile = resources(game, camp);
+    if stockpile.food < ARCHER_FOOD_COST {
+        return Err(RecruitError::NotEnoughFood);
+    }
+
+    if stockpile.gold < ARCHER_GOLD_COST {
+        return Err(RecruitError::NotEnoughGold);
+    }
+
+    {
+        let resources = resources_mut(game, camp);
+        resources.food -= ARCHER_FOOD_COST;
+        resources.gold -= ARCHER_GOLD_COST;
+    }
+
+    let unit_id = UnitId(game.next_unit_id);
+    game.next_unit_id += 1;
+    game.units.push(UnitState {
+        id: unit_id,
+        kind: UnitKind::Archer,
+        camp,
+        position: building_position,
+        has_moved: false,
+        has_acted: false,
+        health: ARCHER_HEALTH,
+        attack: ARCHER_ATTACK,
+        defense: ARCHER_DEFENSE,
+        attack_range: ARCHER_ATTACK_RANGE,
+        move_range: ARCHER_MOVE_RANGE,
+    });
+
+    Ok(vec![Event::UnitRecruited {
+        unit_id,
+        camp,
+        kind: UnitKind::Archer,
         position: building_position,
     }])
 }

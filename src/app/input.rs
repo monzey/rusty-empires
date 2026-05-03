@@ -4,7 +4,7 @@ use super::components::{Building, MapPosition, Unit};
 use super::grid::{cursor_grid_position, is_inside_map};
 use super::resources::{GameState, SelectedBuilding, SelectedUnit};
 use super::setup::spawn_building;
-use super::sync::{apply_game_events, log_resource_events};
+use super::sync::{apply_building_events, apply_game_events, log_resource_events};
 use crate::{Action, BuildingKind, Camp, Event, GridPosition};
 
 pub(super) fn handle_human_input(
@@ -53,7 +53,13 @@ pub(super) fn handle_human_input(
         if let Some((entity, _, building)) = buildings.iter().find(|(_, position, building)| {
             position.0 == clicked_position
                 && building.camp == Camp::Human
-                && matches!(building.kind, BuildingKind::Barracks | BuildingKind::Forum)
+                && matches!(
+                    building.kind,
+                    BuildingKind::Barracks
+                        | BuildingKind::Forum
+                        | BuildingKind::Market
+                        | BuildingKind::University
+                )
         }) {
             selected_building.0 = Some(entity);
             info!(
@@ -102,6 +108,31 @@ pub(super) fn handle_human_input(
         return;
     }
 
+    if let Some((_, _, target)) = buildings.iter().find(|(_, position, building)| {
+        position.0 == clicked_position && building.camp != Camp::Human
+    }) {
+        match game.0.apply(Action::AttackBuilding {
+            attacker_id: unit_id,
+            target_position: clicked_position,
+        }) {
+            Ok(events) => {
+                apply_game_events(&events, &mut commands, &mut units);
+                apply_building_events(&events, &mut commands, &buildings);
+                selected_unit.0 = None;
+                selected_building.0 = None;
+                info!(
+                    "{:?} ennemi attaque en ({}, {}).",
+                    target.kind, clicked_position.x, clicked_position.y
+                );
+                log_combat_events(&events);
+            }
+            Err(error) => {
+                info!("Attaque de batiment refusee: {:?}.", error);
+            }
+        }
+        return;
+    }
+
     match game.0.apply(Action::MoveUnit {
         unit_id,
         to: clicked_position,
@@ -144,6 +175,22 @@ pub(super) fn handle_build_input(
         return;
     }
 
+    if keyboard.just_pressed(KeyCode::KeyA) {
+        handle_recruit_input(
+            &mut commands,
+            &mut game,
+            &selected_building,
+            &mut units,
+            &buildings,
+            BuildingKind::Barracks,
+            |building_position| Action::RecruitArcher { building_position },
+            "Selectionne une caserne avant de recruter un archer.",
+            "Selectionne une caserne alliee pour recruter un archer.",
+            "Archer",
+        );
+        return;
+    }
+
     if keyboard.just_pressed(KeyCode::KeyV) {
         handle_recruit_input(
             &mut commands,
@@ -160,6 +207,31 @@ pub(super) fn handle_build_input(
         return;
     }
 
+    if keyboard.just_pressed(KeyCode::KeyG) {
+        handle_trade_input(
+            &mut game,
+            &selected_building,
+            &buildings,
+            Action::TradeGoldForFood { amount: 10 },
+        );
+        return;
+    }
+
+    if keyboard.just_pressed(KeyCode::KeyN) {
+        handle_trade_input(
+            &mut game,
+            &selected_building,
+            &buildings,
+            Action::TradeFoodForGold { amount: 10 },
+        );
+        return;
+    }
+
+    if keyboard.just_pressed(KeyCode::KeyY) {
+        handle_research_input(&mut game, &selected_building, &buildings);
+        return;
+    }
+
     let build_kind = if keyboard.just_pressed(KeyCode::KeyB) {
         BuildingKind::GoldMine
     } else if keyboard.just_pressed(KeyCode::KeyF) {
@@ -168,6 +240,10 @@ pub(super) fn handle_build_input(
         BuildingKind::Forum
     } else if keyboard.just_pressed(KeyCode::KeyR) {
         BuildingKind::Barracks
+    } else if keyboard.just_pressed(KeyCode::KeyM) {
+        BuildingKind::Market
+    } else if keyboard.just_pressed(KeyCode::KeyU) {
+        BuildingKind::University
     } else {
         return;
     };
@@ -190,6 +266,8 @@ pub(super) fn handle_build_input(
         BuildingKind::Farm => Action::BuildFarm { unit_id },
         BuildingKind::Forum => Action::BuildForum { unit_id },
         BuildingKind::Barracks => Action::BuildBarracks { unit_id },
+        BuildingKind::Market => Action::BuildMarket { unit_id },
+        BuildingKind::University => Action::BuildUniversity { unit_id },
     };
 
     match game.0.apply(action) {
@@ -265,6 +343,65 @@ fn handle_recruit_input(
     }
 }
 
+fn handle_trade_input(
+    game: &mut ResMut<GameState>,
+    selected_building: &Res<SelectedBuilding>,
+    buildings: &Query<(Entity, &Building, &MapPosition), Without<Unit>>,
+    action: Action,
+) {
+    if game.0.current_turn() != Camp::Human {
+        return;
+    }
+
+    let Some(selected_entity) = selected_building.0 else {
+        info!("Selectionne un marche avant d'echanger des ressources.");
+        return;
+    };
+
+    let Ok((_, building, _)) = buildings.get(selected_entity) else {
+        return;
+    };
+
+    if building.camp != Camp::Human || building.kind != BuildingKind::Market {
+        info!("Selectionne un marche allie pour echanger des ressources.");
+        return;
+    }
+
+    match game.0.apply(action) {
+        Ok(events) => log_resource_events(&events),
+        Err(error) => info!("Echange refuse: {:?}.", error),
+    }
+}
+
+fn handle_research_input(
+    game: &mut ResMut<GameState>,
+    selected_building: &Res<SelectedBuilding>,
+    buildings: &Query<(Entity, &Building, &MapPosition), Without<Unit>>,
+) {
+    if game.0.current_turn() != Camp::Human {
+        return;
+    }
+
+    let Some(selected_entity) = selected_building.0 else {
+        info!("Selectionne une universite avant de rechercher une technologie.");
+        return;
+    };
+
+    let Ok((_, building, _)) = buildings.get(selected_entity) else {
+        return;
+    };
+
+    if building.camp != Camp::Human || building.kind != BuildingKind::University {
+        info!("Selectionne une universite alliee pour rechercher une technologie.");
+        return;
+    }
+
+    match game.0.apply(Action::ResearchMilitaryTraining) {
+        Ok(events) => log_resource_events(&events),
+        Err(error) => info!("Recherche refusee: {:?}.", error),
+    }
+}
+
 pub(super) fn handle_end_turn_input(
     keyboard: Res<ButtonInput<KeyCode>>,
     mut game: ResMut<GameState>,
@@ -321,6 +458,16 @@ pub(super) fn run_ai_turn(
                     camp, amount, total
                 );
             }
+            Event::TechnologyProduced {
+                camp,
+                amount,
+                total,
+            } => {
+                info!(
+                    "{:?} produit {} technologie (total: {}).",
+                    camp, amount, total
+                );
+            }
             _ => {}
         }
     }
@@ -343,6 +490,21 @@ fn log_combat_events(events: &[Event]) {
             }
             Event::UnitDefeated { unit_id } => {
                 info!("Unite {:?} vaincue.", unit_id);
+            }
+            Event::BuildingDamaged {
+                kind,
+                position,
+                amount,
+                remaining_health,
+                ..
+            } => {
+                info!(
+                    "{:?} en ({}, {}) subit {} degats (PV restants: {}).",
+                    kind, position.x, position.y, amount, remaining_health
+                );
+            }
+            Event::BuildingDestroyed { kind, position, .. } => {
+                info!("{:?} detruit en ({}, {}).", kind, position.x, position.y);
             }
             Event::GameWon { camp } => {
                 info!("Victoire {:?}.", camp);

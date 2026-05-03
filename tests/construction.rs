@@ -224,6 +224,114 @@ fn barracks_must_be_built_adjacent_to_own_forum() {
     );
 }
 
+#[test]
+fn market_must_be_built_adjacent_to_own_forum() {
+    let mut game = Game::new_single_player_vs_ai(10, 8);
+    let human_villager = game
+        .villager_id(Camp::Human)
+        .expect("human villager should exist at game start");
+
+    move_human_villager_and_restore_turn(&mut game, GridPosition { x: 0, y: 3 });
+
+    assert_eq!(
+        game.apply(Action::BuildMarket {
+            unit_id: human_villager,
+        }),
+        Err(GameError::Build(BuildError::NoAdjacentForum))
+    );
+
+    game.apply(Action::BuildForum {
+        unit_id: human_villager,
+    })
+    .expect("forum should be buildable before building a market");
+    pass_turn_back_to_human(&mut game);
+
+    game.apply(Action::MoveUnit {
+        unit_id: human_villager,
+        to: GridPosition { x: 0, y: 4 },
+    })
+    .expect("villager should be able to move adjacent to the forum");
+    pass_turn_back_to_human(&mut game);
+
+    let events = game
+        .apply(Action::BuildMarket {
+            unit_id: human_villager,
+        })
+        .expect("market should be buildable next to an allied forum");
+
+    assert_eq!(
+        events,
+        vec![
+            Event::BuildingConstructed {
+                camp: Camp::Human,
+                kind: BuildingKind::Market,
+                position: GridPosition { x: 0, y: 4 }
+            },
+            Event::UnitActed {
+                unit_id: human_villager
+            },
+        ]
+    );
+    assert_eq!(
+        game.building_at(GridPosition { x: 0, y: 4 }),
+        Some((Camp::Human, BuildingKind::Market))
+    );
+}
+
+#[test]
+fn university_must_be_built_adjacent_to_own_forum() {
+    let mut game = Game::new_single_player_vs_ai(10, 8);
+    let human_villager = game
+        .villager_id(Camp::Human)
+        .expect("human villager should exist at game start");
+
+    move_human_villager_and_restore_turn(&mut game, GridPosition { x: 0, y: 3 });
+
+    assert_eq!(
+        game.apply(Action::BuildUniversity {
+            unit_id: human_villager,
+        }),
+        Err(GameError::Build(BuildError::NoAdjacentForum))
+    );
+
+    game.apply(Action::BuildForum {
+        unit_id: human_villager,
+    })
+    .expect("forum should be buildable before building a university");
+    pass_turn_back_to_human(&mut game);
+
+    game.apply(Action::MoveUnit {
+        unit_id: human_villager,
+        to: GridPosition { x: 0, y: 4 },
+    })
+    .expect("villager should be able to move adjacent to the forum");
+    pass_turn_back_to_human(&mut game);
+
+    let events = game
+        .apply(Action::BuildUniversity {
+            unit_id: human_villager,
+        })
+        .expect("university should be buildable next to an allied forum");
+
+    assert_eq!(
+        events,
+        vec![
+            Event::BuildingConstructed {
+                camp: Camp::Human,
+                kind: BuildingKind::University,
+                position: GridPosition { x: 0, y: 4 }
+            },
+            Event::UnitActed {
+                unit_id: human_villager
+            },
+        ]
+    );
+    assert_eq!(
+        game.building_at(GridPosition { x: 0, y: 4 }),
+        Some((Camp::Human, BuildingKind::University))
+    );
+}
+
 fn move_human_villager_and_restore_turn(game: &mut Game, to: GridPosition) {
     let human_villager = game
         .villager_id(Camp::Human)

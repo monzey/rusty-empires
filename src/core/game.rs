@@ -1,7 +1,9 @@
 use super::buildings::BuildingState;
 use super::map::NaturalResourceState;
 use super::resources::ResourceStockpile;
-use super::rules::{ai, combat, construction, economy, movement, recruitment, turns};
+use super::rules::{
+    ai, combat, construction, economy, movement, recruitment, research, trade, turns,
+};
 use super::units::{
     UnitState, SOLDIER_ATTACK, SOLDIER_ATTACK_RANGE, SOLDIER_DEFENSE, SOLDIER_HEALTH,
     SOLDIER_MOVE_RANGE, VILLAGER_ATTACK, VILLAGER_ATTACK_RANGE, VILLAGER_DEFENSE, VILLAGER_HEALTH,
@@ -22,11 +24,15 @@ pub struct Game {
     pub(crate) human_resources: ResourceStockpile,
     pub(crate) ai_resources: ResourceStockpile,
     pub(crate) next_unit_id: u32,
+    human_visible_tiles: Vec<GridPosition>,
+    human_explored_tiles: Vec<GridPosition>,
+    ai_visible_tiles: Vec<GridPosition>,
+    ai_explored_tiles: Vec<GridPosition>,
 }
 
 impl Game {
     pub fn new_single_player_vs_ai(map_width: i32, map_height: i32) -> Self {
-        Self {
+        let mut game = Self {
             map_width,
             map_height,
             current_turn: Camp::Human,
@@ -115,7 +121,13 @@ impl Game {
             human_resources: ResourceStockpile::default(),
             ai_resources: ResourceStockpile::default(),
             next_unit_id: 5,
-        }
+            human_visible_tiles: Vec::new(),
+            human_explored_tiles: Vec::new(),
+            ai_visible_tiles: Vec::new(),
+            ai_explored_tiles: Vec::new(),
+        };
+        game.refresh_visibility();
+        game
     }
 
     pub fn apply(&mut self, action: Action) -> Result<Vec<Event>, GameError> {
@@ -123,7 +135,7 @@ impl Game {
             return Err(GameError::GameOver { winner });
         }
 
-        match action {
+        let result = match action {
             Action::MoveUnit { unit_id, to } => {
                 movement::move_unit(self, unit_id, to).map_err(GameError::Move)
             }
@@ -131,6 +143,11 @@ impl Game {
                 attacker_id,
                 target_id,
             } => combat::attack_unit(self, attacker_id, target_id).map_err(GameError::Combat),
+            Action::AttackBuilding {
+                attacker_id,
+                target_position,
+            } => combat::attack_building(self, attacker_id, target_position)
+                .map_err(GameError::Combat),
             Action::BuildGoldMine { unit_id } => {
                 construction::build_gold_mine(self, unit_id).map_err(GameError::Build)
             }
@@ -143,15 +160,39 @@ impl Game {
             Action::BuildBarracks { unit_id } => {
                 construction::build_barracks(self, unit_id).map_err(GameError::Build)
             }
+            Action::BuildMarket { unit_id } => {
+                construction::build_market(self, unit_id).map_err(GameError::Build)
+            }
+            Action::BuildUniversity { unit_id } => {
+                construction::build_university(self, unit_id).map_err(GameError::Build)
+            }
             Action::RecruitSoldier { building_position } => {
                 recruitment::recruit_soldier(self, building_position).map_err(GameError::Recruit)
+            }
+            Action::RecruitArcher { building_position } => {
+                recruitment::recruit_archer(self, building_position).map_err(GameError::Recruit)
             }
             Action::RecruitVillager { building_position } => {
                 recruitment::recruit_villager(self, building_position).map_err(GameError::Recruit)
             }
+            Action::TradeGoldForFood { amount } => {
+                trade::trade_gold_for_food(self, amount).map_err(GameError::Trade)
+            }
+            Action::TradeFoodForGold { amount } => {
+                trade::trade_food_for_gold(self, amount).map_err(GameError::Trade)
+            }
+            Action::ResearchMilitaryTraining => {
+                research::research_military_training(self).map_err(GameError::Research)
+            }
             Action::EndTurn => turns::end_human_turn(self).map_err(GameError::Turn),
             Action::RunAiTurn => ai::run_ai_turn(self).map_err(GameError::Turn),
+        };
+
+        if result.is_ok() {
+            self.refresh_visibility();
         }
+
+        result
     }
 
     pub fn current_turn(&self) -> Camp {
@@ -236,6 +277,32 @@ impl Game {
         economy::resources(self, camp).food
     }
 
+    pub fn technology_points(&self, camp: Camp) -> i32 {
+        economy::resources(self, camp).technology_points
+    }
+
+    pub fn is_visible(&self, camp: Camp, position: GridPosition) -> bool {
+        if !self.is_inside_map(position) {
+            return false;
+        }
+
+        match camp {
+            Camp::Human => self.human_visible_tiles.contains(&position),
+            Camp::Ai => self.ai_visible_tiles.contains(&position),
+        }
+    }
+
+    pub fn is_explored(&self, camp: Camp, position: GridPosition) -> bool {
+        if !self.is_inside_map(position) {
+            return false;
+        }
+
+        match camp {
+            Camp::Human => self.human_explored_tiles.contains(&position),
+            Camp::Ai => self.ai_explored_tiles.contains(&position),
+        }
+    }
+
     pub fn winner(&self) -> Option<Camp> {
         let human_alive = self.has_assets(Camp::Human);
         let ai_alive = self.has_assets(Camp::Ai);
@@ -257,5 +324,86 @@ impl Game {
     fn has_assets(&self, camp: Camp) -> bool {
         self.units.iter().any(|unit| unit.camp == camp)
             || self.buildings.iter().any(|building| building.camp == camp)
+    }
+
+    fn refresh_visibility(&mut self) {
+        self.human_visible_tiles = self.visible_tiles_for(Camp::Human);
+        self.ai_visible_tiles = self.visible_tiles_for(Camp::Ai);
+        add_explored_tiles(&mut self.human_explored_tiles, &self.human_visible_tiles);
+        add_explored_tiles(&mut self.ai_explored_tiles, &self.ai_visible_tiles);
+    }
+
+    fn visible_tiles_for(&self, camp: Camp) -> Vec<GridPosition> {
+        let mut visible_tiles = Vec::new();
+
+        for unit in self.units.iter().filter(|unit| unit.camp == camp) {
+            add_tiles_in_range(
+                &mut visible_tiles,
+                unit.position,
+                unit_vision_range(unit.kind),
+                self.map_width,
+                self.map_height,
+            );
+        }
+
+        for building in self
+            .buildings
+            .iter()
+            .filter(|building| building.camp == camp)
+        {
+            add_tiles_in_range(
+                &mut visible_tiles,
+                building.position,
+                building_vision_range(building.kind),
+                self.map_width,
+                self.map_height,
+            );
+        }
+
+        visible_tiles
+    }
+}
+
+fn add_tiles_in_range(
+    tiles: &mut Vec<GridPosition>,
+    center: GridPosition,
+    range: i32,
+    map_width: i32,
+    map_height: i32,
+) {
+    for y in 0..map_height {
+        for x in 0..map_width {
+            let position = GridPosition { x, y };
+            if super::geometry::distance(center, position) <= range && !tiles.contains(&position) {
+                tiles.push(position);
+            }
+        }
+    }
+}
+
+fn add_explored_tiles(explored_tiles: &mut Vec<GridPosition>, visible_tiles: &[GridPosition]) {
+    for position in visible_tiles {
+        if !explored_tiles.contains(position) {
+            explored_tiles.push(*position);
+        }
+    }
+}
+
+fn unit_vision_range(kind: UnitKind) -> i32 {
+    match kind {
+        UnitKind::Villager => 3,
+        UnitKind::Soldier => 3,
+        UnitKind::Archer => 4,
+    }
+}
+
+fn building_vision_range(kind: BuildingKind) -> i32 {
+    match kind {
+        BuildingKind::Forum => 4,
+        BuildingKind::GoldMine
+        | BuildingKind::Farm
+        | BuildingKind::Barracks
+        | BuildingKind::Market
+        | BuildingKind::University => 2,
     }
 }

@@ -4,4 +4,6 @@ pub(crate) mod construction;
 pub(crate) mod economy;
 pub(crate) mod movement;
 pub(crate) mod recruitment;
+pub(crate) mod research;
+pub(crate) mod trade;
 pub(crate) mod turns;

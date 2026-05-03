@@ -43,8 +43,10 @@ pub(super) fn unit_color(camp: Camp, kind: UnitKind, selected: bool, inactive: b
     match (camp, kind) {
         (Camp::Human, UnitKind::Villager) => Color::srgb(0.2, 0.55, 1.0),
         (Camp::Human, UnitKind::Soldier) => Color::srgb(0.12, 0.24, 0.95),
+        (Camp::Human, UnitKind::Archer) => Color::srgb(0.08, 0.62, 0.92),
         (Camp::Ai, UnitKind::Villager) => Color::srgb(0.95, 0.25, 0.22),
         (Camp::Ai, UnitKind::Soldier) => Color::srgb(0.62, 0.05, 0.08),
+        (Camp::Ai, UnitKind::Archer) => Color::srgb(0.78, 0.16, 0.1),
     }
 }
 
@@ -58,5 +60,9 @@ pub(super) fn building_color(camp: Camp, kind: BuildingKind) -> Color {
         (Camp::Ai, BuildingKind::Forum) => Color::srgb(0.82, 0.28, 0.3),
         (Camp::Human, BuildingKind::Barracks) => Color::srgb(0.24, 0.32, 0.78),
         (Camp::Ai, BuildingKind::Barracks) => Color::srgb(0.45, 0.12, 0.14),
+        (Camp::Human, BuildingKind::Market) => Color::srgb(0.78, 0.42, 0.9),
+        (Camp::Ai, BuildingKind::Market) => Color::srgb(0.5, 0.18, 0.58),
+        (Camp::Human, BuildingKind::University) => Color::srgb(0.3, 0.82, 0.92),
+        (Camp::Ai, BuildingKind::University) => Color::srgb(0.1, 0.45, 0.58),
     }
 }
