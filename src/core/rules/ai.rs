@@ -1,0 +1,81 @@
+use crate::core::geometry::distance;
+use crate::core::rules::{economy, turns};
+use crate::core::{Camp, Event, Game, GridPosition, TurnError};
+
+pub(crate) fn run_ai_turn(game: &mut Game) -> Result<Vec<Event>, TurnError> {
+    if game.current_turn != Camp::Ai {
+        return Err(TurnError::NotAiTurn);
+    }
+
+    let mut events = Vec::new();
+
+    if let (Some(ai_index), Some(target)) = (
+        game.units.iter().position(|unit| unit.camp == Camp::Ai),
+        game.villager_position(Camp::Human),
+    ) {
+        let occupied_positions: Vec<GridPosition> = game
+            .units
+            .iter()
+            .enumerate()
+            .filter(|(index, _)| *index != ai_index)
+            .map(|(_, unit)| unit.position)
+            .collect();
+        let unit_id = game.units[ai_index].id;
+        let from = game.units[ai_index].position;
+
+        if !game.units[ai_index].has_acted {
+            if let Some(to) = next_move(
+                from,
+                target,
+                &occupied_positions,
+                game.units[ai_index].move_range,
+                game.map_width,
+                game.map_height,
+            ) {
+                game.units[ai_index].position = to;
+                events.push(Event::UnitMoved { unit_id, from, to });
+            }
+
+            game.units[ai_index].has_acted = true;
+            events.push(Event::UnitActed { unit_id });
+        }
+    }
+
+    events.extend(economy::produce_end_of_turn_resources(game, Camp::Ai));
+    let from = game.current_turn;
+    game.current_turn = Camp::Human;
+    turns::reset_villager_action(game, Camp::Human);
+    events.push(Event::TurnChanged {
+        from,
+        to: game.current_turn,
+    });
+
+    Ok(events)
+}
+
+fn next_move(
+    from: GridPosition,
+    target: GridPosition,
+    occupied_positions: &[GridPosition],
+    move_range: i32,
+    map_width: i32,
+    map_height: i32,
+) -> Option<GridPosition> {
+    let mut candidates = Vec::new();
+
+    for y in 0..map_height {
+        for x in 0..map_width {
+            let position = GridPosition { x, y };
+
+            if position != from
+                && distance(from, position) <= move_range
+                && !occupied_positions.contains(&position)
+            {
+                candidates.push(position);
+            }
+        }
+    }
+
+    candidates.sort_by_key(|position| distance(*position, target));
+    candidates.into_iter().next()
+}
