@@ -16,6 +16,12 @@ pub enum Action {
     BuildFarm {
         unit_id: UnitId,
     },
+    BuildForum {
+        unit_id: UnitId,
+    },
+    BuildBarracks {
+        unit_id: UnitId,
+    },
     EndTurn,
     RunAiTurn,
 }

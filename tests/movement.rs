@@ -18,21 +18,17 @@ fn human_can_move_villager_up_to_five_tiles_during_their_turn() {
 
     assert_eq!(
         events,
-        vec![
-            Event::UnitMoved {
-                unit_id: human_villager,
-                from: GridPosition { x: 1, y: 3 },
-                to: GridPosition { x: 6, y: 3 }
-            },
-            Event::UnitActed {
-                unit_id: human_villager
-            },
-        ]
+        vec![Event::UnitMoved {
+            unit_id: human_villager,
+            from: GridPosition { x: 1, y: 3 },
+            to: GridPosition { x: 6, y: 3 }
+        },]
     );
     assert_eq!(
         game.villager_position(Camp::Human),
         Some(GridPosition { x: 6, y: 3 })
     );
+    assert_eq!(game.unit_has_acted(human_villager), Some(false));
 }
 
 #[test]
@@ -82,7 +78,7 @@ fn human_villager_cannot_move_to_invalid_tiles_or_act_twice() {
         unit_id: human_villager,
         to: GridPosition { x: 2, y: 3 },
     })
-    .expect("first valid move should consume the villager action");
+    .expect("first valid move should consume the villager movement");
     assert_eq!(
         game.apply(Action::MoveUnit {
             unit_id: human_villager,
@@ -109,16 +105,11 @@ fn human_soldier_can_move_three_tiles_but_not_four() {
             to: GridPosition { x: 4, y: 1 }
         })
         .expect("human soldier should be able to move three tiles"),
-        vec![
-            Event::UnitMoved {
-                unit_id: human_soldier,
-                from: GridPosition { x: 4, y: 4 },
-                to: GridPosition { x: 4, y: 1 }
-            },
-            Event::UnitActed {
-                unit_id: human_soldier
-            },
-        ]
+        vec![Event::UnitMoved {
+            unit_id: human_soldier,
+            from: GridPosition { x: 4, y: 4 },
+            to: GridPosition { x: 4, y: 1 }
+        },]
     );
 
     let mut game = Game::new_single_player_vs_ai(10, 8);

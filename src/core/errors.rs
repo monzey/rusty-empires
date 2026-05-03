@@ -24,7 +24,9 @@ pub enum BuildError {
     AlreadyActed,
     NoGoldDeposit,
     NoField,
+    NaturalResourcePresent,
     OccupiedByBuilding,
+    NoAdjacentForum,
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]

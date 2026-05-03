@@ -81,7 +81,7 @@ pub(super) fn setup(mut commands: Commands, game: Res<GameState>) {
             .expect("AI soldier should exist at game start"),
     );
 
-    info!("Boucle initiale: clic sur ton villageois bleu, clic sur une case adjacente libre pour bouger, clic sur une unite ennemie adjacente pour attaquer, B pour construire une mine, F pour construire une ferme, Espace/Entree pour finir le tour.");
+    info!("Boucle initiale: clic sur une unite pour la selectionner, clic sur une case libre pour bouger, clic sur une unite ennemie a portee pour attaquer, B mine, F ferme, T forum, R caserne, Espace/Entree pour finir le tour.");
 }
 
 fn spawn_unit(

@@ -27,6 +27,7 @@ pub(crate) struct UnitState {
     pub(crate) kind: UnitKind,
     pub(crate) camp: Camp,
     pub(crate) position: GridPosition,
+    pub(crate) has_moved: bool,
     pub(crate) has_acted: bool,
     pub(crate) health: i32,
     pub(crate) attack: i32,

@@ -4,6 +4,8 @@ use super::{Camp, GridPosition};
 pub enum BuildingKind {
     GoldMine,
     Farm,
+    Forum,
+    Barracks,
 }
 
 #[derive(Debug, Clone)]

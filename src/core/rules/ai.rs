@@ -44,7 +44,7 @@ pub(crate) fn run_ai_turn(game: &mut Game) -> Result<Vec<Event>, TurnError> {
     events.extend(economy::produce_end_of_turn_resources(game, Camp::Ai));
     let from = game.current_turn;
     game.current_turn = Camp::Human;
-    turns::reset_villager_action(game, Camp::Human);
+    turns::reset_units_for_turn(game, Camp::Human);
     events.push(Event::TurnChanged {
         from,
         to: game.current_turn,

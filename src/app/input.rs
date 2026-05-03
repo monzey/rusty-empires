@@ -88,7 +88,6 @@ pub(super) fn handle_human_input(
     }) {
         Ok(events) => {
             apply_game_events(&events, &mut commands, &mut units);
-            selected_unit.0 = None;
             info!(
                 "Villageois deplace en ({}, {}).",
                 clicked_position.x, clicked_position.y
@@ -111,6 +110,10 @@ pub(super) fn handle_build_input(
         BuildingKind::GoldMine
     } else if keyboard.just_pressed(KeyCode::KeyF) {
         BuildingKind::Farm
+    } else if keyboard.just_pressed(KeyCode::KeyT) {
+        BuildingKind::Forum
+    } else if keyboard.just_pressed(KeyCode::KeyR) {
+        BuildingKind::Barracks
     } else {
         return;
     };
@@ -131,6 +134,8 @@ pub(super) fn handle_build_input(
     let action = match build_kind {
         BuildingKind::GoldMine => Action::BuildGoldMine { unit_id },
         BuildingKind::Farm => Action::BuildFarm { unit_id },
+        BuildingKind::Forum => Action::BuildForum { unit_id },
+        BuildingKind::Barracks => Action::BuildBarracks { unit_id },
     };
 
     match game.0.apply(action) {

@@ -25,7 +25,7 @@ pub(crate) fn move_unit(
         return Err(MoveError::NotUnitTurn);
     }
 
-    if unit.has_acted {
+    if unit.has_acted || unit.has_moved {
         return Err(MoveError::AlreadyActed);
     }
 
@@ -35,10 +35,7 @@ pub(crate) fn move_unit(
 
     let from = unit.position;
     game.units[unit_index].position = to;
-    game.units[unit_index].has_acted = true;
+    game.units[unit_index].has_moved = true;
 
-    Ok(vec![
-        Event::UnitMoved { unit_id, from, to },
-        Event::UnitActed { unit_id },
-    ])
+    Ok(vec![Event::UnitMoved { unit_id, from, to }])
 }

@@ -35,6 +35,7 @@ impl Game {
                     kind: UnitKind::Villager,
                     camp: Camp::Human,
                     position: GridPosition { x: 1, y: 3 },
+                    has_moved: false,
                     has_acted: false,
                     health: VILLAGER_HEALTH,
                     attack: VILLAGER_ATTACK,
@@ -50,6 +51,7 @@ impl Game {
                         x: map_width - 2,
                         y: map_height - 4,
                     },
+                    has_moved: false,
                     has_acted: false,
                     health: VILLAGER_HEALTH,
                     attack: VILLAGER_ATTACK,
@@ -62,6 +64,7 @@ impl Game {
                     kind: UnitKind::Soldier,
                     camp: Camp::Human,
                     position: GridPosition { x: 4, y: 4 },
+                    has_moved: false,
                     has_acted: false,
                     health: SOLDIER_HEALTH,
                     attack: SOLDIER_ATTACK,
@@ -74,6 +77,7 @@ impl Game {
                     kind: UnitKind::Soldier,
                     camp: Camp::Ai,
                     position: GridPosition { x: 5, y: 4 },
+                    has_moved: false,
                     has_acted: false,
                     health: SOLDIER_HEALTH,
                     attack: SOLDIER_ATTACK,
@@ -126,6 +130,12 @@ impl Game {
             }
             Action::BuildFarm { unit_id } => {
                 construction::build_farm(self, unit_id).map_err(GameError::Build)
+            }
+            Action::BuildForum { unit_id } => {
+                construction::build_forum(self, unit_id).map_err(GameError::Build)
+            }
+            Action::BuildBarracks { unit_id } => {
+                construction::build_barracks(self, unit_id).map_err(GameError::Build)
             }
             Action::EndTurn => turns::end_human_turn(self).map_err(GameError::Turn),
             Action::RunAiTurn => ai::run_ai_turn(self).map_err(GameError::Turn),
