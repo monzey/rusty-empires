@@ -76,6 +76,9 @@ fn human_cannot_attack_invalid_or_out_of_range_targets() {
     let ai_villager = game
         .villager_id(Camp::Ai)
         .expect("AI villager should exist at game start");
+    let ai_soldier = game
+        .soldier_id(Camp::Ai)
+        .expect("AI soldier should exist at game start");
 
     assert_eq!(
         game.apply(Action::AttackUnit {
@@ -101,9 +104,33 @@ fn human_cannot_attack_invalid_or_out_of_range_targets() {
     assert_eq!(
         game.apply(Action::AttackUnit {
             attacker_id: human_villager,
-            target_id: ai_villager,
+            target_id: ai_soldier,
         }),
         Err(GameError::Combat(CombatError::OutOfRange))
+    );
+}
+
+#[test]
+fn human_cannot_attack_enemy_unit_outside_vision() {
+    let mut game = Game::new_single_player_vs_ai(10, 8);
+    let human_villager = game
+        .villager_id(Camp::Human)
+        .expect("human villager should exist at game start");
+    let ai_villager = game
+        .villager_id(Camp::Ai)
+        .expect("AI villager should exist at game start");
+
+    assert!(!game.is_visible(
+        Camp::Human,
+        game.unit_position(ai_villager)
+            .expect("AI villager should have a position")
+    ));
+    assert_eq!(
+        game.apply(Action::AttackUnit {
+            attacker_id: human_villager,
+            target_id: ai_villager,
+        }),
+        Err(GameError::Combat(CombatError::TargetNotVisible))
     );
 }
 
@@ -289,6 +316,24 @@ fn human_can_attack_adjacent_enemy_building() {
 }
 
 #[test]
+fn human_cannot_attack_enemy_building_outside_vision() {
+    let mut game = Game::new_single_player_vs_ai(10, 8);
+    let human_soldier = game
+        .soldier_id(Camp::Human)
+        .expect("human soldier should exist at game start");
+    let forum_position = build_far_ai_forum_and_return_to_human(&mut game);
+
+    assert!(!game.is_visible(Camp::Human, forum_position));
+    assert_eq!(
+        game.apply(Action::AttackBuilding {
+            attacker_id: human_soldier,
+            target_position: forum_position,
+        }),
+        Err(GameError::Combat(CombatError::TargetNotVisible))
+    );
+}
+
+#[test]
 fn archer_can_attack_enemy_unit_two_tiles_away() {
     let mut game = Game::new_single_player_vs_ai(10, 8);
     let archer = recruit_human_archer(&mut game);
@@ -411,6 +456,29 @@ fn build_ai_forum_next_to_human_soldier(game: &mut Game) -> GridPosition {
         to: forum_position,
     })
     .expect("AI villager should be able to move next to the human soldier");
+    game.apply(Action::BuildForum {
+        unit_id: ai_villager,
+    })
+    .expect("AI villager should be able to build a forum");
+    game.apply(Action::RunAiTurn)
+        .expect("AI should pass the turn back after building a forum");
+
+    forum_position
+}
+
+fn build_far_ai_forum_and_return_to_human(game: &mut Game) -> GridPosition {
+    game.apply(Action::EndTurn)
+        .expect("human should be able to end turn");
+    let ai_villager = game
+        .villager_id(Camp::Ai)
+        .expect("AI villager should exist at game start");
+    let forum_position = GridPosition { x: 8, y: 3 };
+
+    game.apply(Action::MoveUnit {
+        unit_id: ai_villager,
+        to: forum_position,
+    })
+    .expect("AI villager should be able to move to a non-resource tile");
     game.apply(Action::BuildForum {
         unit_id: ai_villager,
     })

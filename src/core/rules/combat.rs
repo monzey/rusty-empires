@@ -32,6 +32,10 @@ pub(crate) fn attack_unit(
         return Err(CombatError::FriendlyTarget);
     }
 
+    if !game.is_visible(attacker.camp, target.position) {
+        return Err(CombatError::TargetNotVisible);
+    }
+
     if distance(attacker.position, target.position) > attacker.attack_range {
         return Err(CombatError::OutOfRange);
     }
@@ -92,6 +96,10 @@ pub(crate) fn attack_building(
 
     if attacker.camp == building.camp {
         return Err(CombatError::FriendlyTarget);
+    }
+
+    if !game.is_visible(attacker.camp, building.position) {
+        return Err(CombatError::TargetNotVisible);
     }
 
     if distance(attacker.position, building.position) > attacker.attack_range {

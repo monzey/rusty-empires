@@ -41,6 +41,7 @@ pub enum CombatError {
     NotAttackerTurn,
     AlreadyActed,
     FriendlyTarget,
+    TargetNotVisible,
     OutOfRange,
 }
 
