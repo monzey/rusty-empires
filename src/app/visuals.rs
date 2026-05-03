@@ -1,15 +1,21 @@
 use bevy::prelude::*;
 
-use super::components::{Building, Unit};
+use super::components::{Building, MapPosition, Tile, Unit};
 use super::resources::{GameState, SelectedBuilding, SelectedUnit};
-use crate::{BuildingKind, Camp, UnitKind};
+use crate::{BuildingKind, Camp, GridPosition, NaturalResource, UnitKind};
 
 pub(super) fn update_unit_visuals(
     selected_unit: Res<SelectedUnit>,
     game: Res<GameState>,
-    mut units: Query<(Entity, &Unit, &mut Sprite)>,
+    mut units: Query<(Entity, &Unit, &MapPosition, &mut Sprite, &mut Visibility)>,
 ) {
-    for (entity, unit, mut sprite) in &mut units {
+    for (entity, unit, position, mut sprite, mut visibility) in &mut units {
+        *visibility = if unit.camp == Camp::Human || game.0.is_visible(Camp::Human, position.0) {
+            Visibility::Visible
+        } else {
+            Visibility::Hidden
+        };
+
         let selected = selected_unit.0 == Some(entity);
         let inactive =
             unit.camp != game.0.current_turn() || game.0.unit_has_acted(unit.id).unwrap_or(false);
@@ -19,15 +25,63 @@ pub(super) fn update_unit_visuals(
 
 pub(super) fn update_building_visuals(
     selected_building: Res<SelectedBuilding>,
-    mut buildings: Query<(Entity, &Building, &mut Sprite)>,
+    game: Res<GameState>,
+    mut buildings: Query<(
+        Entity,
+        &Building,
+        &MapPosition,
+        &mut Sprite,
+        &mut Visibility,
+    )>,
 ) {
-    for (entity, building, mut sprite) in &mut buildings {
+    for (entity, building, position, mut sprite, mut visibility) in &mut buildings {
+        *visibility = if building.camp == Camp::Human || game.0.is_visible(Camp::Human, position.0)
+        {
+            Visibility::Visible
+        } else {
+            Visibility::Hidden
+        };
+
         let selected = selected_building.0 == Some(entity);
         sprite.color = if selected {
             Color::srgb(1.0, 0.92, 0.18)
         } else {
             building_color(building.camp, building.kind)
         };
+    }
+}
+
+pub(super) fn update_tile_visuals(
+    game: Res<GameState>,
+    mut tiles: Query<(&MapPosition, &mut Sprite), With<Tile>>,
+) {
+    for (position, mut sprite) in &mut tiles {
+        sprite.color = tile_color(&game, position.0);
+    }
+}
+
+fn tile_color(game: &GameState, position: GridPosition) -> Color {
+    if game.0.is_visible(Camp::Human, position) {
+        return base_tile_color(game, position);
+    }
+
+    if game.0.is_explored(Camp::Human, position) {
+        return match game.0.natural_resource_at(position) {
+            Some(NaturalResource::GoldDeposit) => Color::srgb(0.24, 0.2, 0.08),
+            Some(NaturalResource::Field) => Color::srgb(0.16, 0.2, 0.08),
+            None => Color::srgb(0.08, 0.11, 0.1),
+        };
+    }
+
+    Color::srgb(0.01, 0.012, 0.016)
+}
+
+fn base_tile_color(game: &GameState, position: GridPosition) -> Color {
+    match game.0.natural_resource_at(position) {
+        Some(NaturalResource::GoldDeposit) => Color::srgb(0.55, 0.42, 0.12),
+        Some(NaturalResource::Field) => Color::srgb(0.42, 0.46, 0.16),
+        None if (position.x + position.y) % 2 == 0 => Color::srgb(0.22, 0.31, 0.22),
+        None => Color::srgb(0.18, 0.27, 0.18),
     }
 }
 

@@ -13,11 +13,17 @@ pub(super) fn setup(mut commands: Commands, game: Res<GameState>) {
     for y in 0..MAP_HEIGHT {
         for x in 0..MAP_WIDTH {
             let position = GridPosition { x, y };
-            let color = match game.0.natural_resource_at(position) {
-                Some(NaturalResource::GoldDeposit) => Color::srgb(0.55, 0.42, 0.12),
-                Some(NaturalResource::Field) => Color::srgb(0.42, 0.46, 0.16),
-                None if (x + y) % 2 == 0 => Color::srgb(0.22, 0.31, 0.22),
-                None => Color::srgb(0.18, 0.27, 0.18),
+            let color = if game.0.is_visible(Camp::Human, position) {
+                match game.0.natural_resource_at(position) {
+                    Some(NaturalResource::GoldDeposit) => Color::srgb(0.55, 0.42, 0.12),
+                    Some(NaturalResource::Field) => Color::srgb(0.42, 0.46, 0.16),
+                    None if (x + y) % 2 == 0 => Color::srgb(0.22, 0.31, 0.22),
+                    None => Color::srgb(0.18, 0.27, 0.18),
+                }
+            } else if game.0.is_explored(Camp::Human, position) {
+                Color::srgb(0.08, 0.11, 0.1)
+            } else {
+                Color::srgb(0.01, 0.012, 0.016)
             };
 
             commands.spawn((

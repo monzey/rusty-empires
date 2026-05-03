@@ -4,7 +4,7 @@ use super::constants::{MAP_HEIGHT, MAP_WIDTH};
 use super::input::{handle_build_input, handle_end_turn_input, handle_human_input, run_ai_turn};
 use super::resources::{GameState, SelectedBuilding, SelectedUnit};
 use super::setup::setup;
-use super::visuals::{update_building_visuals, update_unit_visuals};
+use super::visuals::{update_building_visuals, update_tile_visuals, update_unit_visuals};
 use crate::Game;
 
 pub struct RustyEmpiresAppPlugin;
@@ -34,6 +34,7 @@ impl Plugin for RustyEmpiresAppPlugin {
                     handle_build_input,
                     handle_end_turn_input,
                     run_ai_turn,
+                    update_tile_visuals,
                     update_unit_visuals,
                     update_building_visuals,
                 ),
