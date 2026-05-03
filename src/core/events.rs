@@ -43,4 +43,7 @@ pub enum Event {
         from: Camp,
         to: Camp,
     },
+    GameWon {
+        camp: Camp,
+    },
 }

@@ -1,6 +1,6 @@
 use crate::core::geometry::distance;
-use crate::core::rules::{economy, turns};
-use crate::core::{Camp, Event, Game, GridPosition, TurnError};
+use crate::core::rules::{economy, recruitment, turns};
+use crate::core::{BuildingKind, Camp, Event, Game, GridPosition, TurnError};
 
 pub(crate) fn run_ai_turn(game: &mut Game) -> Result<Vec<Event>, TurnError> {
     if game.current_turn != Camp::Ai {
@@ -8,6 +8,12 @@ pub(crate) fn run_ai_turn(game: &mut Game) -> Result<Vec<Event>, TurnError> {
     }
 
     let mut events = Vec::new();
+
+    if let Some(barracks_position) = empty_ai_barracks(game) {
+        if let Ok(recruitment_events) = recruitment::recruit_soldier(game, barracks_position) {
+            events.extend(recruitment_events);
+        }
+    }
 
     if let (Some(ai_index), Some(target)) = (
         game.units.iter().position(|unit| unit.camp == Camp::Ai),
@@ -59,6 +65,20 @@ pub(crate) fn run_ai_turn(game: &mut Game) -> Result<Vec<Event>, TurnError> {
     });
 
     Ok(events)
+}
+
+fn empty_ai_barracks(game: &Game) -> Option<GridPosition> {
+    game.buildings
+        .iter()
+        .find(|building| {
+            building.camp == Camp::Ai
+                && building.kind == BuildingKind::Barracks
+                && !game
+                    .units
+                    .iter()
+                    .any(|unit| unit.position == building.position)
+        })
+        .map(|building| building.position)
 }
 
 fn next_move(

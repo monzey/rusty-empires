@@ -344,6 +344,9 @@ fn log_combat_events(events: &[Event]) {
             Event::UnitDefeated { unit_id } => {
                 info!("Unite {:?} vaincue.", unit_id);
             }
+            Event::GameWon { camp } => {
+                info!("Victoire {:?}.", camp);
+            }
             _ => {}
         }
     }

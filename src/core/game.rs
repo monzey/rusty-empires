@@ -119,6 +119,10 @@ impl Game {
     }
 
     pub fn apply(&mut self, action: Action) -> Result<Vec<Event>, GameError> {
+        if let Some(winner) = self.winner() {
+            return Err(GameError::GameOver { winner });
+        }
+
         match action {
             Action::MoveUnit { unit_id, to } => {
                 movement::move_unit(self, unit_id, to).map_err(GameError::Move)
@@ -232,10 +236,26 @@ impl Game {
         economy::resources(self, camp).food
     }
 
+    pub fn winner(&self) -> Option<Camp> {
+        let human_alive = self.has_assets(Camp::Human);
+        let ai_alive = self.has_assets(Camp::Ai);
+
+        match (human_alive, ai_alive) {
+            (true, false) => Some(Camp::Human),
+            (false, true) => Some(Camp::Ai),
+            _ => None,
+        }
+    }
+
     pub(crate) fn is_inside_map(&self, position: GridPosition) -> bool {
         position.x >= 0
             && position.x < self.map_width
             && position.y >= 0
             && position.y < self.map_height
+    }
+
+    fn has_assets(&self, camp: Camp) -> bool {
+        self.units.iter().any(|unit| unit.camp == camp)
+            || self.buildings.iter().any(|building| building.camp == camp)
     }
 }

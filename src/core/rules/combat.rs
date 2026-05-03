@@ -57,5 +57,8 @@ pub(crate) fn attack_unit(
     events.push(Event::UnitActed {
         unit_id: attacker_id,
     });
+    if let Some(camp) = game.winner() {
+        events.push(Event::GameWon { camp });
+    }
     Ok(events)
 }

@@ -1,5 +1,6 @@
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum GameError {
+    GameOver { winner: crate::core::Camp },
     Move(MoveError),
     Combat(CombatError),
     Build(BuildError),
