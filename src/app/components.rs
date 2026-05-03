@@ -17,6 +17,6 @@ pub(super) struct Unit {
 
 #[derive(Component)]
 pub(super) struct Building {
-    pub(super) _camp: Camp,
-    pub(super) _kind: BuildingKind,
+    pub(super) camp: Camp,
+    pub(super) kind: BuildingKind,
 }

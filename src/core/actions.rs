@@ -22,6 +22,9 @@ pub enum Action {
     BuildBarracks {
         unit_id: UnitId,
     },
+    RecruitSoldier {
+        building_position: GridPosition,
+    },
     EndTurn,
     RunAiTurn,
 }

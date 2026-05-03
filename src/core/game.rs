@@ -1,7 +1,7 @@
 use super::buildings::BuildingState;
 use super::map::NaturalResourceState;
 use super::resources::ResourceStockpile;
-use super::rules::{ai, combat, construction, economy, movement, turns};
+use super::rules::{ai, combat, construction, economy, movement, recruitment, turns};
 use super::units::{
     UnitState, SOLDIER_ATTACK, SOLDIER_ATTACK_RANGE, SOLDIER_DEFENSE, SOLDIER_HEALTH,
     SOLDIER_MOVE_RANGE, VILLAGER_ATTACK, VILLAGER_ATTACK_RANGE, VILLAGER_DEFENSE, VILLAGER_HEALTH,
@@ -21,6 +21,7 @@ pub struct Game {
     pub(crate) buildings: Vec<BuildingState>,
     pub(crate) human_resources: ResourceStockpile,
     pub(crate) ai_resources: ResourceStockpile,
+    pub(crate) next_unit_id: u32,
 }
 
 impl Game {
@@ -113,6 +114,7 @@ impl Game {
             buildings: Vec::new(),
             human_resources: ResourceStockpile::default(),
             ai_resources: ResourceStockpile::default(),
+            next_unit_id: 5,
         }
     }
 
@@ -136,6 +138,9 @@ impl Game {
             }
             Action::BuildBarracks { unit_id } => {
                 construction::build_barracks(self, unit_id).map_err(GameError::Build)
+            }
+            Action::RecruitSoldier { building_position } => {
+                recruitment::recruit_soldier(self, building_position).map_err(GameError::Recruit)
             }
             Action::EndTurn => turns::end_human_turn(self).map_err(GameError::Turn),
             Action::RunAiTurn => ai::run_ai_turn(self).map_err(GameError::Turn),

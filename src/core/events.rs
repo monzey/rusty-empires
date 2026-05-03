@@ -1,4 +1,4 @@
-use super::{BuildingKind, Camp, GridPosition, UnitId};
+use super::{BuildingKind, Camp, GridPosition, UnitId, UnitKind};
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum Event {
@@ -17,6 +17,12 @@ pub enum Event {
     },
     UnitDefeated {
         unit_id: UnitId,
+    },
+    UnitRecruited {
+        unit_id: UnitId,
+        camp: Camp,
+        kind: UnitKind,
+        position: GridPosition,
     },
     BuildingConstructed {
         camp: Camp,

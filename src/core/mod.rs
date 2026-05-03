@@ -13,7 +13,7 @@ pub(crate) mod rules;
 
 pub use actions::Action;
 pub use buildings::BuildingKind;
-pub use errors::{BuildError, CombatError, GameError, MoveError, TurnError};
+pub use errors::{BuildError, CombatError, GameError, MoveError, RecruitError, TurnError};
 pub use events::Event;
 pub use game::Game;
 pub use geometry::GridPosition;

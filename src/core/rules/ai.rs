@@ -22,12 +22,20 @@ pub(crate) fn run_ai_turn(game: &mut Game) -> Result<Vec<Event>, TurnError> {
             .collect();
         let unit_id = game.units[ai_index].id;
         let from = game.units[ai_index].position;
+        let camp = game.units[ai_index].camp;
+        let enemy_building_positions: Vec<GridPosition> = game
+            .buildings
+            .iter()
+            .filter(|building| building.camp != camp)
+            .map(|building| building.position)
+            .collect();
 
         if !game.units[ai_index].has_acted {
             if let Some(to) = next_move(
                 from,
                 target,
                 &occupied_positions,
+                &enemy_building_positions,
                 game.units[ai_index].move_range,
                 game.map_width,
                 game.map_height,
@@ -57,6 +65,7 @@ fn next_move(
     from: GridPosition,
     target: GridPosition,
     occupied_positions: &[GridPosition],
+    enemy_building_positions: &[GridPosition],
     move_range: i32,
     map_width: i32,
     map_height: i32,
@@ -70,6 +79,7 @@ fn next_move(
             if position != from
                 && distance(from, position) <= move_range
                 && !occupied_positions.contains(&position)
+                && !enemy_building_positions.contains(&position)
             {
                 candidates.push(position);
             }

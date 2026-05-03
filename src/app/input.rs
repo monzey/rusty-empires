@@ -1,8 +1,8 @@
 use bevy::{prelude::*, window::PrimaryWindow};
 
-use super::components::{MapPosition, Unit};
+use super::components::{Building, MapPosition, Unit};
 use super::grid::{cursor_grid_position, is_inside_map};
-use super::resources::{GameState, SelectedUnit};
+use super::resources::{GameState, SelectedBuilding, SelectedUnit};
 use super::setup::spawn_building;
 use super::sync::{apply_game_events, log_resource_events};
 use crate::{Action, BuildingKind, Camp, Event};
@@ -14,7 +14,9 @@ pub(super) fn handle_human_input(
     cameras: Query<(&Camera, &GlobalTransform)>,
     mut game: ResMut<GameState>,
     mut selected_unit: ResMut<SelectedUnit>,
-    mut units: Query<(Entity, &mut MapPosition, &mut Transform, &Unit)>,
+    mut selected_building: ResMut<SelectedBuilding>,
+    mut units: Query<(Entity, &mut MapPosition, &mut Transform, &Unit), Without<Building>>,
+    buildings: Query<(Entity, &MapPosition, &Building), Without<Unit>>,
 ) {
     if !mouse_buttons.just_pressed(MouseButton::Left) {
         return;
@@ -30,6 +32,7 @@ pub(super) fn handle_human_input(
 
     if !is_inside_map(clicked_position) {
         selected_unit.0 = None;
+        selected_building.0 = None;
         return;
     }
 
@@ -38,11 +41,27 @@ pub(super) fn handle_human_input(
         .find(|(_, position, _, unit)| position.0 == clicked_position && unit.camp == Camp::Human)
     {
         selected_unit.0 = Some(entity);
+        selected_building.0 = None;
         info!(
-            "Villageois selectionne en ({}, {}).",
+            "Unite selectionnee en ({}, {}).",
             clicked_position.x, clicked_position.y
         );
         return;
+    }
+
+    if selected_unit.0.is_none() {
+        if let Some((entity, _, _)) = buildings.iter().find(|(_, position, building)| {
+            position.0 == clicked_position
+                && building.camp == Camp::Human
+                && building.kind == BuildingKind::Barracks
+        }) {
+            selected_building.0 = Some(entity);
+            info!(
+                "Caserne selectionnee en ({}, {}).",
+                clicked_position.x, clicked_position.y
+            );
+            return;
+        }
     }
 
     let Some(selected_entity) = selected_unit.0 else {
@@ -73,6 +92,7 @@ pub(super) fn handle_human_input(
             Ok(events) => {
                 apply_game_events(&events, &mut commands, &mut units);
                 selected_unit.0 = None;
+                selected_building.0 = None;
                 log_combat_events(&events);
             }
             Err(error) => {
@@ -104,8 +124,21 @@ pub(super) fn handle_build_input(
     mut commands: Commands,
     mut game: ResMut<GameState>,
     selected_unit: Res<SelectedUnit>,
-    units: Query<&Unit>,
+    selected_building: Res<SelectedBuilding>,
+    mut units: Query<(Entity, &mut MapPosition, &mut Transform, &Unit), Without<Building>>,
+    buildings: Query<(Entity, &Building, &MapPosition), Without<Unit>>,
 ) {
+    if keyboard.just_pressed(KeyCode::KeyS) {
+        handle_recruit_soldier_input(
+            &mut commands,
+            &mut game,
+            &selected_building,
+            &mut units,
+            &buildings,
+        );
+        return;
+    }
+
     let build_kind = if keyboard.just_pressed(KeyCode::KeyB) {
         BuildingKind::GoldMine
     } else if keyboard.just_pressed(KeyCode::KeyF) {
@@ -127,7 +160,7 @@ pub(super) fn handle_build_input(
         return;
     };
 
-    let Ok(unit) = units.get(selected_entity) else {
+    let Ok((_, _, _, unit)) = units.get(selected_entity) else {
         return;
     };
     let unit_id = unit.id;
@@ -158,10 +191,59 @@ pub(super) fn handle_build_input(
     }
 }
 
+fn handle_recruit_soldier_input(
+    commands: &mut Commands,
+    game: &mut ResMut<GameState>,
+    selected_building: &Res<SelectedBuilding>,
+    units: &mut Query<(Entity, &mut MapPosition, &mut Transform, &Unit), Without<Building>>,
+    buildings: &Query<(Entity, &Building, &MapPosition), Without<Unit>>,
+) {
+    if game.0.current_turn() != Camp::Human {
+        return;
+    }
+
+    let Some(selected_entity) = selected_building.0 else {
+        info!("Selectionne une caserne avant de recruter un soldat.");
+        return;
+    };
+
+    let Ok((_, building, position)) = buildings.get(selected_entity) else {
+        return;
+    };
+
+    if building.camp != Camp::Human || building.kind != BuildingKind::Barracks {
+        info!("Selectionne une caserne alliee pour recruter un soldat.");
+        return;
+    }
+
+    let building_position = position.0;
+
+    match game.0.apply(Action::RecruitSoldier { building_position }) {
+        Ok(events) => {
+            apply_game_events(&events, commands, units);
+            for event in events {
+                if let Event::UnitRecruited {
+                    unit_id, position, ..
+                } = event
+                {
+                    info!(
+                        "Soldat {:?} recrute en ({}, {}).",
+                        unit_id, position.x, position.y
+                    );
+                }
+            }
+        }
+        Err(error) => {
+            info!("Recrutement refuse: {:?}.", error);
+        }
+    }
+}
+
 pub(super) fn handle_end_turn_input(
     keyboard: Res<ButtonInput<KeyCode>>,
     mut game: ResMut<GameState>,
     mut selected_unit: ResMut<SelectedUnit>,
+    mut selected_building: ResMut<SelectedBuilding>,
 ) {
     if !keyboard.just_pressed(KeyCode::Space) && !keyboard.just_pressed(KeyCode::Enter) {
         return;
@@ -169,6 +251,7 @@ pub(super) fn handle_end_turn_input(
 
     if let Ok(events) = game.0.apply(Action::EndTurn) {
         selected_unit.0 = None;
+        selected_building.0 = None;
         log_resource_events(&events);
         info!("Tour: IA.");
     }

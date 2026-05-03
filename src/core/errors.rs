@@ -3,7 +3,16 @@ pub enum GameError {
     Move(MoveError),
     Combat(CombatError),
     Build(BuildError),
+    Recruit(RecruitError),
     Turn(TurnError),
+}
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub enum RecruitError {
+    NoBarracks,
+    NotOwnerTurn,
+    Occupied,
+    NotEnoughFood,
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
@@ -36,6 +45,7 @@ pub enum MoveError {
     AlreadyActed,
     OutsideMap,
     Occupied,
+    EnemyBuilding,
     OutOfRange,
 }
 

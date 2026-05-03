@@ -10,10 +10,6 @@ pub(crate) fn move_unit(
         return Err(MoveError::OutsideMap);
     }
 
-    if game.units.iter().any(|unit| unit.position == to) {
-        return Err(MoveError::Occupied);
-    }
-
     let unit_index = game
         .units
         .iter()
@@ -23,6 +19,16 @@ pub(crate) fn move_unit(
     let unit = &game.units[unit_index];
     if unit.camp != game.current_turn {
         return Err(MoveError::NotUnitTurn);
+    }
+
+    if game.units.iter().any(|unit| unit.position == to) {
+        return Err(MoveError::Occupied);
+    }
+
+    if let Some((building_camp, _)) = game.building_at(to) {
+        if building_camp != unit.camp {
+            return Err(MoveError::EnemyBuilding);
+        }
     }
 
     if unit.has_acted || unit.has_moved {

@@ -1,13 +1,14 @@
-use bevy::prelude::*;
+use bevy::{ecs::query::QueryFilter, prelude::*};
 
 use super::components::{MapPosition, Unit};
 use super::grid::grid_to_world;
+use super::setup::spawn_unit;
 use crate::Event;
 
-pub(super) fn apply_game_events(
+pub(super) fn apply_game_events<F: QueryFilter>(
     events: &[Event],
     commands: &mut Commands,
-    units: &mut Query<(Entity, &mut MapPosition, &mut Transform, &Unit)>,
+    units: &mut Query<(Entity, &mut MapPosition, &mut Transform, &Unit), F>,
 ) {
     for event in events {
         match *event {
@@ -26,6 +27,14 @@ pub(super) fn apply_game_events(
                 {
                     commands.entity(entity).despawn();
                 }
+            }
+            Event::UnitRecruited {
+                unit_id,
+                camp,
+                kind,
+                position,
+            } => {
+                spawn_unit(commands, unit_id, kind, camp, position);
             }
             _ => {}
         }

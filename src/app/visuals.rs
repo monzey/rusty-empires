@@ -1,7 +1,7 @@
 use bevy::prelude::*;
 
-use super::components::Unit;
-use super::resources::{GameState, SelectedUnit};
+use super::components::{Building, Unit};
+use super::resources::{GameState, SelectedBuilding, SelectedUnit};
 use crate::{BuildingKind, Camp, UnitKind};
 
 pub(super) fn update_unit_visuals(
@@ -14,6 +14,20 @@ pub(super) fn update_unit_visuals(
         let inactive =
             unit.camp != game.0.current_turn() || game.0.unit_has_acted(unit.id).unwrap_or(false);
         sprite.color = unit_color(unit.camp, unit.kind, selected, inactive);
+    }
+}
+
+pub(super) fn update_building_visuals(
+    selected_building: Res<SelectedBuilding>,
+    mut buildings: Query<(Entity, &Building, &mut Sprite)>,
+) {
+    for (entity, building, mut sprite) in &mut buildings {
+        let selected = selected_building.0 == Some(entity);
+        sprite.color = if selected {
+            Color::srgb(1.0, 0.92, 0.18)
+        } else {
+            building_color(building.camp, building.kind)
+        };
     }
 }
 
