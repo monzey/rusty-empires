@@ -1,6 +1,6 @@
 use bevy::prelude::*;
 
-use crate::{BuildingKind, Camp, GridPosition, UnitId};
+use crate::{BuildingKind, Camp, GridPosition, UnitId, UnitKind};
 
 #[derive(Component)]
 pub(super) struct Tile;
@@ -19,9 +19,4 @@ pub(super) struct Unit {
 pub(super) struct Building {
     pub(super) _camp: Camp,
     pub(super) _kind: BuildingKind,
-}
-
-#[derive(Clone, Copy)]
-pub(super) enum UnitKind {
-    Villager,
 }

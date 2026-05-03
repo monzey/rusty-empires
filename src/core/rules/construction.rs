@@ -1,5 +1,5 @@
 use crate::core::buildings::BuildingState;
-use crate::core::{BuildError, BuildingKind, Event, Game, NaturalResource, UnitId};
+use crate::core::{BuildError, BuildingKind, Event, Game, NaturalResource, UnitId, UnitKind};
 
 pub(crate) fn build_gold_mine(game: &mut Game, unit_id: UnitId) -> Result<Vec<Event>, BuildError> {
     build_on_resource(
@@ -35,6 +35,10 @@ fn build_on_resource(
         .ok_or(BuildError::NoUnit)?;
 
     let unit = &game.units[unit_index];
+    if unit.kind != UnitKind::Villager {
+        return Err(BuildError::NotBuilder);
+    }
+
     if unit.camp != game.current_turn {
         return Err(BuildError::NotUnitTurn);
     }

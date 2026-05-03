@@ -19,4 +19,4 @@ pub use game::Game;
 pub use geometry::GridPosition;
 pub use map::NaturalResource;
 pub use players::Camp;
-pub use units::UnitId;
+pub use units::{UnitId, UnitKind};

@@ -3,10 +3,13 @@ use super::map::NaturalResourceState;
 use super::resources::ResourceStockpile;
 use super::rules::{ai, combat, construction, economy, movement, turns};
 use super::units::{
-    UnitState, VILLAGER_ATTACK, VILLAGER_ATTACK_RANGE, VILLAGER_DEFENSE, VILLAGER_HEALTH,
+    UnitState, SOLDIER_ATTACK, SOLDIER_ATTACK_RANGE, SOLDIER_DEFENSE, SOLDIER_HEALTH,
+    SOLDIER_MOVE_RANGE, VILLAGER_ATTACK, VILLAGER_ATTACK_RANGE, VILLAGER_DEFENSE, VILLAGER_HEALTH,
     VILLAGER_MOVE_RANGE,
 };
-use super::{Action, BuildingKind, Camp, Event, GameError, GridPosition, NaturalResource, UnitId};
+use super::{
+    Action, BuildingKind, Camp, Event, GameError, GridPosition, NaturalResource, UnitId, UnitKind,
+};
 
 #[derive(Debug, Clone)]
 pub struct Game {
@@ -29,6 +32,7 @@ impl Game {
             units: vec![
                 UnitState {
                     id: UnitId(1),
+                    kind: UnitKind::Villager,
                     camp: Camp::Human,
                     position: GridPosition { x: 1, y: 3 },
                     has_acted: false,
@@ -40,6 +44,7 @@ impl Game {
                 },
                 UnitState {
                     id: UnitId(2),
+                    kind: UnitKind::Villager,
                     camp: Camp::Ai,
                     position: GridPosition {
                         x: map_width - 2,
@@ -51,6 +56,30 @@ impl Game {
                     defense: VILLAGER_DEFENSE,
                     attack_range: VILLAGER_ATTACK_RANGE,
                     move_range: VILLAGER_MOVE_RANGE,
+                },
+                UnitState {
+                    id: UnitId(3),
+                    kind: UnitKind::Soldier,
+                    camp: Camp::Human,
+                    position: GridPosition { x: 4, y: 4 },
+                    has_acted: false,
+                    health: SOLDIER_HEALTH,
+                    attack: SOLDIER_ATTACK,
+                    defense: SOLDIER_DEFENSE,
+                    attack_range: SOLDIER_ATTACK_RANGE,
+                    move_range: SOLDIER_MOVE_RANGE,
+                },
+                UnitState {
+                    id: UnitId(4),
+                    kind: UnitKind::Soldier,
+                    camp: Camp::Ai,
+                    position: GridPosition { x: 5, y: 4 },
+                    has_acted: false,
+                    health: SOLDIER_HEALTH,
+                    attack: SOLDIER_ATTACK,
+                    defense: SOLDIER_DEFENSE,
+                    attack_range: SOLDIER_ATTACK_RANGE,
+                    move_range: SOLDIER_MOVE_RANGE,
                 },
             ],
             natural_resources: vec![
@@ -110,14 +139,28 @@ impl Game {
     pub fn villager_id(&self, camp: Camp) -> Option<UnitId> {
         self.units
             .iter()
-            .find(|unit| unit.camp == camp)
+            .find(|unit| unit.camp == camp && unit.kind == UnitKind::Villager)
+            .map(|unit| unit.id)
+    }
+
+    pub fn soldier_id(&self, camp: Camp) -> Option<UnitId> {
+        self.units
+            .iter()
+            .find(|unit| unit.camp == camp && unit.kind == UnitKind::Soldier)
             .map(|unit| unit.id)
     }
 
     pub fn villager_position(&self, camp: Camp) -> Option<GridPosition> {
         self.units
             .iter()
-            .find(|unit| unit.camp == camp)
+            .find(|unit| unit.camp == camp && unit.kind == UnitKind::Villager)
+            .map(|unit| unit.position)
+    }
+
+    pub fn soldier_position(&self, camp: Camp) -> Option<GridPosition> {
+        self.units
+            .iter()
+            .find(|unit| unit.camp == camp && unit.kind == UnitKind::Soldier)
             .map(|unit| unit.position)
     }
 
@@ -140,6 +183,13 @@ impl Game {
             .iter()
             .find(|unit| unit.id == unit_id)
             .map(|unit| unit.health)
+    }
+
+    pub fn unit_kind(&self, unit_id: UnitId) -> Option<UnitKind> {
+        self.units
+            .iter()
+            .find(|unit| unit.id == unit_id)
+            .map(|unit| unit.kind)
     }
 
     pub fn natural_resource_at(&self, position: GridPosition) -> Option<NaturalResource> {

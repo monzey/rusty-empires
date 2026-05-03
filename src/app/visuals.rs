@@ -1,8 +1,8 @@
 use bevy::prelude::*;
 
-use super::components::{Unit, UnitKind};
+use super::components::Unit;
 use super::resources::{GameState, SelectedUnit};
-use crate::{BuildingKind, Camp};
+use crate::{BuildingKind, Camp, UnitKind};
 
 pub(super) fn update_unit_visuals(
     selected_unit: Res<SelectedUnit>,
@@ -28,7 +28,9 @@ pub(super) fn unit_color(camp: Camp, kind: UnitKind, selected: bool, inactive: b
 
     match (camp, kind) {
         (Camp::Human, UnitKind::Villager) => Color::srgb(0.2, 0.55, 1.0),
+        (Camp::Human, UnitKind::Soldier) => Color::srgb(0.12, 0.24, 0.95),
         (Camp::Ai, UnitKind::Villager) => Color::srgb(0.95, 0.25, 0.22),
+        (Camp::Ai, UnitKind::Soldier) => Color::srgb(0.62, 0.05, 0.08),
     }
 }
 

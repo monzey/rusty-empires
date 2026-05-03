@@ -95,3 +95,42 @@ fn human_villager_cannot_move_to_invalid_tiles_or_act_twice() {
         Some(GridPosition { x: 2, y: 3 })
     );
 }
+
+#[test]
+fn human_soldier_can_move_three_tiles_but_not_four() {
+    let mut game = Game::new_single_player_vs_ai(10, 8);
+    let human_soldier = game
+        .soldier_id(Camp::Human)
+        .expect("human soldier should exist at game start");
+
+    assert_eq!(
+        game.apply(Action::MoveUnit {
+            unit_id: human_soldier,
+            to: GridPosition { x: 4, y: 1 }
+        })
+        .expect("human soldier should be able to move three tiles"),
+        vec![
+            Event::UnitMoved {
+                unit_id: human_soldier,
+                from: GridPosition { x: 4, y: 4 },
+                to: GridPosition { x: 4, y: 1 }
+            },
+            Event::UnitActed {
+                unit_id: human_soldier
+            },
+        ]
+    );
+
+    let mut game = Game::new_single_player_vs_ai(10, 8);
+    let human_soldier = game
+        .soldier_id(Camp::Human)
+        .expect("human soldier should exist at game start");
+
+    assert_eq!(
+        game.apply(Action::MoveUnit {
+            unit_id: human_soldier,
+            to: GridPosition { x: 4, y: 0 }
+        }),
+        Err(GameError::Move(MoveError::OutOfRange))
+    );
+}

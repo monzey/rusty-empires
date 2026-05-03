@@ -3,15 +3,28 @@ use super::{Camp, GridPosition};
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
 pub struct UnitId(pub u32);
 
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub enum UnitKind {
+    Villager,
+    Soldier,
+}
+
 pub(crate) const VILLAGER_HEALTH: i32 = 6;
 pub(crate) const VILLAGER_ATTACK: i32 = 4;
 pub(crate) const VILLAGER_DEFENSE: i32 = 1;
 pub(crate) const VILLAGER_ATTACK_RANGE: i32 = 1;
 pub(crate) const VILLAGER_MOVE_RANGE: i32 = 5;
 
+pub(crate) const SOLDIER_HEALTH: i32 = 10;
+pub(crate) const SOLDIER_ATTACK: i32 = 6;
+pub(crate) const SOLDIER_DEFENSE: i32 = 2;
+pub(crate) const SOLDIER_ATTACK_RANGE: i32 = 1;
+pub(crate) const SOLDIER_MOVE_RANGE: i32 = 3;
+
 #[derive(Debug, Clone)]
 pub(crate) struct UnitState {
     pub(crate) id: UnitId,
+    pub(crate) kind: UnitKind,
     pub(crate) camp: Camp,
     pub(crate) position: GridPosition,
     pub(crate) has_acted: bool,

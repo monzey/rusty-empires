@@ -19,6 +19,7 @@ pub enum CombatError {
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum BuildError {
     NoUnit,
+    NotBuilder,
     NotUnitTurn,
     AlreadyActed,
     NoGoldDeposit,

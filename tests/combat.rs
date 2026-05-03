@@ -1,6 +1,39 @@
 use rusty_empires::{Action, Camp, CombatError, Event, Game, GameError, GridPosition, UnitId};
 
 #[test]
+fn human_soldier_uses_soldier_combat_stats() {
+    let mut game = Game::new_single_player_vs_ai(10, 8);
+    let human_soldier = game
+        .soldier_id(Camp::Human)
+        .expect("human soldier should exist at game start");
+    let ai_soldier = game
+        .soldier_id(Camp::Ai)
+        .expect("AI soldier should exist at game start");
+
+    let events = game
+        .apply(Action::AttackUnit {
+            attacker_id: human_soldier,
+            target_id: ai_soldier,
+        })
+        .expect("initial soldiers should start adjacent and be able to fight");
+
+    assert_eq!(
+        events,
+        vec![
+            Event::UnitDamaged {
+                unit_id: ai_soldier,
+                amount: 4,
+                remaining_health: 6,
+            },
+            Event::UnitActed {
+                unit_id: human_soldier,
+            },
+        ]
+    );
+    assert_eq!(game.unit_health(ai_soldier), Some(6));
+}
+
+#[test]
 fn human_can_attack_adjacent_enemy_unit() {
     let mut game = Game::new_single_player_vs_ai(10, 8);
     let human_villager = game

@@ -117,3 +117,18 @@ fn human_cannot_build_farm_away_from_field() {
     );
     assert_eq!(game.building_at(GridPosition { x: 1, y: 3 }), None);
 }
+
+#[test]
+fn soldier_cannot_build() {
+    let mut game = Game::new_single_player_vs_ai(10, 8);
+    let human_soldier = game
+        .soldier_id(Camp::Human)
+        .expect("human soldier should exist at game start");
+
+    assert_eq!(
+        game.apply(Action::BuildFarm {
+            unit_id: human_soldier,
+        }),
+        Err(GameError::Build(BuildError::NotBuilder))
+    );
+}
