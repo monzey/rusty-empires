@@ -5,7 +5,7 @@ use super::grid::{cursor_grid_position, is_inside_map};
 use super::resources::{GameState, SelectedBuilding, SelectedUnit};
 use super::setup::spawn_building;
 use super::sync::{apply_game_events, log_resource_events};
-use crate::{Action, BuildingKind, Camp, Event};
+use crate::{Action, BuildingKind, Camp, Event, GridPosition};
 
 pub(super) fn handle_human_input(
     mouse_buttons: Res<ButtonInput<MouseButton>>,
@@ -50,15 +50,15 @@ pub(super) fn handle_human_input(
     }
 
     if selected_unit.0.is_none() {
-        if let Some((entity, _, _)) = buildings.iter().find(|(_, position, building)| {
+        if let Some((entity, _, building)) = buildings.iter().find(|(_, position, building)| {
             position.0 == clicked_position
                 && building.camp == Camp::Human
-                && building.kind == BuildingKind::Barracks
+                && matches!(building.kind, BuildingKind::Barracks | BuildingKind::Forum)
         }) {
             selected_building.0 = Some(entity);
             info!(
-                "Caserne selectionnee en ({}, {}).",
-                clicked_position.x, clicked_position.y
+                "{:?} selectionne en ({}, {}).",
+                building.kind, clicked_position.x, clicked_position.y
             );
             return;
         }
@@ -129,12 +129,33 @@ pub(super) fn handle_build_input(
     buildings: Query<(Entity, &Building, &MapPosition), Without<Unit>>,
 ) {
     if keyboard.just_pressed(KeyCode::KeyS) {
-        handle_recruit_soldier_input(
+        handle_recruit_input(
             &mut commands,
             &mut game,
             &selected_building,
             &mut units,
             &buildings,
+            BuildingKind::Barracks,
+            |building_position| Action::RecruitSoldier { building_position },
+            "Selectionne une caserne avant de recruter un soldat.",
+            "Selectionne une caserne alliee pour recruter un soldat.",
+            "Soldat",
+        );
+        return;
+    }
+
+    if keyboard.just_pressed(KeyCode::KeyV) {
+        handle_recruit_input(
+            &mut commands,
+            &mut game,
+            &selected_building,
+            &mut units,
+            &buildings,
+            BuildingKind::Forum,
+            |building_position| Action::RecruitVillager { building_position },
+            "Selectionne un forum avant de recruter un villageois.",
+            "Selectionne un forum allie pour recruter un villageois.",
+            "Villageois",
         );
         return;
     }
@@ -191,19 +212,24 @@ pub(super) fn handle_build_input(
     }
 }
 
-fn handle_recruit_soldier_input(
+fn handle_recruit_input(
     commands: &mut Commands,
     game: &mut ResMut<GameState>,
     selected_building: &Res<SelectedBuilding>,
     units: &mut Query<(Entity, &mut MapPosition, &mut Transform, &Unit), Without<Building>>,
     buildings: &Query<(Entity, &Building, &MapPosition), Without<Unit>>,
+    expected_kind: BuildingKind,
+    action: impl FnOnce(GridPosition) -> Action,
+    missing_selection_message: &str,
+    wrong_building_message: &str,
+    recruited_label: &str,
 ) {
     if game.0.current_turn() != Camp::Human {
         return;
     }
 
     let Some(selected_entity) = selected_building.0 else {
-        info!("Selectionne une caserne avant de recruter un soldat.");
+        info!("{}", missing_selection_message);
         return;
     };
 
@@ -211,14 +237,14 @@ fn handle_recruit_soldier_input(
         return;
     };
 
-    if building.camp != Camp::Human || building.kind != BuildingKind::Barracks {
-        info!("Selectionne une caserne alliee pour recruter un soldat.");
+    if building.camp != Camp::Human || building.kind != expected_kind {
+        info!("{}", wrong_building_message);
         return;
     }
 
     let building_position = position.0;
 
-    match game.0.apply(Action::RecruitSoldier { building_position }) {
+    match game.0.apply(action(building_position)) {
         Ok(events) => {
             apply_game_events(&events, commands, units);
             for event in events {
@@ -227,8 +253,8 @@ fn handle_recruit_soldier_input(
                 } = event
                 {
                     info!(
-                        "Soldat {:?} recrute en ({}, {}).",
-                        unit_id, position.x, position.y
+                        "{} {:?} recrute en ({}, {}).",
+                        recruited_label, unit_id, position.x, position.y
                     );
                 }
             }

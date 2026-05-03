@@ -1,10 +1,12 @@
 use crate::core::units::{
     UnitState, SOLDIER_ATTACK, SOLDIER_ATTACK_RANGE, SOLDIER_DEFENSE, SOLDIER_HEALTH,
-    SOLDIER_MOVE_RANGE,
+    SOLDIER_MOVE_RANGE, VILLAGER_ATTACK, VILLAGER_ATTACK_RANGE, VILLAGER_DEFENSE, VILLAGER_HEALTH,
+    VILLAGER_MOVE_RANGE,
 };
 use crate::core::{BuildingKind, Camp, Event, Game, GridPosition, RecruitError, UnitId, UnitKind};
 
 const SOLDIER_FOOD_COST: i32 = 10;
+const VILLAGER_FOOD_COST: i32 = 10;
 
 pub(crate) fn recruit_soldier(
     game: &mut Game,
@@ -51,6 +53,55 @@ pub(crate) fn recruit_soldier(
         unit_id,
         camp,
         kind: UnitKind::Soldier,
+        position: building_position,
+    }])
+}
+
+pub(crate) fn recruit_villager(
+    game: &mut Game,
+    building_position: GridPosition,
+) -> Result<Vec<Event>, RecruitError> {
+    let Some((camp, BuildingKind::Forum)) = game.building_at(building_position) else {
+        return Err(RecruitError::NoForum);
+    };
+
+    if camp != game.current_turn {
+        return Err(RecruitError::NotOwnerTurn);
+    }
+
+    if game
+        .units
+        .iter()
+        .any(|unit| unit.position == building_position)
+    {
+        return Err(RecruitError::Occupied);
+    }
+
+    if resources(game, camp).food < VILLAGER_FOOD_COST {
+        return Err(RecruitError::NotEnoughFood);
+    }
+
+    resources_mut(game, camp).food -= VILLAGER_FOOD_COST;
+    let unit_id = UnitId(game.next_unit_id);
+    game.next_unit_id += 1;
+    game.units.push(UnitState {
+        id: unit_id,
+        kind: UnitKind::Villager,
+        camp,
+        position: building_position,
+        has_moved: false,
+        has_acted: false,
+        health: VILLAGER_HEALTH,
+        attack: VILLAGER_ATTACK,
+        defense: VILLAGER_DEFENSE,
+        attack_range: VILLAGER_ATTACK_RANGE,
+        move_range: VILLAGER_MOVE_RANGE,
+    });
+
+    Ok(vec![Event::UnitRecruited {
+        unit_id,
+        camp,
+        kind: UnitKind::Villager,
         position: building_position,
     }])
 }

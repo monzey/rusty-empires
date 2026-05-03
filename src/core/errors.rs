@@ -10,6 +10,7 @@ pub enum GameError {
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum RecruitError {
     NoBarracks,
+    NoForum,
     NotOwnerTurn,
     Occupied,
     NotEnoughFood,

@@ -25,6 +25,9 @@ pub enum Action {
     RecruitSoldier {
         building_position: GridPosition,
     },
+    RecruitVillager {
+        building_position: GridPosition,
+    },
     EndTurn,
     RunAiTurn,
 }

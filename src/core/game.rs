@@ -142,6 +142,9 @@ impl Game {
             Action::RecruitSoldier { building_position } => {
                 recruitment::recruit_soldier(self, building_position).map_err(GameError::Recruit)
             }
+            Action::RecruitVillager { building_position } => {
+                recruitment::recruit_villager(self, building_position).map_err(GameError::Recruit)
+            }
             Action::EndTurn => turns::end_human_turn(self).map_err(GameError::Turn),
             Action::RunAiTurn => ai::run_ai_turn(self).map_err(GameError::Turn),
         }
