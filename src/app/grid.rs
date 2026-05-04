@@ -31,6 +31,12 @@ pub(super) fn grid_to_world(position: GridPosition, z: f32) -> Vec3 {
 }
 
 fn world_to_grid(position: Vec2) -> Option<GridPosition> {
+    let grid_position = world_to_grid_unbounded(position);
+
+    is_inside_map(grid_position).then_some(grid_position)
+}
+
+pub(super) fn world_to_grid_unbounded(position: Vec2) -> GridPosition {
     let center_x = (MAP_WIDTH as f32 - MAP_HEIGHT as f32) * TILE_WIDTH / 4.0;
     let center_y = -(MAP_WIDTH as f32 + MAP_HEIGHT as f32) * TILE_HEIGHT / 4.0;
     let raw_x = position.x + center_x;
@@ -39,9 +45,7 @@ fn world_to_grid(position: Vec2) -> Option<GridPosition> {
     let axis_y = -raw_y / (TILE_HEIGHT / 2.0);
     let x = ((axis_x + axis_y) / 2.0).floor() as i32;
     let y = ((axis_y - axis_x) / 2.0).floor() as i32;
-    let grid_position = GridPosition { x, y };
-
-    is_inside_map(grid_position).then_some(grid_position)
+    GridPosition { x, y }
 }
 
 pub(super) fn is_inside_map(position: GridPosition) -> bool {

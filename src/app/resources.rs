@@ -1,6 +1,7 @@
 use bevy::prelude::*;
+use std::collections::HashMap;
 
-use crate::Game;
+use crate::{Game, GridPosition};
 
 #[derive(Resource)]
 pub(super) struct GameState(pub(super) Game);
@@ -28,6 +29,10 @@ pub(super) struct ContextMenu {
 
 #[derive(Resource, Clone)]
 pub(super) struct AppMeshes {
+    pub(super) tile: Handle<Mesh>,
     pub(super) unit: Handle<Mesh>,
     pub(super) building: Handle<Mesh>,
 }
+
+#[derive(Resource, Default)]
+pub(super) struct ActiveTiles(pub(super) HashMap<GridPosition, Entity>);

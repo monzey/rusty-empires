@@ -4,12 +4,12 @@ use bevy::{
     sprite::MaterialMesh2dBundle,
 };
 
-use super::components::{Building, ContextMenuText, HudText, MapPosition, Tile, Unit};
-use super::constants::{MAP_HEIGHT, MAP_WIDTH, TILE_HEIGHT, TILE_SIZE, TILE_WIDTH};
+use super::components::{Building, ContextMenuText, HudText, MapPosition, Unit};
+use super::constants::{TILE_HEIGHT, TILE_SIZE, TILE_WIDTH};
 use super::grid::grid_to_world;
 use super::resources::{AppMeshes, GameState};
 use super::visuals::{building_color, unit_color};
-use crate::{BuildingKind, Camp, GridPosition, NaturalResource, UnitId, UnitKind};
+use crate::{BuildingKind, Camp, GridPosition, UnitId, UnitKind};
 
 pub(super) fn setup(
     mut commands: Commands,
@@ -17,43 +17,23 @@ pub(super) fn setup(
     mut meshes: ResMut<Assets<Mesh>>,
     mut materials: ResMut<Assets<ColorMaterial>>,
 ) {
-    commands.spawn(Camera2dBundle::default());
+    let human_start = game
+        .0
+        .villager_position(Camp::Human)
+        .expect("human villager should exist at game start");
+    let start_world = grid_to_world(human_start, 0.0);
+    commands.spawn(Camera2dBundle {
+        transform: Transform::from_xyz(start_world.x, start_world.y, 999.9),
+        ..default()
+    });
     let tile_mesh = meshes.add(tile_mesh());
     let unit_mesh = meshes.add(unit_mesh());
     let building_mesh = meshes.add(building_mesh());
     commands.insert_resource(AppMeshes {
+        tile: tile_mesh.clone(),
         unit: unit_mesh.clone(),
         building: building_mesh.clone(),
     });
-
-    for y in 0..MAP_HEIGHT {
-        for x in 0..MAP_WIDTH {
-            let position = GridPosition { x, y };
-            let color = if game.0.is_visible(Camp::Human, position) {
-                match game.0.natural_resource_at(position) {
-                    Some(NaturalResource::GoldDeposit) => Color::srgb(0.55, 0.42, 0.12),
-                    Some(NaturalResource::Field) => Color::srgb(0.42, 0.46, 0.16),
-                    None if (x + y) % 2 == 0 => Color::srgb(0.22, 0.31, 0.22),
-                    None => Color::srgb(0.18, 0.27, 0.18),
-                }
-            } else if game.0.is_explored(Camp::Human, position) {
-                Color::srgb(0.08, 0.11, 0.1)
-            } else {
-                Color::srgb(0.01, 0.012, 0.016)
-            };
-
-            commands.spawn((
-                MaterialMesh2dBundle {
-                    mesh: tile_mesh.clone().into(),
-                    material: materials.add(color),
-                    transform: Transform::from_translation(grid_to_world(position, 0.0)),
-                    ..default()
-                },
-                Tile,
-                MapPosition(position),
-            ));
-        }
-    }
 
     spawn_unit(
         &mut commands,

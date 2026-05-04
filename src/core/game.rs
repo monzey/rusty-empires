@@ -468,8 +468,13 @@ fn add_tiles_in_range(
     map_width: i32,
     map_height: i32,
 ) {
-    for y in 0..map_height {
-        for x in 0..map_width {
+    let min_x = (center.x - range).max(0);
+    let max_x = (center.x + range).min(map_width - 1);
+    let min_y = (center.y - range).max(0);
+    let max_y = (center.y + range).min(map_height - 1);
+
+    for y in min_y..=max_y {
+        for x in min_x..=max_x {
             let position = GridPosition { x, y };
             if super::geometry::distance(center, position) <= range && !tiles.contains(&position) {
                 tiles.push(position);

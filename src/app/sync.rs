@@ -123,3 +123,45 @@ pub(super) fn log_resource_events(events: &[Event]) {
         }
     }
 }
+
+pub(super) fn log_combat_events(events: &[Event]) {
+    for event in events {
+        match *event {
+            Event::UnitDamaged {
+                unit_id,
+                amount,
+                remaining_health,
+            } => {
+                info!(
+                    "Unite {:?} subit {} degats (PV restants: {}).",
+                    unit_id, amount, remaining_health
+                );
+            }
+            Event::UnitDefeated { unit_id } => {
+                info!("Unite {:?} vaincue.", unit_id);
+            }
+            Event::BuildingDamaged {
+                kind,
+                position,
+                amount,
+                remaining_health,
+                ..
+            } => {
+                info!(
+                    "{:?} en ({}, {}) subit {} degats (PV restants: {}).",
+                    kind, position.x, position.y, amount, remaining_health
+                );
+            }
+            Event::BuildingDestroyed { kind, position, .. } => {
+                info!("{:?} detruit en ({}, {}).", kind, position.x, position.y);
+            }
+            Event::BuildingActed { kind, position, .. } => {
+                info!("{:?} agit en ({}, {}).", kind, position.x, position.y);
+            }
+            Event::GameWon { camp } => {
+                info!("Victoire {:?}.", camp);
+            }
+            _ => {}
+        }
+    }
+}
