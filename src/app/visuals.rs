@@ -98,9 +98,17 @@ pub(super) fn unit_color(camp: Camp, kind: UnitKind, selected: bool, inactive: b
         (Camp::Human, UnitKind::Villager) => Color::srgb(0.2, 0.55, 1.0),
         (Camp::Human, UnitKind::Soldier) => Color::srgb(0.12, 0.24, 0.95),
         (Camp::Human, UnitKind::Archer) => Color::srgb(0.08, 0.62, 0.92),
+        (Camp::Human, UnitKind::ValdorianLegionary) => Color::srgb(0.2, 0.32, 0.9),
+        (Camp::Human, UnitKind::KharzunShieldbreaker) => Color::srgb(0.32, 0.38, 0.56),
+        (Camp::Human, UnitKind::ElyrPathfinder) => Color::srgb(0.18, 0.78, 0.42),
+        (Camp::Human, UnitKind::ObsidianBoneServant) => Color::srgb(0.52, 0.48, 0.68),
         (Camp::Ai, UnitKind::Villager) => Color::srgb(0.95, 0.25, 0.22),
         (Camp::Ai, UnitKind::Soldier) => Color::srgb(0.62, 0.05, 0.08),
         (Camp::Ai, UnitKind::Archer) => Color::srgb(0.78, 0.16, 0.1),
+        (Camp::Ai, UnitKind::ValdorianLegionary) => Color::srgb(0.58, 0.08, 0.12),
+        (Camp::Ai, UnitKind::KharzunShieldbreaker) => Color::srgb(0.52, 0.24, 0.14),
+        (Camp::Ai, UnitKind::ElyrPathfinder) => Color::srgb(0.42, 0.62, 0.2),
+        (Camp::Ai, UnitKind::ObsidianBoneServant) => Color::srgb(0.38, 0.18, 0.46),
     }
 }
 

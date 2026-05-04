@@ -1,18 +1,71 @@
 use bevy::{prelude::*, window::PrimaryWindow};
 
 use super::components::{Building, MapPosition, Unit};
+use super::constants::{MAP_HEIGHT, MAP_WIDTH};
 use super::grid::{cursor_grid_position, is_inside_map};
-use super::resources::{GameState, SelectedBuilding, SelectedUnit};
+use super::resources::{FactionSelection, GameState, SelectedBuilding, SelectedUnit};
 use super::setup::spawn_building;
 use super::sync::{apply_building_events, apply_game_events, log_resource_events};
-use crate::{Action, BuildingKind, Camp, Event, GridPosition};
+use crate::{Action, BuildingKind, Camp, Event, Faction, Game, GridPosition};
+
+pub(super) fn handle_faction_selection_input(
+    keyboard: Res<ButtonInput<KeyCode>>,
+    mut game: ResMut<GameState>,
+    mut faction_selection: ResMut<FactionSelection>,
+    mut selected_unit: ResMut<SelectedUnit>,
+    mut selected_building: ResMut<SelectedBuilding>,
+) {
+    if !faction_selection.0 {
+        return;
+    }
+
+    let Some(human_faction) = selected_faction(&keyboard) else {
+        return;
+    };
+    let ai_faction = default_ai_faction(human_faction);
+
+    game.0 = Game::new_single_player(human_faction, ai_faction, MAP_WIDTH, MAP_HEIGHT);
+    faction_selection.0 = false;
+    clear_selection(&mut selected_unit, &mut selected_building);
+    info!(
+        "Civilisation choisie: {:?}. Adversaire: {:?}.",
+        human_faction, ai_faction
+    );
+}
+
+fn selected_faction(keyboard: &ButtonInput<KeyCode>) -> Option<Faction> {
+    if keyboard.just_pressed(KeyCode::Digit1) {
+        Some(Faction::Valdorian)
+    } else if keyboard.just_pressed(KeyCode::Digit2) {
+        Some(Faction::Kharzun)
+    } else if keyboard.just_pressed(KeyCode::Digit3) {
+        Some(Faction::Sylvans)
+    } else if keyboard.just_pressed(KeyCode::Digit4) {
+        Some(Faction::Necrarchs)
+    } else {
+        None
+    }
+}
+
+fn default_ai_faction(human_faction: Faction) -> Faction {
+    if human_faction == Faction::Kharzun {
+        Faction::Valdorian
+    } else {
+        Faction::Kharzun
+    }
+}
 
 pub(super) fn handle_deselect_input(
     keyboard: Res<ButtonInput<KeyCode>>,
     mouse_buttons: Res<ButtonInput<MouseButton>>,
+    faction_selection: Res<FactionSelection>,
     mut selected_unit: ResMut<SelectedUnit>,
     mut selected_building: ResMut<SelectedBuilding>,
 ) {
+    if faction_selection.0 {
+        return;
+    }
+
     if !keyboard.just_pressed(KeyCode::Escape) && !mouse_buttons.just_pressed(MouseButton::Right) {
         return;
     }
@@ -36,9 +89,14 @@ pub(super) fn handle_human_input(
     mut game: ResMut<GameState>,
     mut selected_unit: ResMut<SelectedUnit>,
     mut selected_building: ResMut<SelectedBuilding>,
+    faction_selection: Res<FactionSelection>,
     mut units: Query<(Entity, &mut MapPosition, &mut Transform, &Unit), Without<Building>>,
     buildings: Query<(Entity, &MapPosition, &Building), Without<Unit>>,
 ) {
+    if faction_selection.0 {
+        return;
+    }
+
     if !mouse_buttons.just_pressed(MouseButton::Left) {
         return;
     }
@@ -205,9 +263,14 @@ pub(super) fn handle_build_input(
     mut game: ResMut<GameState>,
     selected_unit: Res<SelectedUnit>,
     selected_building: Res<SelectedBuilding>,
+    faction_selection: Res<FactionSelection>,
     mut units: Query<(Entity, &mut MapPosition, &mut Transform, &Unit), Without<Building>>,
     buildings: Query<(Entity, &Building, &MapPosition), Without<Unit>>,
 ) {
+    if faction_selection.0 {
+        return;
+    }
+
     if keyboard.just_pressed(KeyCode::KeyS) {
         handle_recruit_input(
             &mut commands,
@@ -236,6 +299,22 @@ pub(super) fn handle_build_input(
             "Selectionne une caserne avant de recruter un archer.",
             "Selectionne une caserne alliee pour recruter un archer.",
             "Archer",
+        );
+        return;
+    }
+
+    if keyboard.just_pressed(KeyCode::KeyC) {
+        handle_recruit_input(
+            &mut commands,
+            &mut game,
+            &selected_building,
+            &mut units,
+            &buildings,
+            BuildingKind::Barracks,
+            |building_position| Action::RecruitUniqueUnit { building_position },
+            "Selectionne une caserne avant de recruter une unite unique.",
+            "Selectionne une caserne alliee pour recruter une unite unique.",
+            "Unite unique",
         );
         return;
     }
@@ -473,9 +552,14 @@ fn handle_research_input(
 pub(super) fn handle_end_turn_input(
     keyboard: Res<ButtonInput<KeyCode>>,
     mut game: ResMut<GameState>,
+    faction_selection: Res<FactionSelection>,
     mut selected_unit: ResMut<SelectedUnit>,
     mut selected_building: ResMut<SelectedBuilding>,
 ) {
+    if faction_selection.0 {
+        return;
+    }
+
     if !keyboard.just_pressed(KeyCode::Space) && !keyboard.just_pressed(KeyCode::Enter) {
         return;
     }
@@ -490,8 +574,13 @@ pub(super) fn handle_end_turn_input(
 pub(super) fn run_ai_turn(
     mut commands: Commands,
     mut game: ResMut<GameState>,
+    faction_selection: Res<FactionSelection>,
     mut units: Query<(Entity, &mut MapPosition, &mut Transform, &Unit)>,
 ) {
+    if faction_selection.0 {
+        return;
+    }
+
     if game.0.current_turn() != Camp::Ai {
         return;
     }

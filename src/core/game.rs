@@ -248,6 +248,10 @@ impl Game {
             Action::RecruitArcher { building_position } => {
                 recruitment::recruit_archer(self, building_position).map_err(GameError::Recruit)
             }
+            Action::RecruitUniqueUnit { building_position } => {
+                recruitment::recruit_unique_unit(self, building_position)
+                    .map_err(GameError::Recruit)
+            }
             Action::RecruitVillager { building_position } => {
                 recruitment::recruit_villager(self, building_position).map_err(GameError::Recruit)
             }
@@ -487,6 +491,10 @@ fn unit_vision_range(kind: UnitKind) -> i32 {
         UnitKind::Villager => 3,
         UnitKind::Soldier => 3,
         UnitKind::Archer => 4,
+        UnitKind::ValdorianLegionary => 3,
+        UnitKind::KharzunShieldbreaker => 3,
+        UnitKind::ElyrPathfinder => 8,
+        UnitKind::ObsidianBoneServant => 2,
     }
 }
 

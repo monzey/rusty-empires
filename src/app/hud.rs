@@ -1,11 +1,12 @@
 use bevy::prelude::*;
 
 use super::components::{Building, HudText, MapPosition, Unit};
-use super::resources::{GameState, SelectedBuilding, SelectedUnit};
+use super::resources::{FactionSelection, GameState, SelectedBuilding, SelectedUnit};
 use crate::Camp;
 
 pub(super) fn update_hud(
     game: Res<GameState>,
+    faction_selection: Res<FactionSelection>,
     selected_unit: Res<SelectedUnit>,
     selected_building: Res<SelectedBuilding>,
     units: Query<(&Unit, &MapPosition)>,
@@ -15,6 +16,14 @@ pub(super) fn update_hud(
     let Ok(mut text) = hud.get_single_mut() else {
         return;
     };
+
+    if faction_selection.0 {
+        text.sections[0].value = format!(
+            "Choisis ta civilisation\n1 Valdorian\n2 Kharzun\n3 Sylvans\n4 Necrarchs\n\nIA par defaut: {:?}",
+            game.0.faction(Camp::Ai),
+        );
+        return;
+    }
 
     text.sections[0].value = format!(
         "Tour: {:?}\nCivilisation: {:?}\nIA: {:?}\nOr: {}\nNourriture: {}\nTech: {}{}\n{}",

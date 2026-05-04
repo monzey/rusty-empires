@@ -8,6 +8,10 @@ pub enum UnitKind {
     Villager,
     Soldier,
     Archer,
+    ValdorianLegionary,
+    KharzunShieldbreaker,
+    ElyrPathfinder,
+    ObsidianBoneServant,
 }
 
 pub(crate) const VILLAGER_HEALTH: i32 = 6;
@@ -27,6 +31,30 @@ pub(crate) const ARCHER_ATTACK: i32 = 4;
 pub(crate) const ARCHER_DEFENSE: i32 = 1;
 pub(crate) const ARCHER_ATTACK_RANGE: i32 = 2;
 pub(crate) const ARCHER_MOVE_RANGE: i32 = 3;
+
+pub(crate) const VALDORIAN_LEGIONARY_HEALTH: i32 = 12;
+pub(crate) const VALDORIAN_LEGIONARY_ATTACK: i32 = 7;
+pub(crate) const VALDORIAN_LEGIONARY_DEFENSE: i32 = 3;
+pub(crate) const VALDORIAN_LEGIONARY_ATTACK_RANGE: i32 = 1;
+pub(crate) const VALDORIAN_LEGIONARY_MOVE_RANGE: i32 = 3;
+
+pub(crate) const KHARZUN_SHIELDBREAKER_HEALTH: i32 = 12;
+pub(crate) const KHARZUN_SHIELDBREAKER_ATTACK: i32 = 8;
+pub(crate) const KHARZUN_SHIELDBREAKER_DEFENSE: i32 = 3;
+pub(crate) const KHARZUN_SHIELDBREAKER_ATTACK_RANGE: i32 = 1;
+pub(crate) const KHARZUN_SHIELDBREAKER_MOVE_RANGE: i32 = 2;
+
+pub(crate) const ELYR_PATHFINDER_HEALTH: i32 = 6;
+pub(crate) const ELYR_PATHFINDER_ATTACK: i32 = 3;
+pub(crate) const ELYR_PATHFINDER_DEFENSE: i32 = 0;
+pub(crate) const ELYR_PATHFINDER_ATTACK_RANGE: i32 = 1;
+pub(crate) const ELYR_PATHFINDER_MOVE_RANGE: i32 = 5;
+
+pub(crate) const OBSIDIAN_BONE_SERVANT_HEALTH: i32 = 5;
+pub(crate) const OBSIDIAN_BONE_SERVANT_ATTACK: i32 = 3;
+pub(crate) const OBSIDIAN_BONE_SERVANT_DEFENSE: i32 = 0;
+pub(crate) const OBSIDIAN_BONE_SERVANT_ATTACK_RANGE: i32 = 1;
+pub(crate) const OBSIDIAN_BONE_SERVANT_MOVE_RANGE: i32 = 3;
 
 #[derive(Debug, Clone)]
 pub(crate) struct UnitState {

@@ -4,10 +4,10 @@ use super::camera::{move_camera, zoom_camera};
 use super::constants::{MAP_HEIGHT, MAP_WIDTH};
 use super::hud::update_hud;
 use super::input::{
-    handle_build_input, handle_deselect_input, handle_end_turn_input, handle_human_input,
-    run_ai_turn,
+    handle_build_input, handle_deselect_input, handle_end_turn_input,
+    handle_faction_selection_input, handle_human_input, run_ai_turn,
 };
-use super::resources::{GameState, SelectedBuilding, SelectedUnit};
+use super::resources::{FactionSelection, GameState, SelectedBuilding, SelectedUnit};
 use super::setup::setup;
 use super::visuals::{update_building_visuals, update_tile_visuals, update_unit_visuals};
 use crate::Game;
@@ -20,6 +20,7 @@ impl Plugin for RustyEmpiresAppPlugin {
             .insert_resource(GameState(Game::new_single_player_vs_ai(
                 MAP_WIDTH, MAP_HEIGHT,
             )))
+            .insert_resource(FactionSelection::default())
             .insert_resource(SelectedUnit::default())
             .insert_resource(SelectedBuilding::default())
             .add_plugins(DefaultPlugins.set(WindowPlugin {
@@ -35,6 +36,7 @@ impl Plugin for RustyEmpiresAppPlugin {
             .add_systems(
                 Update,
                 (
+                    handle_faction_selection_input,
                     handle_human_input,
                     handle_deselect_input,
                     handle_build_input,

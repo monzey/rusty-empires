@@ -89,7 +89,8 @@ pub(super) fn setup(mut commands: Commands, game: Res<GameState>) {
 
     spawn_hud(&mut commands);
 
-    info!("Boucle initiale: clic sur une unite pour la selectionner, clic droit/Echap pour deselectionner, clic sur une case libre pour bouger, clic sur une unite ennemie a portee pour attaquer, B mine, F ferme, T forum, R caserne, M marche, U universite, O tour de guet, S recruter soldat depuis caserne, A recruter archer depuis caserne, V recruter villageois depuis forum, G echanger or vers nourriture depuis marche, N echanger nourriture vers or depuis marche, H rechercher Agriculture depuis universite, Y rechercher entrainement militaire depuis universite, selection tour puis clic unite ennemie pour tirer, fleches camera, molette zoom, Espace/Entree pour finir le tour.");
+    info!("Choisis ta civilisation: 1 Valdorian, 2 Kharzun, 3 Sylvans, 4 Necrarchs.");
+    info!("Apres choix: clic unite selection, clic droit/Echap deselection, clic case libre bouger, clic ennemi attaquer, B mine, F ferme, T forum, R caserne, M marche, U universite, O tour de guet, S soldat, A archer, C unite unique, V villageois, G/N commerce, H Agriculture, Y entrainement militaire, fleches camera, molette zoom, Espace/Entree finir tour.");
 }
 
 fn spawn_hud(commands: &mut Commands) {
@@ -123,6 +124,10 @@ pub(super) fn spawn_unit(
         UnitKind::Villager => TILE_SIZE * 0.62,
         UnitKind::Soldier => TILE_SIZE * 0.72,
         UnitKind::Archer => TILE_SIZE * 0.66,
+        UnitKind::ValdorianLegionary => TILE_SIZE * 0.74,
+        UnitKind::KharzunShieldbreaker => TILE_SIZE * 0.78,
+        UnitKind::ElyrPathfinder => TILE_SIZE * 0.58,
+        UnitKind::ObsidianBoneServant => TILE_SIZE * 0.56,
     };
     commands.spawn((
         SpriteBundle {

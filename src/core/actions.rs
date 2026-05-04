@@ -45,6 +45,9 @@ pub enum Action {
     RecruitArcher {
         building_position: GridPosition,
     },
+    RecruitUniqueUnit {
+        building_position: GridPosition,
+    },
     RecruitVillager {
         building_position: GridPosition,
     },
