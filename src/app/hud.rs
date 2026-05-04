@@ -17,8 +17,10 @@ pub(super) fn update_hud(
     };
 
     text.sections[0].value = format!(
-        "Tour: {:?}\nOr: {}\nNourriture: {}\nTech: {}{}\n{}",
+        "Tour: {:?}\nCivilisation: {:?}\nIA: {:?}\nOr: {}\nNourriture: {}\nTech: {}{}\n{}",
         game.0.current_turn(),
+        game.0.faction(Camp::Human),
+        game.0.faction(Camp::Ai),
         game.0.gold(Camp::Human),
         game.0.food(Camp::Human),
         game.0.technology_points(Camp::Human),

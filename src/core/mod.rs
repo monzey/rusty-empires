@@ -2,6 +2,7 @@ mod actions;
 mod buildings;
 mod errors;
 mod events;
+mod factions;
 mod game;
 mod geometry;
 mod map;
@@ -18,6 +19,7 @@ pub use errors::{
     TurnError,
 };
 pub use events::Event;
+pub use factions::Faction;
 pub use game::Game;
 pub use geometry::GridPosition;
 pub use map::NaturalResource;

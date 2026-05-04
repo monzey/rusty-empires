@@ -10,7 +10,8 @@ use super::units::{
     VILLAGER_MOVE_RANGE,
 };
 use super::{
-    Action, BuildingKind, Camp, Event, GameError, GridPosition, NaturalResource, UnitId, UnitKind,
+    Action, BuildingKind, Camp, Event, Faction, GameError, GridPosition, NaturalResource, UnitId,
+    UnitKind,
 };
 
 #[derive(Debug, Clone)]
@@ -18,6 +19,8 @@ pub struct Game {
     pub(crate) map_width: i32,
     pub(crate) map_height: i32,
     pub(crate) current_turn: Camp,
+    human_faction: Faction,
+    ai_faction: Faction,
     pub(crate) units: Vec<UnitState>,
     pub(crate) natural_resources: Vec<NaturalResourceState>,
     pub(crate) buildings: Vec<BuildingState>,
@@ -34,10 +37,50 @@ pub struct Game {
 
 impl Game {
     pub fn new_single_player_vs_ai(map_width: i32, map_height: i32) -> Self {
-        Self::new_single_player_vs_ai_with_resources(map_width, map_height, 1000, 500, 1000, 500)
+        Self::new_single_player(Faction::Valdorian, Faction::Kharzun, map_width, map_height)
+    }
+
+    pub fn new_single_player(
+        human_faction: Faction,
+        ai_faction: Faction,
+        map_width: i32,
+        map_height: i32,
+    ) -> Self {
+        Self::new_single_player_with_resources(
+            human_faction,
+            ai_faction,
+            map_width,
+            map_height,
+            1000,
+            500,
+            1000,
+            500,
+        )
     }
 
     pub fn new_single_player_vs_ai_with_resources(
+        map_width: i32,
+        map_height: i32,
+        human_gold: i32,
+        human_food: i32,
+        ai_gold: i32,
+        ai_food: i32,
+    ) -> Self {
+        Self::new_single_player_with_resources(
+            Faction::Valdorian,
+            Faction::Kharzun,
+            map_width,
+            map_height,
+            human_gold,
+            human_food,
+            ai_gold,
+            ai_food,
+        )
+    }
+
+    pub fn new_single_player_with_resources(
+        human_faction: Faction,
+        ai_faction: Faction,
         map_width: i32,
         map_height: i32,
         human_gold: i32,
@@ -49,6 +92,8 @@ impl Game {
             map_width,
             map_height,
             current_turn: Camp::Human,
+            human_faction,
+            ai_faction,
             units: vec![
                 UnitState {
                     id: UnitId(1),
@@ -231,6 +276,13 @@ impl Game {
 
     pub fn current_turn(&self) -> Camp {
         self.current_turn
+    }
+
+    pub fn faction(&self, camp: Camp) -> Faction {
+        match camp {
+            Camp::Human => self.human_faction,
+            Camp::Ai => self.ai_faction,
+        }
     }
 
     pub fn villager_id(&self, camp: Camp) -> Option<UnitId> {
