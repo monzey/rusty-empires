@@ -54,6 +54,7 @@ pub enum Action {
     TradeFoodForGold {
         amount: i32,
     },
+    ResearchAgriculture,
     ResearchMilitaryTraining,
     EndTurn,
     RunAiTurn,

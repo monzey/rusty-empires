@@ -13,7 +13,10 @@ pub enum GameError {
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum ResearchError {
     NoUniversity,
+    NoFarm,
     NotEnoughTechnologyPoints,
+    NotEnoughFood,
+    AlreadyResearched,
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]

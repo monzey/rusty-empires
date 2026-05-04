@@ -28,6 +28,8 @@ pub struct Game {
     human_explored_tiles: Vec<GridPosition>,
     ai_visible_tiles: Vec<GridPosition>,
     ai_explored_tiles: Vec<GridPosition>,
+    pub(crate) human_agriculture_researched: bool,
+    pub(crate) ai_agriculture_researched: bool,
 }
 
 impl Game {
@@ -144,6 +146,8 @@ impl Game {
             human_explored_tiles: Vec::new(),
             ai_visible_tiles: Vec::new(),
             ai_explored_tiles: Vec::new(),
+            human_agriculture_researched: false,
+            ai_agriculture_researched: false,
         };
         game.refresh_visibility();
         game
@@ -207,6 +211,9 @@ impl Game {
             }
             Action::TradeFoodForGold { amount } => {
                 trade::trade_food_for_gold(self, amount).map_err(GameError::Trade)
+            }
+            Action::ResearchAgriculture => {
+                research::research_agriculture(self).map_err(GameError::Research)
             }
             Action::ResearchMilitaryTraining => {
                 research::research_military_training(self).map_err(GameError::Research)

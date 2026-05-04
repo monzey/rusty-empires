@@ -3,6 +3,7 @@ use crate::core::{BuildingKind, Camp, Event, Game};
 
 const GOLD_MINE_YIELD: i32 = 10;
 const FARM_YIELD: i32 = 10;
+const AGRICULTURE_FARM_YIELD_BONUS: i32 = 15;
 const UNIVERSITY_YIELD: i32 = 10;
 
 pub(crate) fn produce_end_of_turn_resources(game: &mut Game, camp: Camp) -> Vec<Event> {
@@ -28,12 +29,18 @@ pub(crate) fn produce_end_of_turn_resources(game: &mut Game, camp: Camp) -> Vec<
         });
     }
 
+    let food_per_farm = FARM_YIELD
+        + if agriculture_researched(game, camp) {
+            AGRICULTURE_FARM_YIELD_BONUS
+        } else {
+            0
+        };
     let food = game
         .buildings
         .iter()
         .filter(|building| building.camp == camp && building.kind == BuildingKind::Farm)
         .count() as i32
-        * FARM_YIELD;
+        * food_per_farm;
 
     if food > 0 {
         let total = {
@@ -84,5 +91,12 @@ fn resources_mut(game: &mut Game, camp: Camp) -> &mut ResourceStockpile {
     match camp {
         Camp::Human => &mut game.human_resources,
         Camp::Ai => &mut game.ai_resources,
+    }
+}
+
+fn agriculture_researched(game: &Game, camp: Camp) -> bool {
+    match camp {
+        Camp::Human => game.human_agriculture_researched,
+        Camp::Ai => game.ai_agriculture_researched,
     }
 }

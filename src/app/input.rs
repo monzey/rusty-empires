@@ -277,7 +277,22 @@ pub(super) fn handle_build_input(
     }
 
     if keyboard.just_pressed(KeyCode::KeyY) {
-        handle_research_input(&mut game, &selected_building, &buildings);
+        handle_research_input(
+            &mut game,
+            &selected_building,
+            &buildings,
+            Action::ResearchMilitaryTraining,
+        );
+        return;
+    }
+
+    if keyboard.just_pressed(KeyCode::KeyH) {
+        handle_research_input(
+            &mut game,
+            &selected_building,
+            &buildings,
+            Action::ResearchAgriculture,
+        );
         return;
     }
 
@@ -429,6 +444,7 @@ fn handle_research_input(
     game: &mut ResMut<GameState>,
     selected_building: &Res<SelectedBuilding>,
     buildings: &Query<(Entity, &Building, &MapPosition), Without<Unit>>,
+    action: Action,
 ) {
     if game.0.current_turn() != Camp::Human {
         return;
@@ -448,7 +464,7 @@ fn handle_research_input(
         return;
     }
 
-    match game.0.apply(Action::ResearchMilitaryTraining) {
+    match game.0.apply(action) {
         Ok(events) => log_resource_events(&events),
         Err(error) => info!("Recherche refusee: {:?}.", error),
     }
