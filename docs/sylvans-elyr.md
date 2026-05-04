@@ -4,7 +4,11 @@ Les Sylvains d'Elyr sont une civilisation forestiere, mobile et insaisissable. I
 
 Cette faction doit proposer un gameplay tres different du Royaume Valdorien et des Clans Kharzun. Les Elyr ne cherchent pas a tenir une ligne compacte ou a construire des positions imprenables. Ils gagnent en choisissant leurs combats, en frappant les points faibles et en disparaissant avant la riposte.
 
-## Resume
+Ce document est aligne avec `docs/SPEC.md` : les ressources utilisees sont la nourriture, l'or et les points de technologie ; les recherches sont lancees depuis l'Universite ; le Marche sert uniquement a l'echange ; les unites de combat communes sont recrutees a la Caserne ; les unites speciales Elyr utilisent leurs batiments speciaux lorsque precise.
+
+---
+
+# Resume
 
 | Element | Valeur |
 |---|---|
@@ -13,10 +17,12 @@ Cette faction doit proposer un gameplay tres different du Royaume Valdorien et d
 | Style de jeu | Mobilite, archers, vision, embuscades |
 | Rythme | Rapide |
 | Difficulte | Moyenne a elevee |
-| Force principale | Controle de carte et harcelement |
+| Force principale | Controle de carte, harcelement et repositionnement |
 | Faiblesse principale | Faible en combat frontal prolonge |
 
-## Identite de gameplay
+---
+
+# Identite de gameplay
 
 Les Elyr gagnent en evitant les affrontements defavorables. Leur armee est fragile si elle est coincee, mais tres dangereuse lorsqu'elle peut se repositionner.
 
@@ -25,6 +31,8 @@ Leur gameplay repose sur trois piliers :
 - une excellente vision ;
 - une mobilite superieure ;
 - des attaques a distance et embuscades.
+
+Dans la nouvelle economie de Rusty Empires, leur theme forestier n'est pas represente par une ressource bois. Il est represente par les terrains de foret, leurs bonus de deplacement, leurs batiments speciaux, leurs technologies et leurs unites mobiles.
 
 Ils sont forts sur les cartes ouvertes, boisees ou avec plusieurs chemins d'acces. Ils sont plus faibles lorsqu'ils doivent attaquer une forteresse, tenir un point etroit ou subir une bataille frontale.
 
@@ -39,7 +47,7 @@ Ils sont forts sur les cartes ouvertes, boisees ou avec plusieurs chemins d'acce
 ## Faiblesses
 
 - Infanterie fragile.
-- Machines de siege faibles ou limitees.
+- Siege limite.
 - Batiments moins resistants.
 - Difficile a jouer si l'armee est encerclee.
 - Moins efficace sur les cartes sans vegetation ou avec peu de chemins alternatifs.
@@ -53,9 +61,9 @@ Ils sont forts sur les cartes ouvertes, boisees ou avec plusieurs chemins d'acce
 | Bonus | Effet |
 |---|---|
 | Enfants de la foret | Les unites Elyr ignorent le malus de mouvement des forets legeres |
-| Oeil des clairieres | Les eclaireurs et archers gagnent +1 vision |
-| Tir mobile | Les archers Elyr peuvent se deplacer de 1 case apres avoir attaque, si leur mouvement n'a pas ete entierement utilise |
-| Economie sylvestre | Les villageois recoltant le bois rapportent +15% de ressources |
+| Oeil des clairieres | Les eclaireurs et unites a distance Elyr gagnent +1 vision |
+| Tir mobile | Les unites a distance Elyr peuvent se deplacer de 1 case apres avoir attaque, si elles ne sont pas adjacentes a un ennemi |
+| Economie sylvestre | Les Fermes adjacentes a une foret produisent +10 nourriture par tour |
 | Embuscade naturelle | Les unites Elyr gagnent +1 attaque lorsqu'elles attaquent depuis une foret |
 
 ## Malus de civilisation
@@ -63,9 +71,9 @@ Ils sont forts sur les cartes ouvertes, boisees ou avec plusieurs chemins d'acce
 | Malus | Effet |
 |---|---|
 | Structures legeres | Les batiments Elyr ont -10% PV |
-| Siege limite | Les machines de siege coutent 20% de bois et d'or en plus |
+| Siege limite | Les unites de siege coutent 20% d'or en plus si elles sont ajoutees au roster |
 | Front fragile | L'infanterie melee Elyr a -1 defense hors foret |
-| Peu d'armure lourde | Les technologies d'armure coutent 15% plus cher |
+| Peu d'armure lourde | Les technologies defensives coutent 15% d'or en plus |
 
 ## Capacite passive : Frappe et repli
 
@@ -79,11 +87,67 @@ Cette capacite encourage le joueur a attaquer, se repositionner et eviter les en
 
 ---
 
+# Heros de faction
+
+## Sylwen Oeil-des-Bois
+
+Sylwen est l'heroine des Sylvains d'Elyr. Elle incarne la vision, la chasse et la maitrise du terrain.
+
+Elle n'est pas concue pour tenir une ligne de front. Sa puissance vient de sa capacite a reveler les mouvements ennemis, marquer les cibles importantes et permettre aux unites Elyr de se repositionner.
+
+| Statistique | Valeur |
+|---|---:|
+| PV | 80 |
+| Attaque | 12 |
+| Defense | 2 |
+| Portee | 2-4 |
+| Mouvement | 4 |
+| Vision | 7 |
+| Population | 3 |
+
+Cout :
+
+| Ressource | Valeur |
+|---|---:|
+| Nourriture | 100 |
+| Or | 180 |
+
+Recrute par : Forum
+
+Prerequis : Universite
+
+Traits :
+
+- heros ;
+- attaque a distance ;
+- vision ;
+- mobilite ;
+- embuscade.
+
+Capacite speciale : Repli rapide
+
+Une fois tous les 3 tours, Sylwen donne un ordre de repli tactique a toutes les unites alliees dans un rayon de 2 cases.
+
+Effet pendant 1 tour :
+
+- les unites affectees peuvent se deplacer de 1 case apres avoir attaque ;
+- les unites deja capables de se deplacer apres attaque gagnent +1 case de repli a la place ;
+- les unites affectees gagnent +1 vision jusqu'au debut du prochain tour Elyr.
+
+Role tactique :
+
+- ouvrir une fenetre de hit and run ;
+- sauver des archers exposes ;
+- reveler et punir une cible cle ;
+- permettre aux Elyr de choisir le rythme du combat.
+
+---
+
 # Unites uniques
 
 ## Pisteur d'Elyr
 
-Le Pisteur d'Elyr remplace le Cavalier eclaireur. Il est moins resistant, mais beaucoup plus discret et utile pour controler la carte.
+Le Pisteur d'Elyr est une unite d'exploration et de marquage. Il est fragile, mais essentiel pour controler la carte et preparer les attaques a distance.
 
 | Statistique | Valeur |
 |---|---:|
@@ -99,13 +163,12 @@ Cout :
 
 | Ressource | Valeur |
 |---|---:|
-| Nourriture | 45 |
-| Bois | 25 |
-| Or | 20 |
+| Nourriture | 55 |
+| Or | 45 |
 
-Produit par : Ecurie ou Pavillon des sentiers
+Recrute par : Pavillon des sentiers
 
-Requis : Sentiers caches
+Prerequis : Sentiers caches
 
 Traits :
 
@@ -120,7 +183,7 @@ Le Pisteur peut marquer une unite ennemie visible dans un rayon de 4 cases. Jusq
 
 ## Archer aux epines
 
-L'Archer aux epines remplace l'Archer. Il inflige moins de degats bruts qu'une unite d'elite lourde, mais affaiblit progressivement les ennemis.
+L'Archer aux epines est une unite a distance unique. Il inflige moins de degats bruts qu'une unite lourde, mais affaiblit progressivement les ennemis et aide les Elyr a garder la distance.
 
 | Statistique | Valeur |
 |---|---:|
@@ -136,17 +199,17 @@ Cout :
 
 | Ressource | Valeur |
 |---|---:|
-| Bois | 55 |
-| Or | 25 |
+| Nourriture | 45 |
+| Or | 60 |
 
-Produit par : Champ de tir
+Recrute par : Caserne
 
-Requis : Arcs vivants
+Prerequis : Arcs vivants
 
 Traits :
 
 - attaque a distance ;
-- poison leger ;
+- controle ;
 - mobile ;
 - fragile au corps-a-corps.
 
@@ -172,13 +235,12 @@ Cout :
 
 | Ressource | Valeur |
 |---|---:|
-| Nourriture | 55 |
-| Fer | 20 |
-| Or | 45 |
+| Nourriture | 70 |
+| Or | 75 |
 
-Produit par : Caserne
+Recrute par : Caserne
 
-Requis : Lames de clairiere
+Prerequis : Lames de clairiere
 
 Traits :
 
@@ -193,7 +255,7 @@ Le Danse-lame ignore les zones de controle ennemies lorsqu'il commence son tour 
 
 ## Cavalier cerf
 
-Cavalerie legere unique. Tres rapide, excellente pour contourner et menacer les archers, les machines de siege ou les villageois.
+Unite legere tres mobile. Excellente pour contourner et menacer les archers, les soutiens, les batiments economiques ou les machines de siege isolees.
 
 | Statistique | Valeur |
 |---|---:|
@@ -209,20 +271,19 @@ Cout :
 
 | Ressource | Valeur |
 |---|---:|
-| Nourriture | 85 |
-| Bois | 35 |
-| Or | 55 |
+| Nourriture | 100 |
+| Or | 100 |
 
-Produit par : Ecurie
+Recrute par : Sanctuaire racinaire
 
-Requis : Pactes des betes
+Prerequis : Pactes des betes
 
 Traits :
 
-- cavalerie legere ;
-- tres mobile ;
+- unite legere mobile ;
+- tres rapide ;
 - bon contre archers et siege ;
-- vulnerable aux lanciers.
+- vulnerable aux unites anti-mobilite.
 
 Capacite speciale : Charge sylvestre
 
@@ -247,20 +308,14 @@ Cout :
 
 | Ressource | Valeur |
 |---|---:|
-| Bois | 100 |
-| Nourriture | 40 |
+| Nourriture | 50 |
+| Or | 120 |
 
-Requis : Forum
+Prerequis : Forum
 
 Produit :
 
-- Pisteur d'Elyr, apres Sentiers caches.
-
-Recherches possibles :
-
-- Sentiers caches ;
-- Veilleurs des clairieres ;
-- Cartographie vivante.
+- Pisteur d'Elyr.
 
 Effets :
 
@@ -270,27 +325,31 @@ Effets :
 
 ## Sanctuaire racinaire
 
-Batiment economique et defensif leger. Il soutient l'economie du bois et protege les zones forestieres.
+Batiment economique, tactique et legerement defensif. Il soutient les zones forestieres et permet de recruter les Cavaliers cerfs.
 
 | Statistique | Valeur |
 |---|---:|
 | PV | 240 |
 | Defense | 1 |
 | Taille | 2x2 |
+| Vision | 3 |
 
 Cout :
 
 | Ressource | Valeur |
 |---|---:|
-| Bois | 130 |
-| Pierre | 40 |
-| Or | 40 |
+| Nourriture | 90 |
+| Or | 160 |
 
-Requis : Economie sylvestre
+Prerequis : Economie sylvestre
+
+Produit :
+
+- Cavalier cerf.
 
 Effets :
 
-- les villageois recoltant le bois dans un rayon de 4 cases rapportent +10% de ressources ;
+- les Fermes dans un rayon de 4 cases produisent +10 nourriture si elles sont adjacentes a une foret ;
 - les unites Elyr adjacentes au Sanctuaire racinaire recuperent 5 PV au debut du tour ;
 - ne peut etre construit que sur ou pres d'une zone forestiere.
 
@@ -302,16 +361,17 @@ Le Sanctuaire racinaire donne aux Elyr une economie locale forte, mais dependant
 
 # Technologies specifiques
 
+Toutes les recherches Elyr sont lancees depuis l'Universite. Les batiments indiques sont des prerequis, pas les lieux de recherche.
+
 ## Sentiers caches
 
 Les Elyr utilisent des chemins invisibles aux autres peuples pour se deplacer et observer.
 
 | Champ | Valeur |
 |---|---|
-| Batiment | Pavillon des sentiers |
-| Cout | 100 bois, 80 nourriture, 60 or |
-| Prerequis | Aucun |
-| Effet | Debloque Pisteur d'Elyr, +1 vision pour les eclaireurs |
+| Cout | 120 points de technologie, 80 or |
+| Prerequis | Pavillon des sentiers |
+| Effet | Debloque Pisteur d'Elyr, +1 vision pour les eclaireurs Elyr |
 
 ## Veilleurs des clairieres
 
@@ -319,8 +379,7 @@ Organise les eclaireurs en reseau de surveillance.
 
 | Champ | Valeur |
 |---|---|
-| Batiment | Pavillon des sentiers |
-| Cout | 150 bois, 120 or |
+| Cout | 160 points de technologie, 120 or |
 | Prerequis | Sentiers caches |
 | Effet | Les Pavillons des sentiers gagnent +2 vision et detectent les unites camouflees proches |
 
@@ -330,9 +389,8 @@ Les artisans Elyr cultivent des arcs flexibles et puissants a partir de bois rit
 
 | Champ | Valeur |
 |---|---|
-| Batiment | Champ de tir |
-| Cout | 180 bois, 120 or |
-| Prerequis | Archerie |
+| Cout | 160 points de technologie, 140 or |
+| Prerequis | Caserne, Archerie organisee |
 | Effet | Debloque Archer aux epines |
 
 ## Tir mouvant
@@ -341,8 +399,7 @@ Les archers Elyr apprennent a tirer tout en conservant leur capacite de repositi
 
 | Champ | Valeur |
 |---|---|
-| Batiment | Champ de tir |
-| Cout | 220 bois, 160 nourriture, 150 or |
+| Cout | 220 points de technologie, 160 nourriture, 160 or |
 | Prerequis | Arcs vivants |
 | Effet | Les unites a distance Elyr peuvent se deplacer de 1 case apres une attaque si elles ne sont pas adjacentes a un ennemi |
 
@@ -352,9 +409,8 @@ Forme des combattants capables de se battre dans les sous-bois et d'exploiter le
 
 | Champ | Valeur |
 |---|---|
-| Batiment | Caserne |
-| Cout | 160 nourriture, 120 fer, 160 or |
-| Prerequis | Discipline militaire |
+| Cout | 180 points de technologie, 140 nourriture, 160 or |
+| Prerequis | Caserne, Discipline militaire |
 | Effet | Debloque Danse-lame sylvain |
 
 ## Pactes des betes
@@ -363,9 +419,8 @@ Les Elyr nouent des liens avec les grands cerfs des forets anciennes.
 
 | Champ | Valeur |
 |---|---|
-| Batiment | Ecurie |
-| Cout | 220 nourriture, 180 bois, 200 or |
-| Prerequis | Elevage militaire, Sentiers caches |
+| Cout | 240 points de technologie, 220 nourriture, 220 or |
+| Prerequis | Sentiers caches, Sanctuaire racinaire |
 | Effet | Debloque Cavalier cerf |
 
 ## Cartographie vivante
@@ -374,8 +429,7 @@ Les cartes Elyr evoluent avec les mouvements des eclaireurs et les signes de la 
 
 | Champ | Valeur |
 |---|---|
-| Batiment | Pavillon des sentiers |
-| Cout | 180 bois, 220 or |
+| Cout | 220 points de technologie, 220 or |
 | Prerequis | Veilleurs des clairieres |
 | Effet | Les unites Elyr gagnent +1 mouvement lorsqu'elles commencent leur tour dans une case revelee mais hors vision ennemie connue |
 
@@ -385,8 +439,7 @@ Les Elyr apprennent a concentrer leurs tirs sur des cibles piegees ou mal positi
 
 | Champ | Valeur |
 |---|---|
-| Batiment | Champ de tir |
-| Cout | 250 bois, 180 nourriture, 220 or |
+| Cout | 260 points de technologie, 180 nourriture, 240 or |
 | Prerequis | Tir mouvant, Veilleurs des clairieres |
 | Effet | Les attaques depuis une foret ou contre une cible marquee gagnent +1 attaque supplementaire |
 
@@ -396,44 +449,33 @@ Ameliore les sanctuaires forestiers et rend l'economie Elyr plus durable.
 
 | Champ | Valeur |
 |---|---|
-| Batiment | Sanctuaire racinaire |
-| Cout | 220 bois, 150 nourriture, 160 or |
-| Prerequis | Economie sylvestre |
-| Effet | Les Sanctuaires racinaires augmentent leur soin a 8 PV et leur bonus de recolte a +15% |
+| Cout | 240 points de technologie, 180 nourriture, 180 or |
+| Prerequis | Economie sylvestre, Sanctuaire racinaire |
+| Effet | Les Sanctuaires racinaires augmentent leur soin a 8 PV et leur bonus de production locale a +15 nourriture |
 
 ---
 
 # Arbre technologique Elyr
 
 ```text
-Pavillon des sentiers
-└── Sentiers caches
-    ├── Pisteur d'Elyr
-    ├── Veilleurs des clairieres
-    │   ├── Cartographie vivante
-    │   └── Embuscade coordonnee
-    └── Pactes des betes
-        └── Cavalier cerf
-
-Champ de tir
-└── Archerie
-    └── Arcs vivants
-        ├── Archer aux epines
-        └── Tir mouvant
-            └── Embuscade coordonnee
-
-Caserne
-└── Discipline militaire
-    └── Lames de clairiere
-        └── Danse-lame sylvain
-
-Ecurie
-└── Elevage militaire
-    └── Pactes des betes
-        └── Cavalier cerf
-
-Sanctuaire racinaire
-└── Racines nourricieres
+Universite
+├── Sentiers caches ← Pavillon des sentiers
+│   ├── Pisteur d'Elyr
+│   ├── Veilleurs des clairieres
+│   │   ├── Cartographie vivante
+│   │   └── Embuscade coordonnee
+│   └── Pactes des betes ← Sanctuaire racinaire
+│       └── Cavalier cerf
+│
+├── Arcs vivants ← Caserne + Archerie organisee
+│   ├── Archer aux epines
+│   └── Tir mouvant
+│       └── Embuscade coordonnee
+│
+├── Lames de clairiere ← Caserne + Discipline militaire
+│   └── Danse-lame sylvain
+│
+└── Racines nourricieres ← Sanctuaire racinaire
 ```
 
 ---
@@ -442,7 +484,7 @@ Sanctuaire racinaire
 
 ## Debut de partie
 
-Les Elyr doivent explorer vite et prendre de l'information avant l'adversaire. Leur debut de partie repose sur la vision, le bois et les petites escarmouches.
+Les Elyr doivent explorer vite et prendre de l'information avant l'adversaire. Leur debut de partie repose sur la vision, les forets et les petites escarmouches.
 
 Objectifs :
 
@@ -461,7 +503,7 @@ Objectifs :
 - rechercher Arcs vivants ;
 - produire des Archers aux epines ;
 - utiliser les Pisteurs pour marquer les cibles ;
-- harceler les villageois et les machines de siege ;
+- harceler les villageois, les soutiens et les batiments economiques ;
 - poser un Sanctuaire racinaire pres d'une zone boisee importante.
 
 ## Fin de partie
@@ -474,6 +516,7 @@ Objectifs :
 - combiner Pisteurs et Archers aux epines ;
 - envoyer les Cavaliers cerfs sur les arrieres ;
 - utiliser les Danse-lames pour punir les unites isolees ;
+- utiliser Sylwen pour declencher les replis decisifs ;
 - eviter les murs, bastions et formations lourdes sans support.
 
 ---
@@ -494,7 +537,7 @@ Objectifs :
 | Menace | Raison |
 |---|---|
 | Fortifications lourdes | Leur siege est limite |
-| Cavalerie anti-archers | Elle peut les punir si mal positionnes |
+| Unites rapides anti-archers | Elles peuvent les punir si mal positionnes |
 | Degats de zone | Leurs unites ont peu de PV |
 | Cartes fermees | Elles reduisent la valeur de la mobilite et de la vision |
 
@@ -503,9 +546,10 @@ Objectifs :
 # Notes d'equilibrage
 
 - Les Elyr doivent avoir l'impression d'etre toujours un pas en avance, mais punissables lorsqu'ils sont attrapes.
+- Sylwen doit permettre des repositionnements decisifs, mais ne doit pas rendre toute l'armee intouchable.
 - Le Tir mobile doit etre fort tactiquement, mais ne doit pas rendre les archers impossibles a engager.
 - Le Pisteur doit etre utile meme sans attaquer, grace a la vision et au marquage.
-- Le Cavalier cerf doit exceller contre les cibles isolees, mais perdre contre des lanciers bien places.
+- Le Cavalier cerf doit exceller contre les cibles isolees, mais perdre contre des unites bien placees.
 - Les Elyr doivent avoir une vraie faiblesse contre les fortifications et le siege lourd.
 - La faction doit recompenser les bons placements plus que les statistiques brutes.
 
