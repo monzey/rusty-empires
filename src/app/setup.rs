@@ -89,7 +89,7 @@ pub(super) fn setup(mut commands: Commands, game: Res<GameState>) {
 
     spawn_hud(&mut commands);
 
-    info!("Boucle initiale: clic sur une unite pour la selectionner, clic sur une case libre pour bouger, clic sur une unite ennemie a portee pour attaquer, B mine, F ferme, T forum, R caserne, M marche, U universite, S recruter soldat depuis caserne, A recruter archer depuis caserne, V recruter villageois depuis forum, G echanger or vers nourriture depuis marche, N echanger nourriture vers or depuis marche, Y rechercher entrainement militaire depuis universite, Espace/Entree pour finir le tour.");
+    info!("Boucle initiale: clic sur une unite pour la selectionner, clic droit/Echap pour deselectionner, clic sur une case libre pour bouger, clic sur une unite ennemie a portee pour attaquer, B mine, F ferme, T forum, R caserne, M marche, U universite, S recruter soldat depuis caserne, A recruter archer depuis caserne, V recruter villageois depuis forum, G echanger or vers nourriture depuis marche, N echanger nourriture vers or depuis marche, Y rechercher entrainement militaire depuis universite, fleches camera, molette zoom, Espace/Entree pour finir le tour.");
 }
 
 fn spawn_hud(commands: &mut Commands) {

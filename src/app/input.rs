@@ -7,6 +7,27 @@ use super::setup::spawn_building;
 use super::sync::{apply_building_events, apply_game_events, log_resource_events};
 use crate::{Action, BuildingKind, Camp, Event, GridPosition};
 
+pub(super) fn handle_deselect_input(
+    keyboard: Res<ButtonInput<KeyCode>>,
+    mouse_buttons: Res<ButtonInput<MouseButton>>,
+    mut selected_unit: ResMut<SelectedUnit>,
+    mut selected_building: ResMut<SelectedBuilding>,
+) {
+    if !keyboard.just_pressed(KeyCode::Escape) && !mouse_buttons.just_pressed(MouseButton::Right) {
+        return;
+    }
+
+    if selected_unit.0.is_some() || selected_building.0.is_some() {
+        clear_selection(&mut selected_unit, &mut selected_building);
+        info!("Selection annulee.");
+    }
+}
+
+fn clear_selection(selected_unit: &mut SelectedUnit, selected_building: &mut SelectedBuilding) {
+    selected_unit.0 = None;
+    selected_building.0 = None;
+}
+
 pub(super) fn handle_human_input(
     mouse_buttons: Res<ButtonInput<MouseButton>>,
     mut commands: Commands,
@@ -31,8 +52,7 @@ pub(super) fn handle_human_input(
     };
 
     if !is_inside_map(clicked_position) {
-        selected_unit.0 = None;
-        selected_building.0 = None;
+        clear_selection(&mut selected_unit, &mut selected_building);
         return;
     }
 
@@ -97,8 +117,7 @@ pub(super) fn handle_human_input(
         }) {
             Ok(events) => {
                 apply_game_events(&events, &mut commands, &mut units);
-                selected_unit.0 = None;
-                selected_building.0 = None;
+                clear_selection(&mut selected_unit, &mut selected_building);
                 log_combat_events(&events);
             }
             Err(error) => {
@@ -118,8 +137,7 @@ pub(super) fn handle_human_input(
             Ok(events) => {
                 apply_game_events(&events, &mut commands, &mut units);
                 apply_building_events(&events, &mut commands, &buildings);
-                selected_unit.0 = None;
-                selected_building.0 = None;
+                clear_selection(&mut selected_unit, &mut selected_building);
                 info!(
                     "{:?} ennemi attaque en ({}, {}).",
                     target.kind, clicked_position.x, clicked_position.y
@@ -413,8 +431,7 @@ pub(super) fn handle_end_turn_input(
     }
 
     if let Ok(events) = game.0.apply(Action::EndTurn) {
-        selected_unit.0 = None;
-        selected_building.0 = None;
+        clear_selection(&mut selected_unit, &mut selected_building);
         log_resource_events(&events);
         info!("Tour: IA.");
     }
@@ -511,5 +528,21 @@ fn log_combat_events(events: &[Event]) {
             }
             _ => {}
         }
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn clear_selection_removes_selected_unit_and_building() {
+        let mut selected_unit = SelectedUnit(Some(Entity::from_raw(1)));
+        let mut selected_building = SelectedBuilding(Some(Entity::from_raw(2)));
+
+        clear_selection(&mut selected_unit, &mut selected_building);
+
+        assert_eq!(selected_unit.0, None);
+        assert_eq!(selected_building.0, None);
     }
 }

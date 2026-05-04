@@ -1,8 +1,12 @@
 use bevy::{prelude::*, window::PresentMode};
 
+use super::camera::{move_camera, zoom_camera};
 use super::constants::{MAP_HEIGHT, MAP_WIDTH};
 use super::hud::update_hud;
-use super::input::{handle_build_input, handle_end_turn_input, handle_human_input, run_ai_turn};
+use super::input::{
+    handle_build_input, handle_deselect_input, handle_end_turn_input, handle_human_input,
+    run_ai_turn,
+};
 use super::resources::{GameState, SelectedBuilding, SelectedUnit};
 use super::setup::setup;
 use super::visuals::{update_building_visuals, update_tile_visuals, update_unit_visuals};
@@ -32,8 +36,11 @@ impl Plugin for RustyEmpiresAppPlugin {
                 Update,
                 (
                     handle_human_input,
+                    handle_deselect_input,
                     handle_build_input,
                     handle_end_turn_input,
+                    move_camera,
+                    zoom_camera,
                     run_ai_turn,
                     update_tile_visuals,
                     update_unit_visuals,
