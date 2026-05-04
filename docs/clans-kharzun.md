@@ -64,7 +64,7 @@ Ils sont faibles quand ils doivent reagir vite a plusieurs attaques dispersees. 
 | Tenacite des clans | Les unites Kharzun gagnent +1 defense lorsqu'elles ne se sont pas deplacees ce tour-ci |
 | Siege ancestral | Les unites de siege Kharzun infligent +20% de degats aux batiments |
 | Montagnards | Les unites Kharzun ignorent le malus de mouvement leger des collines |
-| Ouvrages profonds | Les Tours, Murs et Bastions Kharzun coutent 10% d'or en moins |
+| Ouvrages profonds | Les Tours et Bastions Kharzun coutent 10% d'or en moins |
 
 ## Malus de civilisation
 
@@ -93,7 +93,7 @@ Cette capacite encourage le joueur a verrouiller une position et a forcer l'adve
 
 Brokkar est le heros des Clans Kharzun. C'est un seigneur-forgeron, chef de guerre et gardien des serments anciens.
 
-Il est concu pour tenir une ligne, proteger une position et transformer un point de passage en mur infranchissable. Il est tres fort lorsqu'il est bien place, mais il reagit mal aux menaces multiples et rapides.
+Il est concu pour tenir une ligne, proteger une position et transformer un point de passage en zone infranchissable. Il est tres fort lorsqu'il est bien place, mais il reagit mal aux menaces multiples et rapides.
 
 | Statistique | Valeur |
 |---|---:|
@@ -130,7 +130,7 @@ Une fois tous les 3 tours, Brokkar peut ancrer une position dans un rayon de 2 c
 Effet pendant 1 tour :
 
 - les unites alliees dans la zone gagnent +2 defense si elles ne se deplacent pas ;
-- les Murs, Tours et Bastions dans la zone gagnent +1 defense ;
+- les Tours et Bastions dans la zone gagnent +1 defense ;
 - les unites affectees ne peuvent pas etre repoussees par des effets de recul simples.
 
 Role tactique :
@@ -214,7 +214,7 @@ Traits :
 
 Capacite speciale : Serment de pierre
 
-Si la Garde runique est sur une colline, une montagne, une case adjacente a un Mur, une Tour, un Bastion ou un autre batiment allie, elle gagne +1 defense supplementaire.
+Si la Garde runique est sur une colline, une montagne, une case adjacente a une Tour, un Bastion ou un autre batiment allie, elle gagne +1 defense supplementaire.
 
 ## Belier de fer
 
@@ -286,7 +286,7 @@ Traits :
 
 Capacite speciale : Tir de demolition
 
-Inflige +30% de degats aux Murs, Tours, Bastions et batiments defensifs. Les unites adjacentes a la cible subissent 40% des degats initiaux.
+Inflige +30% de degats aux Tours, Bastions et batiments defensifs. Les unites adjacentes a la cible subissent 40% des degats initiaux.
 
 ---
 
@@ -455,7 +455,7 @@ Les positions defensives Kharzun deviennent presque impossibles a prendre sans s
 |---|---|
 | Cout | 340 points de technologie, 300 or |
 | Prerequis | Architecture de montagne, Serments runiques, Bastion de pierre |
-| Effet | Les Murs, Tours de guet et Bastions de pierre Kharzun gagnent +20% PV et +1 defense |
+| Effet | Les Tours de guet et Bastions de pierre Kharzun gagnent +20% PV et +1 defense |
 
 ---
 

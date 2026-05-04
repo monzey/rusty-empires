@@ -320,28 +320,6 @@ Capacite speciale : Tir defensif
 
 La Tour de guet peut attaquer une unite ennemie dans sa portee une fois par tour.
 
-## Mur
-
-Structure defensive servant a bloquer ou canaliser les deplacements ennemis.
-
-| Statistique | Valeur |
-|---|---:|
-| PV | 180 |
-| Defense | 5 |
-| Taille | 1x1 |
-
-Cout :
-
-| Ressource | Valeur |
-|---|---:|
-| Or | 35 |
-
-Capacite speciale : Obstacle
-
-Bloque les deplacements terrestres ennemis tant qu'il n'est pas detruit.
-
----
-
 # Recherches communes
 
 Toutes les recherches communes sont lancees depuis l'Universite.
@@ -391,8 +369,8 @@ Toutes les recherches communes sont lancees depuis l'Universite.
 | Champ | Valeur |
 |---|---|
 | Cout | 180 points de technologie, 140 or |
-| Prerequis | Tour de guet ou Mur |
-| Effet | Les Tours de guet et Murs gagnent +20% PV |
+| Prerequis | Tour de guet |
+| Effet | Les Tours de guet gagnent +20% PV |
 
 ## Coordination tactique
 
@@ -419,8 +397,7 @@ Forum
 ├── Universite
 │   ├── Recherches communes
 │   └── Recherches de faction
-├── Tour de guet
-└── Mur
+└── Tour de guet
 ```
 
 ---
@@ -430,7 +407,7 @@ Forum
 - Le Soldat doit rester simple et fiable, sans voler le role des unites uniques.
 - L'Archer doit etre fort en soutien, mais vulnerable au contact.
 - Le Villageois doit pouvoir se defendre faiblement, sans devenir une unite militaire.
-- Les Tours et Murs doivent proteger une zone, pas bloquer toute la partie.
+- Les Tours doivent proteger une zone sans bloquer toute la partie.
 - Le Marche doit donner de la flexibilite, mais pas remplacer une bonne economie.
 - L'Universite doit etre un objectif important, car elle ouvre les recherches et les heros.
 - Les factions doivent apporter la complexite principale du jeu via leurs unites, heros, batiments speciaux et technologies propres.

@@ -517,7 +517,7 @@ Objectifs :
 - envoyer les Cavaliers cerfs sur les arrieres ;
 - utiliser les Danse-lames pour punir les unites isolees ;
 - utiliser Sylwen pour declencher les replis decisifs ;
-- eviter les murs, bastions et formations lourdes sans support.
+- eviter les bastions et formations lourdes sans support.
 
 ---
 

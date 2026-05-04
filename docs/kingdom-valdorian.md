@@ -449,7 +449,7 @@ Adapte les defenses communes a la doctrine administrative Valdorienne.
 |---|---|
 | Cout | 240 points de technologie, 220 or |
 | Prerequis | Fortifications, Poste administratif |
-| Effet | Les Tours de guet et Murs dans un rayon de 4 cases d'un Poste administratif gagnent +1 defense |
+| Effet | Les Tours de guet dans un rayon de 4 cases d'un Poste administratif gagnent +1 defense |
 
 ---
 
@@ -515,7 +515,7 @@ Objectifs :
 - former une ligne de Legionnaires ;
 - soutenir la ligne avec Prefets et Arbaletriers ;
 - utiliser les Chevaliers bannerets pour proteger les flancs ;
-- renforcer les positions avec Tours, Murs et Decrets de fortification ;
+- renforcer les positions avec Tours et Decrets de fortification ;
 - avancer avec une formation compacte plutot que chercher une attaque dispersee.
 
 ---

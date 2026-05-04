@@ -176,7 +176,6 @@ Les batiments structurent l'economie, le recrutement, la defense et la progressi
 ### Batiments defensifs communs
 
 - Tour de guet : donne de la vision et attaque a distance.
-- Mur : bloque ou canalise les deplacements ennemis.
 
 ### Batiments speciaux de faction
 
