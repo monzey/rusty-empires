@@ -22,4 +22,12 @@ pub(crate) fn reset_units_for_turn(game: &mut Game, camp: Camp) {
         unit.has_moved = false;
         unit.has_acted = false;
     }
+
+    for building in game
+        .buildings
+        .iter_mut()
+        .filter(|building| building.camp == camp)
+    {
+        building.has_acted = false;
+    }
 }

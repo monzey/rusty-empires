@@ -32,6 +32,17 @@ pub struct Game {
 
 impl Game {
     pub fn new_single_player_vs_ai(map_width: i32, map_height: i32) -> Self {
+        Self::new_single_player_vs_ai_with_resources(map_width, map_height, 1000, 500, 1000, 500)
+    }
+
+    pub fn new_single_player_vs_ai_with_resources(
+        map_width: i32,
+        map_height: i32,
+        human_gold: i32,
+        human_food: i32,
+        ai_gold: i32,
+        ai_food: i32,
+    ) -> Self {
         let mut game = Self {
             map_width,
             map_height,
@@ -118,8 +129,16 @@ impl Game {
                 },
             ],
             buildings: Vec::new(),
-            human_resources: ResourceStockpile::default(),
-            ai_resources: ResourceStockpile::default(),
+            human_resources: ResourceStockpile {
+                gold: human_gold,
+                food: human_food,
+                technology_points: 0,
+            },
+            ai_resources: ResourceStockpile {
+                gold: ai_gold,
+                food: ai_food,
+                technology_points: 0,
+            },
             next_unit_id: 5,
             human_visible_tiles: Vec::new(),
             human_explored_tiles: Vec::new(),
@@ -148,6 +167,11 @@ impl Game {
                 target_position,
             } => combat::attack_building(self, attacker_id, target_position)
                 .map_err(GameError::Combat),
+            Action::AttackWithBuilding {
+                building_position,
+                target_id,
+            } => combat::attack_with_building(self, building_position, target_id)
+                .map_err(GameError::Combat),
             Action::BuildGoldMine { unit_id } => {
                 construction::build_gold_mine(self, unit_id).map_err(GameError::Build)
             }
@@ -165,6 +189,9 @@ impl Game {
             }
             Action::BuildUniversity { unit_id } => {
                 construction::build_university(self, unit_id).map_err(GameError::Build)
+            }
+            Action::BuildWatchtower { unit_id } => {
+                construction::build_watchtower(self, unit_id).map_err(GameError::Build)
             }
             Action::RecruitSoldier { building_position } => {
                 recruitment::recruit_soldier(self, building_position).map_err(GameError::Recruit)
@@ -412,5 +439,6 @@ fn building_vision_range(kind: BuildingKind) -> i32 {
         | BuildingKind::Barracks
         | BuildingKind::Market
         | BuildingKind::University => 2,
+        BuildingKind::Watchtower => 6,
     }
 }

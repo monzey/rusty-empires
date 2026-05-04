@@ -1,5 +1,6 @@
 use crate::core::buildings::{health_for_kind, BuildingState};
 use crate::core::geometry::distance;
+use crate::core::resources::ResourceStockpile;
 use crate::core::{BuildError, BuildingKind, Event, Game, NaturalResource, UnitId, UnitKind};
 
 pub(crate) fn build_gold_mine(game: &mut Game, unit_id: UnitId) -> Result<Vec<Event>, BuildError> {
@@ -36,6 +37,10 @@ pub(crate) fn build_market(game: &mut Game, unit_id: UnitId) -> Result<Vec<Event
 
 pub(crate) fn build_university(game: &mut Game, unit_id: UnitId) -> Result<Vec<Event>, BuildError> {
     build_non_resource_building(game, unit_id, BuildingKind::University, true)
+}
+
+pub(crate) fn build_watchtower(game: &mut Game, unit_id: UnitId) -> Result<Vec<Event>, BuildError> {
+    build_non_resource_building(game, unit_id, BuildingKind::Watchtower, false)
 }
 
 fn build_on_resource(
@@ -78,11 +83,13 @@ fn build_on_resource(
     }
 
     let camp = unit.camp;
+    pay_construction_cost(game, camp, building_kind)?;
     game.buildings.push(BuildingState {
         camp,
         kind: building_kind,
         position,
         health: health_for_kind(building_kind),
+        has_acted: false,
     });
     game.units[unit_index].has_acted = true;
 
@@ -135,15 +142,21 @@ fn build_non_resource_building(
     }
 
     let camp = unit.camp;
+    if building_kind == BuildingKind::Watchtower && !is_in_watchtower_cross(game, camp, position) {
+        return Err(BuildError::NoWatchtowerCross);
+    }
+
     if requires_adjacent_forum && !has_adjacent_forum(game, camp, position) {
         return Err(BuildError::NoAdjacentForum);
     }
 
+    pay_construction_cost(game, camp, building_kind)?;
     game.buildings.push(BuildingState {
         camp,
         kind: building_kind,
         position,
         health: health_for_kind(building_kind),
+        has_acted: false,
     });
     game.units[unit_index].has_acted = true;
 
@@ -157,6 +170,75 @@ fn build_non_resource_building(
     ])
 }
 
+#[derive(Debug, Clone, Copy)]
+struct ConstructionCost {
+    gold: i32,
+    food: i32,
+}
+
+fn pay_construction_cost(
+    game: &mut Game,
+    camp: crate::core::Camp,
+    building_kind: BuildingKind,
+) -> Result<(), BuildError> {
+    let cost = construction_cost(building_kind);
+    let stockpile = resources(game, camp);
+
+    if stockpile.gold < cost.gold {
+        return Err(BuildError::NotEnoughGold);
+    }
+
+    if stockpile.food < cost.food {
+        return Err(BuildError::NotEnoughFood);
+    }
+
+    let stockpile = resources_mut(game, camp);
+    stockpile.gold -= cost.gold;
+    stockpile.food -= cost.food;
+    Ok(())
+}
+
+fn construction_cost(building_kind: BuildingKind) -> ConstructionCost {
+    match building_kind {
+        BuildingKind::GoldMine => ConstructionCost { gold: 60, food: 0 },
+        BuildingKind::Farm => ConstructionCost { gold: 40, food: 0 },
+        BuildingKind::Forum => ConstructionCost {
+            gold: 250,
+            food: 100,
+        },
+        BuildingKind::Barracks => ConstructionCost {
+            gold: 180,
+            food: 80,
+        },
+        BuildingKind::Market => ConstructionCost {
+            gold: 160,
+            food: 80,
+        },
+        BuildingKind::University => ConstructionCost {
+            gold: 220,
+            food: 120,
+        },
+        BuildingKind::Watchtower => ConstructionCost {
+            gold: 140,
+            food: 40,
+        },
+    }
+}
+
+fn resources(game: &Game, camp: crate::core::Camp) -> ResourceStockpile {
+    match camp {
+        crate::core::Camp::Human => game.human_resources,
+        crate::core::Camp::Ai => game.ai_resources,
+    }
+}
+
+fn resources_mut(game: &mut Game, camp: crate::core::Camp) -> &mut ResourceStockpile {
+    match camp {
+        crate::core::Camp::Human => &mut game.human_resources,
+        crate::core::Camp::Ai => &mut game.ai_resources,
+    }
+}
+
 fn has_adjacent_forum(
     game: &Game,
     camp: crate::core::Camp,
@@ -166,5 +248,18 @@ fn has_adjacent_forum(
         building.camp == camp
             && building.kind == BuildingKind::Forum
             && distance(building.position, position) == 1
+    })
+}
+
+fn is_in_watchtower_cross(
+    game: &Game,
+    camp: crate::core::Camp,
+    position: crate::core::GridPosition,
+) -> bool {
+    game.buildings.iter().any(|building| {
+        building.camp == camp
+            && building.kind == BuildingKind::Forum
+            && distance(building.position, position) == 2
+            && (building.position.x == position.x || building.position.y == position.y)
     })
 }

@@ -70,7 +70,7 @@ fn archer_can_be_recruited_on_empty_allied_barracks_with_food_and_gold() {
 
 #[test]
 fn archer_cannot_be_recruited_without_food_or_gold() {
-    let mut game = Game::new_single_player_vs_ai(10, 8);
+    let mut game = Game::new_single_player_vs_ai_with_resources(10, 8, 430, 180, 1000, 500);
     let barracks_position = prepare_empty_human_barracks(&mut game, false);
 
     assert_eq!(
@@ -80,7 +80,7 @@ fn archer_cannot_be_recruited_without_food_or_gold() {
         Err(GameError::Recruit(RecruitError::NotEnoughFood))
     );
 
-    let mut game = Game::new_single_player_vs_ai(10, 8);
+    let mut game = Game::new_single_player_vs_ai_with_resources(10, 8, 470, 180, 1000, 500);
     let barracks_position = prepare_empty_human_barracks(&mut game, true);
 
     assert_eq!(
@@ -93,7 +93,7 @@ fn archer_cannot_be_recruited_without_food_or_gold() {
 
 #[test]
 fn soldier_cannot_be_recruited_without_food() {
-    let mut game = Game::new_single_player_vs_ai(10, 8);
+    let mut game = Game::new_single_player_vs_ai_with_resources(10, 8, 430, 180, 1000, 500);
     let barracks_position = prepare_empty_human_barracks(&mut game, false);
 
     assert_eq!(
@@ -190,7 +190,7 @@ fn villager_can_be_recruited_on_empty_allied_forum() {
 
 #[test]
 fn villager_cannot_be_recruited_without_food() {
-    let mut game = Game::new_single_player_vs_ai(10, 8);
+    let mut game = Game::new_single_player_vs_ai_with_resources(10, 8, 250, 100, 1000, 500);
     let forum_position = prepare_empty_human_forum(&mut game, false);
 
     assert_eq!(

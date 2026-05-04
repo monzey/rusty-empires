@@ -79,6 +79,7 @@ pub(super) fn handle_human_input(
                         | BuildingKind::Forum
                         | BuildingKind::Market
                         | BuildingKind::University
+                        | BuildingKind::Watchtower
                 )
         }) {
             selected_building.0 = Some(entity);
@@ -86,6 +87,36 @@ pub(super) fn handle_human_input(
                 "{:?} selectionne en ({}, {}).",
                 building.kind, clicked_position.x, clicked_position.y
             );
+            return;
+        }
+    }
+
+    if let Some(selected_entity) = selected_building.0 {
+        if let Some((_, _, _, target)) = units.iter().find(|(_, position, _, unit)| {
+            position.0 == clicked_position && unit.camp != Camp::Human
+        }) {
+            let Ok((_, building_position, building)) = buildings.get(selected_entity) else {
+                selected_building.0 = None;
+                return;
+            };
+
+            if building.kind != BuildingKind::Watchtower || building.camp != Camp::Human {
+                return;
+            }
+
+            match game.0.apply(Action::AttackWithBuilding {
+                building_position: building_position.0,
+                target_id: target.id,
+            }) {
+                Ok(events) => {
+                    apply_game_events(&events, &mut commands, &mut units);
+                    clear_selection(&mut selected_unit, &mut selected_building);
+                    log_combat_events(&events);
+                }
+                Err(error) => {
+                    info!("Tir de tour refuse: {:?}.", error);
+                }
+            }
             return;
         }
     }
@@ -262,6 +293,8 @@ pub(super) fn handle_build_input(
         BuildingKind::Market
     } else if keyboard.just_pressed(KeyCode::KeyU) {
         BuildingKind::University
+    } else if keyboard.just_pressed(KeyCode::KeyO) {
+        BuildingKind::Watchtower
     } else {
         return;
     };
@@ -286,6 +319,7 @@ pub(super) fn handle_build_input(
         BuildingKind::Barracks => Action::BuildBarracks { unit_id },
         BuildingKind::Market => Action::BuildMarket { unit_id },
         BuildingKind::University => Action::BuildUniversity { unit_id },
+        BuildingKind::Watchtower => Action::BuildWatchtower { unit_id },
     };
 
     match game.0.apply(action) {
@@ -522,6 +556,9 @@ fn log_combat_events(events: &[Event]) {
             }
             Event::BuildingDestroyed { kind, position, .. } => {
                 info!("{:?} detruit en ({}, {}).", kind, position.x, position.y);
+            }
+            Event::BuildingActed { kind, position, .. } => {
+                info!("{:?} agit en ({}, {}).", kind, position.x, position.y);
             }
             Event::GameWon { camp } => {
                 info!("Victoire {:?}.", camp);

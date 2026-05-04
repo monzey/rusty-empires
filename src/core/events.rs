@@ -10,6 +10,11 @@ pub enum Event {
     UnitActed {
         unit_id: UnitId,
     },
+    BuildingActed {
+        camp: Camp,
+        kind: BuildingKind,
+        position: GridPosition,
+    },
     UnitDamaged {
         unit_id: UnitId,
         amount: i32,

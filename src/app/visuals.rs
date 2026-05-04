@@ -118,5 +118,7 @@ pub(super) fn building_color(camp: Camp, kind: BuildingKind) -> Color {
         (Camp::Ai, BuildingKind::Market) => Color::srgb(0.5, 0.18, 0.58),
         (Camp::Human, BuildingKind::University) => Color::srgb(0.3, 0.82, 0.92),
         (Camp::Ai, BuildingKind::University) => Color::srgb(0.1, 0.45, 0.58),
+        (Camp::Human, BuildingKind::Watchtower) => Color::srgb(0.62, 0.7, 0.86),
+        (Camp::Ai, BuildingKind::Watchtower) => Color::srgb(0.42, 0.34, 0.38),
     }
 }

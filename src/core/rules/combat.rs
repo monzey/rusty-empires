@@ -1,5 +1,9 @@
 use crate::core::geometry::distance;
-use crate::core::{CombatError, Event, Game, GridPosition, UnitId};
+use crate::core::{BuildingKind, CombatError, Event, Game, GridPosition, UnitId};
+
+use crate::core::buildings::{
+    WATCHTOWER_ATTACK, WATCHTOWER_MAX_ATTACK_RANGE, WATCHTOWER_MIN_ATTACK_RANGE,
+};
 
 pub(crate) fn attack_unit(
     game: &mut Game,
@@ -135,6 +139,83 @@ pub(crate) fn attack_building(
 
     events.push(Event::UnitActed {
         unit_id: attacker_id,
+    });
+    if let Some(camp) = game.winner() {
+        events.push(Event::GameWon { camp });
+    }
+
+    Ok(events)
+}
+
+pub(crate) fn attack_with_building(
+    game: &mut Game,
+    building_position: GridPosition,
+    target_id: UnitId,
+) -> Result<Vec<Event>, CombatError> {
+    let building_index = game
+        .buildings
+        .iter()
+        .position(|building| building.position == building_position)
+        .ok_or(CombatError::NoAttacker)?;
+    let target_index = game
+        .units
+        .iter()
+        .position(|unit| unit.id == target_id)
+        .ok_or(CombatError::NoTarget)?;
+
+    let building = &game.buildings[building_index];
+    let target = &game.units[target_index];
+
+    if building.kind != BuildingKind::Watchtower {
+        return Err(CombatError::NoAttacker);
+    }
+
+    if building.camp != game.current_turn {
+        return Err(CombatError::NotAttackerTurn);
+    }
+
+    if building.has_acted {
+        return Err(CombatError::AlreadyActed);
+    }
+
+    if building.camp == target.camp {
+        return Err(CombatError::FriendlyTarget);
+    }
+
+    if !game.is_visible(building.camp, target.position) {
+        return Err(CombatError::TargetNotVisible);
+    }
+
+    let target_distance = distance(building.position, target.position);
+    if !(WATCHTOWER_MIN_ATTACK_RANGE..=WATCHTOWER_MAX_ATTACK_RANGE).contains(&target_distance) {
+        return Err(CombatError::OutOfRange);
+    }
+
+    let damage = (WATCHTOWER_ATTACK - target.defense).max(1);
+    let remaining_health = (target.health - damage).max(0);
+    let defeated = remaining_health == 0;
+    let camp = building.camp;
+    let kind = building.kind;
+    let position = building.position;
+
+    game.buildings[building_index].has_acted = true;
+    game.units[target_index].health = remaining_health;
+
+    let mut events = vec![Event::UnitDamaged {
+        unit_id: target_id,
+        amount: damage,
+        remaining_health,
+    }];
+
+    if defeated {
+        game.units.remove(target_index);
+        events.push(Event::UnitDefeated { unit_id: target_id });
+    }
+
+    events.push(Event::BuildingActed {
+        camp,
+        kind,
+        position,
     });
     if let Some(camp) = game.winner() {
         events.push(Event::GameWon { camp });

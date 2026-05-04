@@ -417,6 +417,121 @@ fn game_is_won_when_last_enemy_building_is_destroyed() {
     assert_eq!(game.winner(), Some(Camp::Human));
 }
 
+#[test]
+fn watchtower_can_attack_enemy_unit_between_two_and_five_tiles_away() {
+    let mut game = Game::new_single_player_vs_ai(20, 20);
+    let watchtower_position = build_human_watchtower(&mut game);
+    let ai_soldier = move_ai_soldier_and_return_to_human(&mut game, GridPosition { x: 4, y: 5 });
+
+    let events = game
+        .apply(Action::AttackWithBuilding {
+            building_position: watchtower_position,
+            target_id: ai_soldier,
+        })
+        .expect("watchtower should attack an enemy unit in range");
+
+    assert_eq!(
+        events,
+        vec![
+            Event::UnitDamaged {
+                unit_id: ai_soldier,
+                amount: 1,
+                remaining_health: 9,
+            },
+            Event::BuildingActed {
+                camp: Camp::Human,
+                kind: BuildingKind::Watchtower,
+                position: watchtower_position,
+            },
+        ]
+    );
+    assert_eq!(game.unit_health(ai_soldier), Some(9));
+}
+
+#[test]
+fn watchtower_cannot_attack_enemy_unit_too_close_or_too_far() {
+    let mut far_game = Game::new_single_player_vs_ai(12, 12);
+    let far_watchtower_position = build_human_watchtower(&mut far_game);
+    let far_ai_soldier = far_game
+        .soldier_id(Camp::Ai)
+        .expect("AI soldier should exist");
+
+    assert_eq!(
+        far_game.apply(Action::AttackWithBuilding {
+            building_position: far_watchtower_position,
+            target_id: far_ai_soldier,
+        }),
+        Err(GameError::Combat(CombatError::OutOfRange))
+    );
+
+    let mut close_game = Game::new_single_player_vs_ai(12, 12);
+    let close_watchtower_position = build_human_watchtower(&mut close_game);
+    let close_ai_soldier =
+        move_ai_soldier_and_return_to_human(&mut close_game, GridPosition { x: 2, y: 4 });
+    move_ai_soldier_and_return_to_human(&mut close_game, GridPosition { x: 1, y: 5 });
+
+    assert_eq!(
+        close_game.apply(Action::AttackWithBuilding {
+            building_position: close_watchtower_position,
+            target_id: close_ai_soldier,
+        }),
+        Err(GameError::Combat(CombatError::OutOfRange))
+    );
+}
+
+#[test]
+fn watchtower_can_attack_once_per_turn() {
+    let mut game = Game::new_single_player_vs_ai(12, 12);
+    let watchtower_position = build_human_watchtower(&mut game);
+    let ai_soldier = move_ai_soldier_and_return_to_human(&mut game, GridPosition { x: 4, y: 5 });
+
+    game.apply(Action::AttackWithBuilding {
+        building_position: watchtower_position,
+        target_id: ai_soldier,
+    })
+    .expect("first watchtower attack should be valid");
+
+    assert_eq!(
+        game.apply(Action::AttackWithBuilding {
+            building_position: watchtower_position,
+            target_id: ai_soldier,
+        }),
+        Err(GameError::Combat(CombatError::AlreadyActed))
+    );
+
+    pass_turn_back_to_human(&mut game);
+
+    game.apply(Action::AttackWithBuilding {
+        building_position: watchtower_position,
+        target_id: ai_soldier,
+    })
+    .expect("watchtower attack should reset next human turn");
+
+    assert_eq!(game.unit_health(ai_soldier), Some(8));
+}
+
+#[test]
+fn watchtower_cannot_attack_enemy_unit_outside_vision() {
+    let mut game = Game::new_single_player_vs_ai(20, 20);
+    let watchtower_position = build_human_watchtower(&mut game);
+    let ai_villager = game
+        .villager_id(Camp::Ai)
+        .expect("AI villager should exist");
+
+    assert!(!game.is_visible(
+        Camp::Human,
+        game.unit_position(ai_villager)
+            .expect("AI villager should have a position")
+    ));
+    assert_eq!(
+        game.apply(Action::AttackWithBuilding {
+            building_position: watchtower_position,
+            target_id: ai_villager,
+        }),
+        Err(GameError::Combat(CombatError::TargetNotVisible))
+    );
+}
+
 fn move_until_ai_is_adjacent_to_human(game: &mut Game) -> UnitId {
     let ai_villager = game
         .villager_id(Camp::Ai)
@@ -564,6 +679,37 @@ fn move_ai_soldier_and_return_to_human(game: &mut Game, to: GridPosition) -> Uni
         .expect("AI should pass the turn back after moving soldier");
 
     ai_soldier
+}
+
+fn build_human_watchtower(game: &mut Game) -> GridPosition {
+    let human_villager = game
+        .villager_id(Camp::Human)
+        .expect("human villager should exist");
+    let watchtower_position = GridPosition { x: 0, y: 5 };
+
+    game.apply(Action::MoveUnit {
+        unit_id: human_villager,
+        to: GridPosition { x: 0, y: 3 },
+    })
+    .expect("villager should be able to move to a forum site");
+    game.apply(Action::BuildForum {
+        unit_id: human_villager,
+    })
+    .expect("villager should be able to build a forum");
+    pass_turn_back_to_human(game);
+
+    game.apply(Action::MoveUnit {
+        unit_id: human_villager,
+        to: watchtower_position,
+    })
+    .expect("villager should be able to move to a watchtower cross tile");
+    game.apply(Action::BuildWatchtower {
+        unit_id: human_villager,
+    })
+    .expect("villager should be able to build a watchtower");
+    pass_turn_back_to_human(game);
+
+    watchtower_position
 }
 
 fn pass_turn_back_to_human(game: &mut Game) {

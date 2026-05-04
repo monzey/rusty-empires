@@ -60,3 +60,41 @@ fn building_adds_visibility_for_own_camp() {
     assert!(game.is_visible(Camp::Human, revealed_by_forum));
     assert!(game.is_explored(Camp::Human, revealed_by_forum));
 }
+
+#[test]
+fn watchtower_reveals_tiles_six_tiles_away() {
+    let mut game = Game::new_single_player_vs_ai(12, 12);
+    let human_villager = game
+        .villager_id(Camp::Human)
+        .expect("human villager should exist");
+    let revealed_by_watchtower = GridPosition { x: 0, y: 11 };
+
+    game.apply(Action::MoveUnit {
+        unit_id: human_villager,
+        to: GridPosition { x: 0, y: 3 },
+    })
+    .expect("villager should be able to move to a forum site");
+    game.apply(Action::BuildForum {
+        unit_id: human_villager,
+    })
+    .expect("villager should be able to build a forum");
+    game.apply(Action::EndTurn)
+        .expect("human should be able to end turn");
+    game.apply(Action::RunAiTurn)
+        .expect("AI should pass the turn back");
+
+    game.apply(Action::MoveUnit {
+        unit_id: human_villager,
+        to: GridPosition { x: 0, y: 5 },
+    })
+    .expect("villager should be able to move to a watchtower cross tile");
+    assert!(!game.is_visible(Camp::Human, revealed_by_watchtower));
+
+    game.apply(Action::BuildWatchtower {
+        unit_id: human_villager,
+    })
+    .expect("watchtower should be buildable two orthogonal tiles from the forum");
+
+    assert!(game.is_visible(Camp::Human, revealed_by_watchtower));
+    assert!(game.is_explored(Camp::Human, revealed_by_watchtower));
+}

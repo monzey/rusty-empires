@@ -56,6 +56,9 @@ pub enum BuildError {
     NaturalResourcePresent,
     OccupiedByBuilding,
     NoAdjacentForum,
+    NoWatchtowerCross,
+    NotEnoughGold,
+    NotEnoughFood,
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]

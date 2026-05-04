@@ -14,6 +14,10 @@ pub enum Action {
         attacker_id: UnitId,
         target_position: GridPosition,
     },
+    AttackWithBuilding {
+        building_position: GridPosition,
+        target_id: UnitId,
+    },
     BuildGoldMine {
         unit_id: UnitId,
     },
@@ -30,6 +34,9 @@ pub enum Action {
         unit_id: UnitId,
     },
     BuildUniversity {
+        unit_id: UnitId,
+    },
+    BuildWatchtower {
         unit_id: UnitId,
     },
     RecruitSoldier {

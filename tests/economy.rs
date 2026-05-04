@@ -11,17 +11,19 @@ fn gold_mine_produces_gold_at_owner_end_of_turn() {
         unit_id: human_villager,
     })
     .expect("human villager should be able to build a gold mine on the initial deposit");
+    let human_gold_before = game.gold(Camp::Human);
+    let ai_gold_before = game.gold(Camp::Ai);
 
     let events = game
         .apply(Action::EndTurn)
         .expect("ending the owner turn should produce gold");
 
-    assert_eq!(game.gold(Camp::Human), 10);
-    assert_eq!(game.gold(Camp::Ai), 0);
+    assert_eq!(game.gold(Camp::Human), human_gold_before + 10);
+    assert_eq!(game.gold(Camp::Ai), ai_gold_before);
     assert!(events.contains(&Event::GoldProduced {
         camp: Camp::Human,
         amount: 10,
-        total: 10,
+        total: human_gold_before + 10,
     }));
 }
 
@@ -45,17 +47,19 @@ fn farm_produces_food_at_owner_end_of_turn() {
         unit_id: human_villager,
     })
     .expect("human villager should be able to build a farm on a field");
+    let human_food_before = game.food(Camp::Human);
+    let ai_food_before = game.food(Camp::Ai);
 
     let events = game
         .apply(Action::EndTurn)
         .expect("ending the owner turn should produce food");
 
-    assert_eq!(game.food(Camp::Human), 10);
-    assert_eq!(game.food(Camp::Ai), 0);
+    assert_eq!(game.food(Camp::Human), human_food_before + 10);
+    assert_eq!(game.food(Camp::Ai), ai_food_before);
     assert!(events.contains(&Event::FoodProduced {
         camp: Camp::Human,
         amount: 10,
-        total: 10,
+        total: human_food_before + 10,
     }));
 }
 
@@ -135,7 +139,7 @@ fn trade_requires_an_allied_market() {
 
 #[test]
 fn trade_requires_enough_resources() {
-    let mut game = Game::new_single_player_vs_ai(10, 8);
+    let mut game = Game::new_single_player_vs_ai_with_resources(10, 8, 410, 180, 1000, 500);
     prepare_human_market_without_resources(&mut game);
 
     assert_eq!(

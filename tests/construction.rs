@@ -6,6 +6,8 @@ fn human_can_build_gold_mine_only_when_standing_on_gold_deposit() {
     let human_villager = game
         .villager_id(Camp::Human)
         .expect("human villager should exist at game start");
+    let gold_before = game.gold(Camp::Human);
+    let food_before = game.food(Camp::Human);
 
     let events = game
         .apply(Action::BuildGoldMine {
@@ -31,6 +33,40 @@ fn human_can_build_gold_mine_only_when_standing_on_gold_deposit() {
         Some((Camp::Human, BuildingKind::GoldMine))
     );
     assert_eq!(game.unit_has_acted(human_villager), Some(true));
+    assert_eq!(game.gold(Camp::Human), gold_before - 60);
+    assert_eq!(game.food(Camp::Human), food_before);
+}
+
+#[test]
+fn construction_requires_enough_resources() {
+    let mut game = Game::new_single_player_vs_ai_with_resources(10, 8, 59, 500, 1000, 500);
+    let human_villager = game
+        .villager_id(Camp::Human)
+        .expect("human villager should exist at game start");
+
+    assert_eq!(
+        game.apply(Action::BuildGoldMine {
+            unit_id: human_villager,
+        }),
+        Err(GameError::Build(BuildError::NotEnoughGold))
+    );
+    assert_eq!(game.gold(Camp::Human), 59);
+    assert_eq!(game.building_at(GridPosition { x: 1, y: 3 }), None);
+
+    let mut game = Game::new_single_player_vs_ai_with_resources(10, 8, 250, 99, 1000, 500);
+    let human_villager = game
+        .villager_id(Camp::Human)
+        .expect("human villager should exist at game start");
+    move_human_villager_and_restore_turn(&mut game, GridPosition { x: 0, y: 3 });
+
+    assert_eq!(
+        game.apply(Action::BuildForum {
+            unit_id: human_villager,
+        }),
+        Err(GameError::Build(BuildError::NotEnoughFood))
+    );
+    assert_eq!(game.food(Camp::Human), 99);
+    assert_eq!(game.building_at(GridPosition { x: 0, y: 3 }), None);
 }
 
 #[test]
@@ -329,6 +365,73 @@ fn university_must_be_built_adjacent_to_own_forum() {
     assert_eq!(
         game.building_at(GridPosition { x: 0, y: 4 }),
         Some((Camp::Human, BuildingKind::University))
+    );
+}
+
+#[test]
+fn watchtower_must_be_built_in_a_cross_two_tiles_from_own_forum() {
+    let mut game = Game::new_single_player_vs_ai(10, 8);
+    let human_villager = game
+        .villager_id(Camp::Human)
+        .expect("human villager should exist at game start");
+
+    move_human_villager_and_restore_turn(&mut game, GridPosition { x: 0, y: 3 });
+
+    assert_eq!(
+        game.apply(Action::BuildWatchtower {
+            unit_id: human_villager,
+        }),
+        Err(GameError::Build(BuildError::NoWatchtowerCross))
+    );
+
+    game.apply(Action::BuildForum {
+        unit_id: human_villager,
+    })
+    .expect("forum should be buildable before building a watchtower");
+    pass_turn_back_to_human(&mut game);
+
+    game.apply(Action::MoveUnit {
+        unit_id: human_villager,
+        to: GridPosition { x: 0, y: 4 },
+    })
+    .expect("villager should be able to move adjacent to the forum");
+    pass_turn_back_to_human(&mut game);
+    assert_eq!(
+        game.apply(Action::BuildWatchtower {
+            unit_id: human_villager,
+        }),
+        Err(GameError::Build(BuildError::NoWatchtowerCross))
+    );
+
+    game.apply(Action::MoveUnit {
+        unit_id: human_villager,
+        to: GridPosition { x: 0, y: 5 },
+    })
+    .expect("villager should be able to move two tiles from the forum");
+    pass_turn_back_to_human(&mut game);
+
+    let events = game
+        .apply(Action::BuildWatchtower {
+            unit_id: human_villager,
+        })
+        .expect("watchtower should be buildable two orthogonal tiles from an allied forum");
+
+    assert_eq!(
+        events,
+        vec![
+            Event::BuildingConstructed {
+                camp: Camp::Human,
+                kind: BuildingKind::Watchtower,
+                position: GridPosition { x: 0, y: 5 }
+            },
+            Event::UnitActed {
+                unit_id: human_villager
+            },
+        ]
+    );
+    assert_eq!(
+        game.building_at(GridPosition { x: 0, y: 5 }),
+        Some((Camp::Human, BuildingKind::Watchtower))
     );
 }
 
