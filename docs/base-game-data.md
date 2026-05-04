@@ -1,50 +1,34 @@
 # Donnees de base du jeu
 
-Ce document decrit les premieres donnees de gameplay communes a toutes les civilisations de Rusty Empires.
+Ce document decrit les donnees communes a toutes les factions de Rusty Empires.
 
-L'objectif est de poser une base claire pour un jeu de strategie tactique au tour par tour : unites, batiments et recherches technologiques. Les valeurs proposees ici sont indicatives et pourront etre ajustees pendant les phases de prototypage et d'equilibrage.
+Il est aligne avec `docs/SPEC.md` : le jeu utilise une economie reduite, une base de batiments lisible, des recherches lancees depuis l'universite et des unites de combat principalement recrutees a la caserne.
 
-## Principes generaux
+Les valeurs de statistiques restent volontairement hautes pour servir de base d'equilibrage cote design.
 
-Rusty Empires repose sur une carte en grille, des unites deplacees au tour par tour et des combats resolus de maniere lisible.
+---
 
-Chaque unite possede :
+# Ressources
 
-- des points de vie ;
-- une attaque ;
-- une defense ;
-- une portee ;
-- une valeur de mouvement ;
-- une vision ;
-- un cout en ressources ;
-- un ou plusieurs traits de gameplay.
-
-Chaque batiment peut servir a :
-
-- produire des unites ;
-- debloquer des recherches ;
-- fournir de la population ;
-- proteger une zone ;
-- stocker ou convertir des ressources.
-
-Chaque recherche sert a :
-
-- debloquer de nouvelles unites ;
-- ameliorer des statistiques ;
-- specialiser certaines strategies ;
-- preparer les futurs arbres technologiques de civilisation.
-
-## Ressources de base
+## Ressources principales
 
 | Ressource | Role principal |
 |---|---|
-| Nourriture | Creation des villageois, unites organiques, cavalerie |
-| Bois | Batiments, archers, machines simples |
-| Pierre | Defenses, tours, murs, batiments solides |
-| Or | Technologies, unites avancees, economie |
-| Fer | Infanterie lourde, cavalerie, armes avancees |
+| Nourriture | Recrutement des villageois et de nombreuses unites organiques |
+| Or | Construction, recrutement avance, echanges et certaines recherches |
+| Points de technologie | Cout principal des recherches lancees a l'universite |
 
-## Statistiques communes
+## Ressources tactiques speciales
+
+Certaines factions peuvent utiliser une ressource secondaire temporaire liee a leur gameplay.
+
+Exemple : les Necrarques peuvent utiliser les Cadavres comme ressource de champ de bataille.
+
+Ces ressources ne remplacent pas l'economie principale et ne doivent pas devenir des ressources globales permanentes.
+
+---
+
+# Statistiques communes
 
 | Statistique | Description |
 |---|---|
@@ -53,16 +37,22 @@ Chaque recherche sert a :
 | Defense | Reduction ou mitigation des degats recus |
 | Portee | Distance minimale et maximale d'attaque |
 | Mouvement | Nombre de cases que l'unite peut parcourir par tour |
-| Vision | Rayon de detection autour de l'unite |
+| Vision | Rayon de detection autour de l'unite ou du batiment |
 | Population | Place occupee par l'unite dans la limite de population |
+
+Chaque unite doit posseder une capacite principale clairement identifiable.
 
 ---
 
-# Unites de base
+# Unites communes
+
+Les unites communes forment le socle de toutes les factions. Elles sont volontairement simples pour laisser les unites uniques porter l'identite des civilisations.
+
+Toutes les unites de combat communes sont recrutees a la caserne.
 
 ## Villageois
 
-Unite economique principale. Le villageois recolte les ressources, construit les batiments et peut reparer les structures.
+Unite economique principale. Le villageois construit les batiments et permet d'etendre l'infrastructure.
 
 | Statistique | Valeur |
 |---|---:|
@@ -82,45 +72,13 @@ Cout :
 
 Produit par : Forum
 
-Traits :
+Capacite speciale : Construction
 
-- recolte les ressources ;
-- construit les batiments ;
-- repare les batiments ;
-- faible au combat.
+Permet de construire un batiment sur une tuile valide respectant les contraintes d'adjacence et de ressource naturelle.
 
-## Milicien
+## Soldat
 
-Unite militaire tres basique. Peu couteuse, utile en debut de partie ou pour defendre rapidement une position.
-
-| Statistique | Valeur |
-|---|---:|
-| PV | 35 |
-| Attaque | 6 |
-| Defense | 1 |
-| Portee | 1 |
-| Mouvement | 3 |
-| Vision | 3 |
-| Population | 1 |
-
-Cout :
-
-| Ressource | Valeur |
-|---|---:|
-| Nourriture | 35 |
-| Fer | 10 |
-
-Produit par : Caserne
-
-Traits :
-
-- unite de transition ;
-- efficace contre les villageois ;
-- faible contre les unites specialisees.
-
-## Lancier
-
-Infanterie defensive specialisee contre la cavalerie.
+Unite de melee commune. Le Soldat sert d'unite de ligne simple et fiable.
 
 | Statistique | Valeur |
 |---|---:|
@@ -136,51 +94,18 @@ Cout :
 
 | Ressource | Valeur |
 |---|---:|
-| Nourriture | 40 |
-| Bois | 25 |
+| Nourriture | 55 |
+| Or | 15 |
 
 Produit par : Caserne
 
-Traits :
+Capacite speciale : Garde
 
-- bonus contre cavalerie ;
-- bon rapport cout/defense ;
-- faible contre les archers.
-
-## Epeiste
-
-Infanterie de ligne polyvalente. Plus couteuse que le lancier mais plus efficace en combat direct.
-
-| Statistique | Valeur |
-|---|---:|
-| PV | 60 |
-| Attaque | 10 |
-| Defense | 3 |
-| Portee | 1 |
-| Mouvement | 3 |
-| Vision | 3 |
-| Population | 1 |
-
-Cout :
-
-| Ressource | Valeur |
-|---|---:|
-| Nourriture | 60 |
-| Fer | 25 |
-
-Produit par : Caserne
-
-Requis : Travail du fer
-
-Traits :
-
-- bonne unite de front ;
-- efficace contre les unites legeres ;
-- sensible aux archers bien proteges.
+Si le Soldat ne s'est pas deplace pendant son tour, il gagne +1 defense jusqu'au debut de son prochain tour.
 
 ## Archer
 
-Unite a distance fragile mais capable d'attaquer sans s'exposer immediatement.
+Unite a distance commune. L'Archer est fragile mais utile pour soutenir une ligne de front.
 
 | Statistique | Valeur |
 |---|---:|
@@ -196,427 +121,185 @@ Cout :
 
 | Ressource | Valeur |
 |---|---:|
-| Bois | 45 |
-| Or | 20 |
+| Nourriture | 30 |
+| Or | 35 |
 
-Produit par : Champ de tir
+Produit par : Caserne
 
-Traits :
+Capacite speciale : Tir de soutien
 
-- attaque a distance ;
-- fort derriere une ligne defensive ;
-- faible au corps-a-corps ;
-- ne peut pas attaquer une cible adjacente si la portee minimale est conservee.
-
-## Frondeur
-
-Unite a distance economique, efficace contre les archers mais moins polyvalente.
-
-| Statistique | Valeur |
-|---|---:|
-| PV | 28 |
-| Attaque | 5 |
-| Defense | 1 |
-| Portee | 2-3 |
-| Mouvement | 3 |
-| Vision | 4 |
-| Population | 1 |
-
-Cout :
-
-| Ressource | Valeur |
-|---|---:|
-| Nourriture | 35 |
-| Pierre | 15 |
-
-Produit par : Champ de tir
-
-Traits :
-
-- bonus contre archers ;
-- peu couteux ;
-- degats faibles contre les unites lourdes.
-
-## Cavalier eclaireur
-
-Unite rapide servant a explorer la carte, harceler l'economie ennemie et capturer les zones neutres.
-
-| Statistique | Valeur |
-|---|---:|
-| PV | 60 |
-| Attaque | 6 |
-| Defense | 1 |
-| Portee | 1 |
-| Mouvement | 5 |
-| Vision | 6 |
-| Population | 1 |
-
-Cout :
-
-| Ressource | Valeur |
-|---|---:|
-| Nourriture | 70 |
-
-Produit par : Ecurie
-
-Traits :
-
-- tres mobile ;
-- grande vision ;
-- bon pour l'exploration ;
-- faible contre les lanciers.
-
-## Cavalier lourd
-
-Unite mobile et puissante, efficace pour contourner les lignes ennemies et atteindre les unites a distance.
-
-| Statistique | Valeur |
-|---|---:|
-| PV | 85 |
-| Attaque | 12 |
-| Defense | 3 |
-| Portee | 1 |
-| Mouvement | 5 |
-| Vision | 4 |
-| Population | 2 |
-
-Cout :
-
-| Ressource | Valeur |
-|---|---:|
-| Nourriture | 80 |
-| Or | 45 |
-| Fer | 25 |
-
-Produit par : Ecurie
-
-Requis : Elevage militaire
-
-Traits :
-
-- charge puissante ;
-- efficace contre archers et unites isolees ;
-- couteux ;
-- vulnerable aux lanciers.
-
-## Belier
-
-Machine de siege lente, concue pour detruire les batiments et absorber les tirs.
-
-| Statistique | Valeur |
-|---|---:|
-| PV | 140 |
-| Attaque | 18 |
-| Defense | 5 |
-| Portee | 1 |
-| Mouvement | 2 |
-| Vision | 2 |
-| Population | 3 |
-
-Cout :
-
-| Ressource | Valeur |
-|---|---:|
-| Bois | 120 |
-| Fer | 60 |
-| Or | 30 |
-
-Produit par : Atelier de siege
-
-Requis : Ingenierie de siege
-
-Traits :
-
-- bonus massif contre batiments ;
-- resistant aux tirs d'archers ;
-- tres lent ;
-- faible contre infanterie melee.
-
-## Catapulte
-
-Machine de siege a distance. Inflige des degats de zone, mais reste fragile si elle est atteinte.
-
-| Statistique | Valeur |
-|---|---:|
-| PV | 80 |
-| Attaque | 22 |
-| Defense | 1 |
-| Portee | 3-6 |
-| Mouvement | 2 |
-| Vision | 4 |
-| Population | 3 |
-
-Cout :
-
-| Ressource | Valeur |
-|---|---:|
-| Bois | 160 |
-| Fer | 70 |
-| Or | 60 |
-
-Produit par : Atelier de siege
-
-Requis : Balistique
-
-Traits :
-
-- attaque a distance ;
-- degats de zone ;
-- forte contre groupes d'unites ;
-- fragile au corps-a-corps ;
-- ne peut pas attaquer les cases adjacentes.
+L'Archer gagne +1 attaque contre une cible adjacente a une unite alliee.
 
 ---
 
-# Batiments de base
+# Heros
+
+Chaque faction possede un heros unique. Les heros ne sont pas communs, mais les regles suivantes s'appliquent a tous :
+
+- un seul heros par faction ;
+- le heros a des statistiques superieures a une unite standard ;
+- le heros possede une capacite forte liee a l'identite de sa faction ;
+- le heros doit renforcer l'armee sans rendre les autres unites inutiles.
+
+Regle de recrutement recommandee : le heros est recrute au Forum apres la construction d'une Universite.
+
+---
+
+# Batiments communs
 
 ## Forum
 
-Batiment principal de la civilisation. Produit les villageois, sert de point de depot et represente le centre de depart.
+Batiment principal de la faction. Il produit les villageois et sert de point de depart au developpement.
 
 | Statistique | Valeur |
 |---|---:|
 | PV | 600 |
 | Defense | 4 |
 | Taille | 2x2 |
-| Population fournie | 10 |
+| Vision | 4 |
 
 Cout :
 
 | Ressource | Valeur |
 |---|---:|
-| Bois | 250 |
-| Pierre | 100 |
+| Or | 250 |
+| Nourriture | 100 |
 
 Fonctions :
 
 - produit les villageois ;
-- sert de depot pour les ressources ;
-- debloque les premiers batiments ;
-- condition de defaite possible si tous les forums sont detruits.
+- permet de recruter le heros lorsque les prerequis sont remplis ;
+- autorise la construction d'autres batiments autour de lui ;
+- peut servir de condition de defaite selon le mode de jeu.
 
-## Maison
+## Mine d'or
 
-Augmente la limite de population.
+Batiment economique construit sur un gisement d'or.
 
 | Statistique | Valeur |
 |---|---:|
-| PV | 120 |
+| PV | 220 |
 | Defense | 1 |
 | Taille | 1x1 |
-| Population fournie | 5 |
+| Vision | 2 |
 
 Cout :
 
 | Ressource | Valeur |
 |---|---:|
-| Bois | 30 |
+| Or | 60 |
 
-Fonctions :
+Production : +40 or a la fin du tour du proprietaire.
 
-- augmente la population maximale ;
-- batiment economique essentiel ;
-- fragile.
+Contraintes :
 
-## Camp de bucheron
+- constructible uniquement sur une tuile contenant un gisement d'or.
 
-Point de depot pour le bois. Peut ameliorer la recolte du bois via certaines recherches.
+## Ferme
 
-| Statistique | Valeur |
-|---|---:|
-| PV | 180 |
-| Defense | 1 |
-| Taille | 1x1 |
-
-Cout :
-
-| Ressource | Valeur |
-|---|---:|
-| Bois | 60 |
-
-Fonctions :
-
-- depot de bois ;
-- reduit les trajets des villageois ;
-- peut debloquer les technologies de recolte du bois.
-
-## Moulin
-
-Point de depot pour la nourriture. Sert aux technologies agricoles.
+Batiment economique construit sur un champ.
 
 | Statistique | Valeur |
 |---|---:|
 | PV | 180 |
 | Defense | 1 |
 | Taille | 1x1 |
+| Vision | 2 |
 
 Cout :
 
 | Ressource | Valeur |
 |---|---:|
-| Bois | 60 |
+| Or | 40 |
 
-Fonctions :
+Production : +45 nourriture a la fin du tour du proprietaire.
 
-- depot de nourriture ;
-- ameliore l'economie alimentaire ;
-- requis pour certaines technologies economiques.
+Contraintes :
 
-## Carriere
-
-Point de depot pour la pierre et le fer.
-
-| Statistique | Valeur |
-|---|---:|
-| PV | 200 |
-| Defense | 1 |
-| Taille | 1x1 |
-
-Cout :
-
-| Ressource | Valeur |
-|---|---:|
-| Bois | 70 |
-
-Fonctions :
-
-- depot de pierre ;
-- depot de fer ;
-- facilite l'expansion vers les ressources minerales.
+- constructible uniquement sur une tuile contenant un champ.
 
 ## Caserne
 
-Premier batiment militaire. Produit l'infanterie de base.
+Batiment militaire commun. La Caserne recrute les unites de combat communes et certaines unites de faction debloquees.
 
 | Statistique | Valeur |
 |---|---:|
 | PV | 350 |
 | Defense | 2 |
 | Taille | 2x2 |
+| Vision | 2 |
 
 Cout :
 
 | Ressource | Valeur |
 |---|---:|
-| Bois | 160 |
+| Or | 180 |
+| Nourriture | 80 |
 
 Produit :
 
-- Milicien ;
-- Lancier ;
-- Epeiste, apres Travail du fer.
+- Soldat ;
+- Archer ;
+- certaines unites de faction si elles sont debloquees par technologie.
 
-Recherches possibles :
+## Marche
 
-- Discipline militaire ;
-- Travail du fer ;
-- Formation de ligne.
-
-## Champ de tir
-
-Produit les unites a distance.
+Batiment economique. Le Marche sert uniquement a l'echange de marchandises.
 
 | Statistique | Valeur |
 |---|---:|
 | PV | 300 |
 | Defense | 1 |
 | Taille | 2x2 |
+| Vision | 2 |
 
 Cout :
 
 | Ressource | Valeur |
 |---|---:|
-| Bois | 150 |
+| Or | 160 |
+| Nourriture | 80 |
 
-Produit :
+Fonctions :
 
-- Archer ;
-- Frondeur.
+- echanger de l'or contre de la nourriture ;
+- echanger de la nourriture contre de l'or ;
+- ameliorer la flexibilite economique.
 
-Recherches possibles :
+Le Marche ne recrute pas de mercenaires dans la version actuelle de la specification.
 
-- Archerie ;
-- Empennage ;
-- Arcs composites.
+## Universite
 
-## Ecurie
-
-Produit les unites montees.
+Batiment technologique. Toutes les recherches sont lancees depuis l'Universite.
 
 | Statistique | Valeur |
 |---|---:|
 | PV | 320 |
 | Defense | 1 |
 | Taille | 2x2 |
+| Vision | 2 |
 
 Cout :
 
 | Ressource | Valeur |
 |---|---:|
-| Bois | 175 |
+| Or | 220 |
+| Nourriture | 120 |
 
-Produit :
+Fonctions :
 
-- Cavalier eclaireur ;
-- Cavalier lourd, apres Elevage militaire.
+- produit +20 points de technologie a la fin du tour ;
+- permet de lancer les recherches communes ;
+- permet de lancer les recherches propres aux factions ;
+- sert de prerequis recommande pour recruter le heros.
 
-Recherches possibles :
+---
 
-- Elevage militaire ;
-- Selle renforcee ;
-- Charge coordonnee.
-
-## Forge
-
-Batiment technologique militaire. Ameliore les armes et armures.
-
-| Statistique | Valeur |
-|---|---:|
-| PV | 350 |
-| Defense | 2 |
-| Taille | 2x2 |
-
-Cout :
-
-| Ressource | Valeur |
-|---|---:|
-| Bois | 150 |
-| Pierre | 75 |
-
-Recherches possibles :
-
-- Travail du fer ;
-- Armes d'acier ;
-- Armures renforcees ;
-- Balistique.
-
-## Atelier de siege
-
-Produit les machines de siege.
-
-| Statistique | Valeur |
-|---|---:|
-| PV | 320 |
-| Defense | 1 |
-| Taille | 2x2 |
-
-Cout :
-
-| Ressource | Valeur |
-|---|---:|
-| Bois | 200 |
-| Fer | 80 |
-
-Produit :
-
-- Belier, apres Ingenierie de siege ;
-- Catapulte, apres Balistique.
-
-Requis : Forge
+# Batiments defensifs communs
 
 ## Tour de guet
 
-Batiment defensif donnant de la vision et pouvant attaquer les ennemis proches.
+Batiment defensif donnant de la vision et une attaque a distance.
 
 | Statistique | Valeur |
 |---|---:|
@@ -630,15 +313,12 @@ Cout :
 
 | Ressource | Valeur |
 |---|---:|
-| Bois | 50 |
-| Pierre | 125 |
+| Or | 140 |
+| Nourriture | 40 |
 
-Fonctions :
+Capacite speciale : Tir defensif
 
-- detecte les ennemis ;
-- attaque a distance ;
-- protege les zones economiques ;
-- faible contre les machines de siege.
+La Tour de guet peut attaquer une unite ennemie dans sa portee une fois par tour.
 
 ## Mur
 
@@ -654,197 +334,73 @@ Cout :
 
 | Ressource | Valeur |
 |---|---:|
-| Pierre | 25 |
+| Or | 35 |
 
-Fonctions :
+Capacite speciale : Obstacle
 
-- bloque le passage ;
-- protege les points strategiques ;
-- vulnerable aux beliers et aux technologies de siege.
+Bloque les deplacements terrestres ennemis tant qu'il n'est pas detruit.
 
 ---
 
-# Recherches de base
+# Recherches communes
+
+Toutes les recherches communes sont lancees depuis l'Universite.
 
 ## Agriculture
 
-Ameliore l'economie alimentaire.
+| Champ | Valeur |
+|---|---|
+| Cout | 80 points de technologie, 60 nourriture |
+| Prerequis | Ferme |
+| Effet | Les fermes produisent +15 nourriture par tour |
+
+## Fiscalite
 
 | Champ | Valeur |
 |---|---|
-| Batiment | Moulin |
-| Cout | 100 nourriture, 50 or |
-| Effet | +15% vitesse de recolte de nourriture |
-
-## Coupe organisee
-
-Ameliore l'exploitation du bois.
-
-| Champ | Valeur |
-|---|---|
-| Batiment | Camp de bucheron |
-| Cout | 100 bois, 50 or |
-| Effet | +15% vitesse de recolte du bois |
-
-## Extraction miniere
-
-Ameliore la recolte de pierre et de fer.
-
-| Champ | Valeur |
-|---|---|
-| Batiment | Carriere |
-| Cout | 100 bois, 75 or |
-| Effet | +15% vitesse de recolte de pierre et de fer |
+| Cout | 100 points de technologie, 80 or |
+| Prerequis | Marche |
+| Effet | Les mines d'or produisent +10 or par tour |
 
 ## Discipline militaire
 
-Rend l'infanterie plus fiable en combat.
+| Champ | Valeur |
+|---|---|
+| Cout | 120 points de technologie, 80 nourriture |
+| Prerequis | Caserne |
+| Effet | Les Soldats gagnent +1 attaque |
+
+## Archerie organisee
 
 | Champ | Valeur |
 |---|---|
-| Batiment | Caserne |
-| Cout | 120 nourriture, 80 or |
-| Effet | +1 mouvement pour les unites d'infanterie legeres et de ligne |
-
-## Travail du fer
-
-Debloque l'epeiste et prepare les ameliorations militaires avancees.
-
-| Champ | Valeur |
-|---|---|
-| Batiment | Forge |
-| Cout | 150 fer, 100 or |
-| Effet | Debloque Epeiste, +1 attaque pour l'infanterie melee |
-
-## Formation de ligne
-
-Ameliore la tenue des unites d'infanterie en groupe.
-
-| Champ | Valeur |
-|---|---|
-| Batiment | Caserne |
-| Cout | 180 nourriture, 120 or |
-| Prerequis | Travail du fer |
-| Effet | +1 defense pour Milicien, Lancier et Epeiste lorsqu'ils sont adjacents a une unite alliee d'infanterie |
-
-## Archerie
-
-Standardise l'entrainement des archers.
-
-| Champ | Valeur |
-|---|---|
-| Batiment | Champ de tir |
-| Cout | 100 bois, 75 or |
-| Effet | +1 attaque pour les unites a distance |
-
-## Empennage
-
-Ameliore la precision des projectiles.
-
-| Champ | Valeur |
-|---|---|
-| Batiment | Champ de tir |
-| Cout | 150 bois, 100 or |
-| Prerequis | Archerie |
-| Effet | +1 portee maximale pour Archer |
-
-## Arcs composites
-
-Augmente la puissance des arcs avances.
-
-| Champ | Valeur |
-|---|---|
-| Batiment | Champ de tir |
-| Cout | 220 bois, 150 or, 80 fer |
-| Prerequis | Empennage |
-| Effet | +2 attaque pour Archer, mais +10 or au cout de creation |
-
-## Elevage militaire
-
-Permet de former des unites de cavalerie plus lourdes.
-
-| Champ | Valeur |
-|---|---|
-| Batiment | Ecurie |
-| Cout | 180 nourriture, 120 or |
-| Effet | Debloque Cavalier lourd |
-
-## Selle renforcee
-
-Ameliore la resistance de la cavalerie.
-
-| Champ | Valeur |
-|---|---|
-| Batiment | Ecurie |
-| Cout | 200 nourriture, 150 or, 80 fer |
-| Prerequis | Elevage militaire |
-| Effet | +1 defense pour les unites de cavalerie |
-
-## Charge coordonnee
-
-Ameliore l'impact offensif de la cavalerie.
-
-| Champ | Valeur |
-|---|---|
-| Batiment | Ecurie |
-| Cout | 250 nourriture, 180 or |
-| Prerequis | Selle renforcee |
-| Effet | Les cavaliers infligent +20% de degats lors de leur premiere attaque apres un deplacement d'au moins 3 cases |
-
-## Armes d'acier
-
-Augmente les degats des unites de melee.
-
-| Champ | Valeur |
-|---|---|
-| Batiment | Forge |
-| Cout | 220 fer, 180 or |
-| Prerequis | Travail du fer |
-| Effet | +2 attaque pour infanterie melee et cavalerie melee |
+| Cout | 120 points de technologie, 80 or |
+| Prerequis | Caserne |
+| Effet | Les Archers gagnent +1 attaque |
 
 ## Armures renforcees
 
-Ameliore la survie des unites de front.
-
 | Champ | Valeur |
 |---|---|
-| Batiment | Forge |
-| Cout | 220 fer, 150 or |
-| Prerequis | Travail du fer |
-| Effet | +2 defense pour infanterie melee et cavalerie melee |
-
-## Ingenierie de siege
-
-Debloque les premieres machines de siege.
-
-| Champ | Valeur |
-|---|---|
-| Batiment | Forge |
-| Cout | 200 bois, 150 fer, 150 or |
-| Prerequis | Travail du fer |
-| Effet | Debloque Atelier de siege et Belier |
-
-## Balistique
-
-Ameliore les tirs complexes et debloque la catapulte.
-
-| Champ | Valeur |
-|---|---|
-| Batiment | Forge |
-| Cout | 250 bois, 180 fer, 200 or |
-| Prerequis | Ingenierie de siege, Empennage |
-| Effet | Debloque Catapulte, +10% precision des attaques a distance |
+| Cout | 160 points de technologie, 120 or |
+| Prerequis | Caserne |
+| Effet | Les unites de combat communes gagnent +1 defense |
 
 ## Fortifications
 
-Renforce les defenses statiques.
+| Champ | Valeur |
+|---|---|
+| Cout | 180 points de technologie, 140 or |
+| Prerequis | Tour de guet ou Mur |
+| Effet | Les Tours de guet et Murs gagnent +20% PV |
+
+## Coordination tactique
 
 | Champ | Valeur |
 |---|---|
-| Batiment | Forum |
-| Cout | 250 pierre, 150 or |
-| Prerequis | Travail du fer |
-| Effet | +25% PV pour Mur et Tour de guet |
+| Cout | 200 points de technologie, 120 nourriture, 120 or |
+| Prerequis | Universite |
+| Effet | Les heros reduisent de 1 tour le temps de recharge de leur capacite principale, jusqu'a un minimum de 1 tour |
 
 ---
 
@@ -853,38 +409,28 @@ Renforce les defenses statiques.
 ```text
 Forum
 ├── Villageois
-├── Maison
-├── Camp de bucheron
-├── Moulin
-├── Carriere
+├── Heros de faction ← Universite
+├── Mine d'or ← Gisement d'or
+├── Ferme ← Champ
 ├── Caserne
-│   ├── Milicien
-│   ├── Lancier
-│   └── Epeiste ← Travail du fer
-├── Champ de tir
-│   ├── Archer
-│   └── Frondeur
-├── Ecurie
-│   ├── Cavalier eclaireur
-│   └── Cavalier lourd ← Elevage militaire
-├── Forge
-│   ├── Travail du fer
-│   ├── Armes d'acier
-│   ├── Armures renforcees
-│   ├── Ingenierie de siege
-│   └── Balistique
-└── Atelier de siege ← Ingenierie de siege
-    ├── Belier
-    └── Catapulte ← Balistique
+│   ├── Soldat
+│   └── Archer
+├── Marche
+├── Universite
+│   ├── Recherches communes
+│   └── Recherches de faction
+├── Tour de guet
+└── Mur
 ```
 
 ---
 
 # Notes d'equilibrage initiales
 
-- Le lancier doit rester rentable contre la cavalerie, meme avec un cout faible.
-- L'archer doit etre fort en position protegee, mais vulnerable au contact.
-- La cavalerie doit dominer la mobilite, sans pouvoir traverser gratuitement une ligne de lanciers.
-- Les machines de siege doivent etre decisives contre les batiments, mais necessiter une escorte.
-- Les recherches doivent creer des choix strategiques clairs, pas seulement des bonus automatiques.
-- Les civilisations pourront modifier ces bases avec des unites uniques, des bonus et des technologies propres.
+- Le Soldat doit rester simple et fiable, sans voler le role des unites uniques.
+- L'Archer doit etre fort en soutien, mais vulnerable au contact.
+- Le Villageois doit pouvoir se defendre faiblement, sans devenir une unite militaire.
+- Les Tours et Murs doivent proteger une zone, pas bloquer toute la partie.
+- Le Marche doit donner de la flexibilite, mais pas remplacer une bonne economie.
+- L'Universite doit etre un objectif important, car elle ouvre les recherches et les heros.
+- Les factions doivent apporter la complexite principale du jeu via leurs unites, heros, batiments speciaux et technologies propres.
