@@ -4,19 +4,25 @@ Le Royaume Valdorien est une civilisation humaine disciplinee, organisee autour 
 
 Cette faction sert de point d'equilibre pour Rusty Empires. Elle doit etre facile a comprendre pour un nouveau joueur, mais offrir assez de profondeur pour recompenser le placement, la coordination et la gestion economique.
 
-## Resume
+Ce document est aligne avec `docs/SPEC.md` : les ressources utilisees sont la nourriture, l'or et les points de technologie ; les recherches sont lancees depuis l'Universite ; le Marche sert uniquement a l'echange ; les unites de combat communes sont recrutees a la Caserne ; les unites speciales Valdoriennes utilisent les batiments speciaux de la faction lorsque precise.
+
+---
+
+# Resume
 
 | Element | Valeur |
 |---|---|
 | Nom | Royaume Valdorien |
-| Archetype | Empire humain discipline |
+| Archetype | Royaume humain discipline |
 | Style de jeu | Polyvalent, economique, infanterie solide |
 | Rythme | Moyen |
 | Difficulte | Facile a moyenne |
-| Force principale | Armee fiable et economie stable |
-| Faiblesse principale | Peu d'options furtives ou extremes |
+| Force principale | Armee fiable, formations solides, economie stable |
+| Faiblesse principale | Peu de furtivite, peu de mobilite extreme, gameplay previsible |
 
-## Identite de gameplay
+---
+
+# Identite de gameplay
 
 Les Valdoriens gagnent en tenant une ligne de bataille solide, en progressant methodiquement et en exploitant une economie plus stable que celle de leurs adversaires.
 
@@ -40,7 +46,7 @@ Ils ne sont pas les meilleurs en mobilite, en siege ou en harcelement, mais ils 
 
 - Peu d'unites rapides specialisees.
 - Peu d'outils de furtivite ou d'embuscade.
-- Elite couteuse en or et en fer.
+- Unites elites couteuses en or.
 - Gameplay parfois previsible.
 - Moins efficace si les formations sont brisees.
 
@@ -52,17 +58,17 @@ Ils ne sont pas les meilleurs en mobilite, en siege ou en harcelement, mais ils 
 
 | Bonus | Effet |
 |---|---|
-| Administration royale | Les batiments economiques coutent 10% de bois en moins |
+| Administration royale | Les batiments economiques coutent 10% d'or en moins |
 | Discipline de ligne | Les unites d'infanterie gagnent +1 defense lorsqu'elles sont adjacentes a une unite alliee d'infanterie |
-| Routes entretenues | Les unites gagnent +1 mouvement lorsqu'elles commencent leur tour sur une route ou pres d'un Forum allie |
-| Fiscalite stable | Les technologies coutent 10% d'or en moins |
+| Routes entretenues | Les unites gagnent +1 mouvement lorsqu'elles commencent leur tour a 3 cases ou moins d'un Forum ou d'un Poste administratif allie |
+| Fiscalite stable | Les recherches economiques et administratives coutent 10% d'or en moins |
 
 ## Malus de civilisation
 
 | Malus | Effet |
 |---|---|
 | Doctrine rigide | Les unites legeres et les eclaireurs ne beneficient pas des bonus de formation |
-| Elite couteuse | Les unites uniques coutent 15% d'or en plus que les equivalents standards |
+| Elite couteuse | Les unites speciales Valdoriennes coutent 15% d'or en plus que les equivalents standards |
 | Peu de furtivite | Les unites Valdoriennes ne peuvent pas recevoir de trait de camouflage naturel |
 
 ## Capacite passive : Tenir la ligne
@@ -77,11 +83,66 @@ Cette capacite encourage le joueur a former une ligne coherente plutot qu'a disp
 
 ---
 
+# Heros de faction
+
+## Aurelian, Marechal de Valdoria
+
+Aurelian est le heros du Royaume Valdorien. Il incarne le commandement, la discipline et la coordination tactique.
+
+Il n'est pas concu pour gagner seul les batailles. Sa force vient de sa capacite a transformer une ligne correcte en formation difficile a briser.
+
+| Statistique | Valeur |
+|---|---:|
+| PV | 110 |
+| Attaque | 14 |
+| Defense | 5 |
+| Portee | 1 |
+| Mouvement | 3 |
+| Vision | 4 |
+| Population | 3 |
+
+Cout :
+
+| Ressource | Valeur |
+|---|---:|
+| Nourriture | 120 |
+| Or | 180 |
+
+Recrute par : Forum
+
+Prerequis : Universite
+
+Traits :
+
+- heros ;
+- infanterie lourde ;
+- commandement ;
+- formation.
+
+Capacite speciale : Ordre royal
+
+Une fois tous les 3 tours, Aurelian peut donner un ordre royal a toutes les unites alliees dans un rayon de 2 cases.
+
+Effet pendant 1 tour :
+
+- +1 attaque ;
+- +1 defense si l'unite beneficie deja de Tenir la ligne ;
+- les unites affectees ne peuvent pas etre repoussees par des effets de recul simples.
+
+Role tactique :
+
+- stabiliser une ligne de bataille ;
+- preparer une poussee decisive ;
+- proteger une position cle ;
+- recompenser le joueur qui place bien ses unites.
+
+---
+
 # Unites uniques
 
-## Légionnaire Valdorien
+## Legionnaire Valdorien
 
-Le Legionnaire Valdorien remplace l'Epeiste. Il est plus defensif, plus fiable en groupe et excellent pour tenir une position.
+Le Legionnaire Valdorien est l'infanterie de ligne signature du royaume. Il ne remplace pas une unite commune dans la specification, mais devient disponible comme unite Valdorienne avancee.
 
 | Statistique | Valeur |
 |---|---:|
@@ -97,19 +158,17 @@ Cout :
 
 | Ressource | Valeur |
 |---|---:|
-| Nourriture | 65 |
-| Fer | 35 |
-| Or | 20 |
+| Nourriture | 75 |
+| Or | 55 |
 
-Produit par : Caserne
+Recrute par : Caserne
 
-Requis : Doctrine legionnaire
+Prerequis : Doctrine legionnaire
 
 Traits :
 
 - infanterie lourde ;
-- beneficie fortement des bonus de formation ;
-- remplace l'Epeiste ;
+- formation ;
 - excellent en defense de ligne.
 
 Capacite speciale : Formation de boucliers
@@ -134,13 +193,12 @@ Cout :
 
 | Ressource | Valeur |
 |---|---:|
-| Nourriture | 40 |
-| Or | 90 |
-| Fer | 20 |
+| Nourriture | 45 |
+| Or | 120 |
 
-Produit par : Caserne
+Recrute par : Caserne legionnaire
 
-Requis : Commandement royal
+Prerequis : Commandement royal
 
 Traits :
 
@@ -149,7 +207,7 @@ Traits :
 - fragile s'il est isole ;
 - augmente l'efficacite des formations.
 
-Aura : Ordres coordonnes
+Capacite speciale : Ordres coordonnes
 
 Les unites d'infanterie alliees dans un rayon de 2 cases gagnent +1 attaque si elles sont adjacentes a une autre unite alliee.
 
@@ -157,7 +215,7 @@ Limite : un seul Prefet de guerre peut appliquer son aura a une meme unite.
 
 ## Arbaletrier royal
 
-Unite a distance avancee. Plus lente et couteuse que l'Archer, mais plus efficace contre les cibles blindees.
+Unite a distance avancee. Plus lente et couteuse que l'Archer commun, mais plus efficace contre les cibles defensives.
 
 | Statistique | Valeur |
 |---|---:|
@@ -173,13 +231,12 @@ Cout :
 
 | Ressource | Valeur |
 |---|---:|
-| Bois | 55 |
-| Fer | 20 |
-| Or | 35 |
+| Nourriture | 35 |
+| Or | 85 |
 
-Produit par : Champ de tir
+Recrute par : Caserne legionnaire
 
-Requis : Arbaletes royales
+Prerequis : Arbaletes royales
 
 Traits :
 
@@ -194,7 +251,7 @@ Ignore 1 point de defense de la cible lors d'une attaque a distance.
 
 ## Chevalier banneret
 
-Cavalerie lourde de commandement. Moins rapide que certaines cavaleries specialisees, mais tres solide en charge coordonnee.
+Unite de commandement mobile. Moins rapide qu'une cavalerie de harcelement, mais tres solide en soutien de ligne et en protection de flanc.
 
 | Statistique | Valeur |
 |---|---:|
@@ -210,19 +267,18 @@ Cout :
 
 | Ressource | Valeur |
 |---|---:|
-| Nourriture | 90 |
-| Fer | 45 |
-| Or | 70 |
+| Nourriture | 110 |
+| Or | 135 |
 
-Produit par : Ecurie
+Recrute par : Caserne legionnaire
 
-Requis : Noblesse militaire
+Prerequis : Noblesse militaire
 
 Traits :
 
-- cavalerie lourde ;
-- charge ;
+- unite lourde mobile ;
 - commandement mineur ;
+- protection de flanc ;
 - couteux.
 
 Capacite speciale : Banniere de ralliement
@@ -242,21 +298,21 @@ Batiment economique propre aux Valdoriens. Il renforce la gestion locale et rend
 | PV | 220 |
 | Defense | 1 |
 | Taille | 1x1 |
+| Vision | 3 |
 
 Cout :
 
 | Ressource | Valeur |
 |---|---:|
-| Bois | 90 |
-| Pierre | 40 |
-| Or | 30 |
+| Or | 120 |
+| Nourriture | 40 |
 
-Requis : Forum
+Prerequis : Forum
 
 Effets :
 
-- les depots de ressources dans un rayon de 4 cases rapportent +10% de ressources ;
-- reduit de 5% le cout en or des recherches economiques ;
+- les Mines d'or et Fermes dans un rayon de 4 cases produisent +10% de ressources ;
+- reduit de 5% le cout en or des recherches economiques et administratives ;
 - ne se cumule pas avec un autre Poste administratif sur les memes cases.
 
 Role :
@@ -265,41 +321,45 @@ Le Poste administratif donne aux Valdoriens un avantage economique stable, mais 
 
 ## Caserne legionnaire
 
-Amelioration de la Caserne standard. Elle represente la professionnalisation militaire Valdorienne.
+Batiment militaire special Valdorien. Elle represente la professionnalisation militaire du royaume.
 
 | Statistique | Valeur |
 |---|---:|
 | PV | 420 |
 | Defense | 3 |
 | Taille | 2x2 |
+| Vision | 2 |
 
-Transformation depuis : Caserne
-
-Cout de transformation :
+Cout :
 
 | Ressource | Valeur |
 |---|---:|
-| Bois | 100 |
-| Fer | 80 |
-| Or | 80 |
+| Or | 240 |
+| Nourriture | 120 |
 
-Requis : Doctrine legionnaire
+Prerequis : Doctrine legionnaire
 
 Produit :
 
-- Milicien ;
-- Lancier ;
-- Legionnaire Valdorien ;
-- Prefet de guerre.
+- Prefet de guerre ;
+- Arbaletrier royal ;
+- Chevalier banneret.
 
 Effets :
 
-- les unites d'infanterie produites ici commencent avec +1 experience ;
-- les technologies d'infanterie sont recherchees 15% plus vite dans ce batiment.
+- les unites speciales produites ici commencent avec +1 experience si un systeme d'experience est implemente ;
+- les unites Valdoriennes adjacentes a la Caserne legionnaire gagnent +1 defense lorsqu'elles defendent ce batiment.
+
+Note de recrutement :
+
+- Le Legionnaire Valdorien reste recrute a la Caserne commune apres Doctrine legionnaire.
+- Les unites speciales de commandement et d'elite sont recrutees a la Caserne legionnaire.
 
 ---
 
 # Technologies specifiques
+
+Toutes les recherches Valdoriennes sont lancees depuis l'Universite. Les batiments indiques sont des prerequis, pas les lieux de recherche.
 
 ## Routes royales
 
@@ -307,9 +367,8 @@ Les Valdoriens structurent leur territoire autour d'axes de circulation entreten
 
 | Champ | Valeur |
 |---|---|
-| Batiment | Forum |
-| Cout | 150 bois, 100 pierre, 100 or |
-| Prerequis | Aucun |
+| Cout | 120 points de technologie, 100 or |
+| Prerequis | Forum |
 | Effet | Les unites gagnent +1 mouvement si elles commencent leur tour a 3 cases ou moins d'un Forum ou d'un Poste administratif allie |
 
 ## Fiscalite organisee
@@ -318,10 +377,9 @@ Ameliore la stabilite economique du royaume.
 
 | Champ | Valeur |
 |---|---|
-| Batiment | Poste administratif |
-| Cout | 120 or, 100 bois |
-| Prerequis | Routes royales |
-| Effet | Les recherches coutent 10% d'or en moins |
+| Cout | 140 points de technologie, 120 or |
+| Prerequis | Poste administratif, Routes royales |
+| Effet | Les recherches economiques et administratives coutent 10% d'or en moins |
 
 ## Doctrine legionnaire
 
@@ -329,9 +387,8 @@ Standardise l'equipement et les formations de l'infanterie Valdorienne.
 
 | Champ | Valeur |
 |---|---|
-| Batiment | Caserne |
-| Cout | 200 nourriture, 180 fer, 150 or |
-| Prerequis | Travail du fer |
+| Cout | 180 points de technologie, 160 nourriture, 140 or |
+| Prerequis | Caserne, Discipline militaire |
 | Effet | Debloque Legionnaire Valdorien et Caserne legionnaire |
 
 ## Commandement royal
@@ -340,31 +397,28 @@ Forme des officiers capables de coordonner les lignes de bataille.
 
 | Champ | Valeur |
 |---|---|
-| Batiment | Caserne legionnaire |
-| Cout | 180 nourriture, 120 fer, 220 or |
-| Prerequis | Doctrine legionnaire |
+| Cout | 220 points de technologie, 140 nourriture, 180 or |
+| Prerequis | Caserne legionnaire, Doctrine legionnaire |
 | Effet | Debloque Prefet de guerre |
 
 ## Arbaletes royales
 
-Introduit des armes a distance plus puissantes, adaptees aux armees disciplinées.
+Introduit des armes a distance plus puissantes, adaptees aux armees disciplinees.
 
 | Champ | Valeur |
 |---|---|
-| Batiment | Champ de tir |
-| Cout | 220 bois, 120 fer, 180 or |
-| Prerequis | Empennage, Travail du fer |
+| Cout | 220 points de technologie, 220 or |
+| Prerequis | Caserne legionnaire, Archerie organisee |
 | Effet | Debloque Arbaletrier royal |
 
 ## Noblesse militaire
 
-Mobilise les familles nobles du royaume comme cavalerie lourde professionnelle.
+Mobilise les familles nobles du royaume comme unites lourdes professionnelles.
 
 | Champ | Valeur |
 |---|---|
-| Batiment | Ecurie |
-| Cout | 260 nourriture, 180 fer, 260 or |
-| Prerequis | Elevage militaire, Fiscalite organisee |
+| Cout | 260 points de technologie, 180 nourriture, 260 or |
+| Prerequis | Caserne legionnaire, Fiscalite organisee |
 | Effet | Debloque Chevalier banneret |
 
 ## Codex tactique
@@ -373,8 +427,7 @@ Formalise les doctrines de combat Valdoriennes.
 
 | Champ | Valeur |
 |---|---|
-| Batiment | Caserne legionnaire |
-| Cout | 300 nourriture, 250 or, 180 fer |
+| Cout | 300 points de technologie, 220 nourriture, 250 or |
 | Prerequis | Commandement royal |
 | Effet | Les unites d'infanterie Valdoriennes gagnent +1 attaque lorsqu'elles attaquent une cible deja adjacente a une unite alliee |
 
@@ -384,39 +437,45 @@ Renforce la coordination entre economie, recherche et armee.
 
 | Champ | Valeur |
 |---|---|
-| Batiment | Poste administratif |
-| Cout | 300 or, 180 pierre |
+| Cout | 280 points de technologie, 300 or |
 | Prerequis | Fiscalite organisee |
-| Effet | Les Forums et Postes administratifs augmentent de 1 la population maximale chacun |
+| Effet | Les Forums et Postes administratifs augmentent de 1 la population maximale chacun, si le systeme de population est implemente |
+
+## Decrets de fortification
+
+Adapte les defenses communes a la doctrine administrative Valdorienne.
+
+| Champ | Valeur |
+|---|---|
+| Cout | 240 points de technologie, 220 or |
+| Prerequis | Fortifications, Poste administratif |
+| Effet | Les Tours de guet et Murs dans un rayon de 4 cases d'un Poste administratif gagnent +1 defense |
 
 ---
 
 # Arbre technologique Valdorien
 
 ```text
-Forum
+Universite
 ├── Routes royales
 │   └── Fiscalite organisee
 │       ├── Noblesse militaire
 │       └── Edits royaux
 │
-Caserne
-└── Travail du fer
-    └── Doctrine legionnaire
-        ├── Caserne legionnaire
-        └── Commandement royal
-            ├── Prefet de guerre
-            └── Codex tactique
-
-Champ de tir
-└── Empennage
-    └── Arbaletes royales
-        └── Arbaletrier royal
-
-Ecurie
-└── Elevage militaire
-    └── Noblesse militaire
-        └── Chevalier banneret
+├── Doctrine legionnaire ← Caserne + Discipline militaire
+│   ├── Legionnaire Valdorien
+│   ├── Caserne legionnaire
+│   └── Commandement royal
+│       ├── Prefet de guerre
+│       └── Codex tactique
+│
+├── Arbaletes royales ← Caserne legionnaire + Archerie organisee
+│   └── Arbaletrier royal
+│
+├── Noblesse militaire ← Caserne legionnaire + Fiscalite organisee
+│   └── Chevalier banneret
+│
+└── Decrets de fortification ← Fortifications + Poste administratif
 ```
 
 ---
@@ -425,14 +484,15 @@ Ecurie
 
 ## Debut de partie
 
-Le joueur Valdorien doit poser rapidement une economie stable : Forum, Maison, depots de ressources, puis Caserne.
+Le joueur Valdorien doit poser rapidement une economie stable : Forum, Mine d'or ou Ferme, Caserne, puis Universite.
 
 Objectifs :
 
 - securiser les ressources proches ;
-- produire quelques Lanciers ou Miliciens ;
+- produire quelques Soldats et Archers ;
+- construire un Poste administratif pres des ressources principales ;
 - rechercher Routes royales pour ameliorer le controle de territoire ;
-- poser un Poste administratif pres des ressources principales.
+- eviter de disperser ses unites.
 
 ## Milieu de partie
 
@@ -440,10 +500,11 @@ Le royaume devient puissant lorsque Doctrine legionnaire est obtenue.
 
 Objectifs :
 
-- transformer une Caserne en Caserne legionnaire ;
-- remplacer progressivement les Epeistes par des Legionnaires ;
-- ajouter des Archers ou Arbaletriers derriere la ligne ;
-- utiliser les Prefets de guerre pour renforcer les points de pression.
+- debloquer le Legionnaire Valdorien ;
+- construire une Caserne legionnaire ;
+- recruter un Prefet de guerre pour renforcer les formations ;
+- ajouter des Arbaletriers royaux derriere la ligne ;
+- utiliser Aurelian pour gagner les combats decisifs.
 
 ## Fin de partie
 
@@ -454,7 +515,8 @@ Objectifs :
 - former une ligne de Legionnaires ;
 - soutenir la ligne avec Prefets et Arbaletriers ;
 - utiliser les Chevaliers bannerets pour proteger les flancs ;
-- avancer avec des machines de siege communes si necessaire.
+- renforcer les positions avec Tours, Murs et Decrets de fortification ;
+- avancer avec une formation compacte plutot que chercher une attaque dispersee.
 
 ---
 
@@ -464,26 +526,27 @@ Objectifs :
 
 | Cible | Raison |
 |---|---|
-| Infanterie legere | Les Legionnaires gagnent les combats prolonges |
 | Armees mal organisees | Les bonus de formation donnent l'avantage |
 | Rushs faibles | Les defenses et la discipline stabilisent le debut de partie |
-| Archers peu proteges | Les Chevaliers bannerets peuvent les menacer |
+| Infanterie legere | Les Legionnaires gagnent les combats prolonges |
+| Positions defensives moyennes | Les formations Valdoriennes progressent efficacement avec soutien |
 
 ## Faible contre
 
 | Menace | Raison |
 |---|---|
 | Harcelement mobile | Les Valdoriens sont solides mais pas tres rapides |
-| Siege lourd | Les formations compactes sont vulnerables aux degats de zone |
+| Degats de zone | Les formations compactes y sont vulnerables |
 | Embuscades | Peu d'outils de detection specialises |
-| Economies explosives | Leur economie est stable mais pas forcement la plus rapide |
+| Attrition magique | Les unites elites coutent cher a remplacer |
 
 ---
 
 # Notes d'equilibrage
 
-- Le Legionnaire doit etre meilleur que l'Epeiste en formation, mais pas beaucoup plus fort seul.
+- Le Legionnaire doit etre meilleur que le Soldat en formation, mais pas beaucoup plus fort seul.
 - Le Prefet de guerre doit etre utile sans devenir obligatoire dans chaque armee.
+- Aurelian doit renforcer les formations, pas remplacer une armee.
 - Les bonus economiques doivent etre fiables, mais moins puissants que ceux d'une faction purement economique.
 - Les Valdoriens doivent rester la faction de reference pour mesurer les autres civilisations.
 - Leur faiblesse principale doit venir de leur predictibilite et de leur dependance au placement.
