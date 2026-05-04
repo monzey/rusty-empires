@@ -1,6 +1,6 @@
 use bevy::{prelude::*, window::PrimaryWindow};
 
-use super::constants::{MAP_HEIGHT, MAP_WIDTH, TILE_SIZE};
+use super::constants::{MAP_HEIGHT, MAP_WIDTH, TILE_HEIGHT, TILE_WIDTH};
 use crate::GridPosition;
 
 pub(super) fn cursor_grid_position(
@@ -19,21 +19,26 @@ pub(super) fn cursor_grid_position(
 }
 
 pub(super) fn grid_to_world(position: GridPosition, z: f32) -> Vec3 {
-    let map_width = MAP_WIDTH as f32 * TILE_SIZE;
-    let map_height = MAP_HEIGHT as f32 * TILE_SIZE;
+    let tile_x = position.x as f32 + 0.5;
+    let tile_y = position.y as f32 + 0.5;
+    let raw_x = (tile_x - tile_y) * TILE_WIDTH / 2.0;
+    let raw_y = -(tile_x + tile_y) * TILE_HEIGHT / 2.0;
+    let center_x = (MAP_WIDTH as f32 - MAP_HEIGHT as f32) * TILE_WIDTH / 4.0;
+    let center_y = -(MAP_WIDTH as f32 + MAP_HEIGHT as f32) * TILE_HEIGHT / 4.0;
+    let draw_order = (position.x + position.y) as f32 * 0.01;
 
-    Vec3::new(
-        (position.x as f32 + 0.5) * TILE_SIZE - map_width / 2.0,
-        (position.y as f32 + 0.5) * TILE_SIZE - map_height / 2.0,
-        z,
-    )
+    Vec3::new(raw_x - center_x, raw_y - center_y, z + draw_order)
 }
 
 fn world_to_grid(position: Vec2) -> Option<GridPosition> {
-    let map_width = MAP_WIDTH as f32 * TILE_SIZE;
-    let map_height = MAP_HEIGHT as f32 * TILE_SIZE;
-    let x = ((position.x + map_width / 2.0) / TILE_SIZE).floor() as i32;
-    let y = ((position.y + map_height / 2.0) / TILE_SIZE).floor() as i32;
+    let center_x = (MAP_WIDTH as f32 - MAP_HEIGHT as f32) * TILE_WIDTH / 4.0;
+    let center_y = -(MAP_WIDTH as f32 + MAP_HEIGHT as f32) * TILE_HEIGHT / 4.0;
+    let raw_x = position.x + center_x;
+    let raw_y = position.y + center_y;
+    let axis_x = raw_x / (TILE_WIDTH / 2.0);
+    let axis_y = -raw_y / (TILE_HEIGHT / 2.0);
+    let x = ((axis_x + axis_y) / 2.0).floor() as i32;
+    let y = ((axis_y - axis_x) / 2.0).floor() as i32;
     let grid_position = GridPosition { x, y };
 
     is_inside_map(grid_position).then_some(grid_position)

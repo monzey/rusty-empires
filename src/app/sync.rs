@@ -8,6 +8,8 @@ use crate::Event;
 pub(super) fn apply_game_events<F: QueryFilter>(
     events: &[Event],
     commands: &mut Commands,
+    unit_mesh: &Handle<Mesh>,
+    materials: &mut Assets<ColorMaterial>,
     units: &mut Query<(Entity, &mut MapPosition, &mut Transform, &Unit), F>,
 ) {
     for event in events {
@@ -34,7 +36,9 @@ pub(super) fn apply_game_events<F: QueryFilter>(
                 kind,
                 position,
             } => {
-                spawn_unit(commands, unit_id, kind, camp, position);
+                spawn_unit(
+                    commands, unit_mesh, materials, unit_id, kind, camp, position,
+                );
             }
             _ => {}
         }

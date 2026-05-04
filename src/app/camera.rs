@@ -1,12 +1,14 @@
-use bevy::{input::mouse::MouseWheel, prelude::*};
+use bevy::{input::mouse::MouseWheel, prelude::*, window::PrimaryWindow};
 
 const CAMERA_SPEED: f32 = 520.0;
+const EDGE_SCROLL_MARGIN: f32 = 24.0;
 const ZOOM_STEP: f32 = 0.12;
 const MIN_ZOOM: f32 = 0.55;
 const MAX_ZOOM: f32 = 2.2;
 
 pub(super) fn move_camera(
     keyboard: Res<ButtonInput<KeyCode>>,
+    windows: Query<&Window, With<PrimaryWindow>>,
     time: Res<Time>,
     mut cameras: Query<&mut Transform, With<Camera2d>>,
 ) {
@@ -26,6 +28,23 @@ pub(super) fn move_camera(
     }
     if keyboard.pressed(KeyCode::ArrowRight) {
         direction.x += 1.0;
+    }
+
+    if let Ok(window) = windows.get_single() {
+        if let Some(cursor_position) = window.cursor_position() {
+            if cursor_position.x <= EDGE_SCROLL_MARGIN {
+                direction.x -= 1.0;
+            }
+            if cursor_position.x >= window.width() - EDGE_SCROLL_MARGIN {
+                direction.x += 1.0;
+            }
+            if cursor_position.y <= EDGE_SCROLL_MARGIN {
+                direction.y += 1.0;
+            }
+            if cursor_position.y >= window.height() - EDGE_SCROLL_MARGIN {
+                direction.y -= 1.0;
+            }
+        }
     }
 
     if direction != Vec3::ZERO {

@@ -7,9 +7,16 @@ use crate::{BuildingKind, Camp, GridPosition, NaturalResource, UnitKind};
 pub(super) fn update_unit_visuals(
     selected_unit: Res<SelectedUnit>,
     game: Res<GameState>,
-    mut units: Query<(Entity, &Unit, &MapPosition, &mut Sprite, &mut Visibility)>,
+    mut units: Query<(
+        Entity,
+        &Unit,
+        &MapPosition,
+        &Handle<ColorMaterial>,
+        &mut Visibility,
+    )>,
+    mut materials: ResMut<Assets<ColorMaterial>>,
 ) {
-    for (entity, unit, position, mut sprite, mut visibility) in &mut units {
+    for (entity, unit, position, material_handle, mut visibility) in &mut units {
         *visibility = if unit.camp == Camp::Human || game.0.is_visible(Camp::Human, position.0) {
             Visibility::Visible
         } else {
@@ -19,7 +26,10 @@ pub(super) fn update_unit_visuals(
         let selected = selected_unit.0 == Some(entity);
         let inactive =
             unit.camp != game.0.current_turn() || game.0.unit_has_acted(unit.id).unwrap_or(false);
-        sprite.color = unit_color(unit.camp, unit.kind, selected, inactive);
+        let Some(material) = materials.get_mut(material_handle) else {
+            continue;
+        };
+        material.color = unit_color(unit.camp, unit.kind, selected, inactive);
     }
 }
 
@@ -30,11 +40,12 @@ pub(super) fn update_building_visuals(
         Entity,
         &Building,
         &MapPosition,
-        &mut Sprite,
+        &Handle<ColorMaterial>,
         &mut Visibility,
     )>,
+    mut materials: ResMut<Assets<ColorMaterial>>,
 ) {
-    for (entity, building, position, mut sprite, mut visibility) in &mut buildings {
+    for (entity, building, position, material_handle, mut visibility) in &mut buildings {
         *visibility = if building.camp == Camp::Human || game.0.is_visible(Camp::Human, position.0)
         {
             Visibility::Visible
@@ -43,7 +54,10 @@ pub(super) fn update_building_visuals(
         };
 
         let selected = selected_building.0 == Some(entity);
-        sprite.color = if selected {
+        let Some(material) = materials.get_mut(material_handle) else {
+            continue;
+        };
+        material.color = if selected {
             Color::srgb(1.0, 0.92, 0.18)
         } else {
             building_color(building.camp, building.kind)
@@ -56,10 +70,14 @@ pub(super) fn update_tile_visuals(
     selected_unit: Res<SelectedUnit>,
     units: Query<(Entity, &Unit, &MapPosition), Without<Tile>>,
     buildings: Query<(&Building, &MapPosition), Without<Tile>>,
-    mut tiles: Query<(&MapPosition, &mut Sprite), With<Tile>>,
+    tiles: Query<(&MapPosition, &Handle<ColorMaterial>), With<Tile>>,
+    mut materials: ResMut<Assets<ColorMaterial>>,
 ) {
-    for (position, mut sprite) in &mut tiles {
-        sprite.color = tile_color(&game, &selected_unit, &units, &buildings, position.0);
+    for (position, material_handle) in &tiles {
+        let Some(material) = materials.get_mut(material_handle) else {
+            continue;
+        };
+        material.color = tile_color(&game, &selected_unit, &units, &buildings, position.0);
     }
 }
 

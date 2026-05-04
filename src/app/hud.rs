@@ -1,7 +1,7 @@
 use bevy::prelude::*;
 
-use super::components::{Building, HudText, MapPosition, Unit};
-use super::resources::{FactionSelection, GameState, SelectedBuilding, SelectedUnit};
+use super::components::{Building, ContextMenuText, HudText, MapPosition, Unit};
+use super::resources::{ContextMenu, FactionSelection, GameState, SelectedBuilding, SelectedUnit};
 use crate::{BuildingKind, Camp, Faction, UnitKind};
 
 pub(super) fn update_hud(
@@ -42,6 +42,25 @@ pub(super) fn update_hud(
             &buildings
         ),
     );
+}
+
+pub(super) fn update_context_menu(
+    context_menu: Res<ContextMenu>,
+    mut menus: Query<(&mut Text, &mut Style), With<ContextMenuText>>,
+) {
+    let Ok((mut text, mut style)) = menus.get_single_mut() else {
+        return;
+    };
+
+    if context_menu.lines.is_empty() {
+        style.display = Display::None;
+        return;
+    }
+
+    text.sections[0].value = context_menu.lines.join("\n");
+    style.display = Display::Flex;
+    style.left = Val::Px(context_menu.screen_position.x + 12.0);
+    style.top = Val::Px(context_menu.screen_position.y + 12.0);
 }
 
 fn winner_text(game: &GameState) -> String {

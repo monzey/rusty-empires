@@ -23,3 +23,6 @@ pub(super) struct Building {
 
 #[derive(Component)]
 pub(super) struct HudText;
+
+#[derive(Component)]
+pub(super) struct ContextMenuText;
