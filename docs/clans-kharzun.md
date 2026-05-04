@@ -1,37 +1,45 @@
 # Clans Kharzun
 
-Les Clans Kharzun sont une civilisation montagnarde, forgeuse et obstinee. Ils excellent dans la defense, les combats d'usure et la guerre de siege.
+Les Clans Kharzun sont une civilisation montagnarde, forgeuse et obstinee. Ils excellent dans la defense, les combats d'usure, le controle de passages et la destruction des positions fortifiees.
 
 Cette faction doit offrir un gameplay plus lent que le Royaume Valdorien, mais plus robuste. Les Kharzun avancent peu, mais quand ils prennent une position, ils deviennent tres difficiles a deloger.
 
-## Resume
+Ce document est aligne avec `docs/SPEC.md` : les ressources utilisees sont la nourriture, l'or et les points de technologie ; les recherches sont lancees depuis l'Universite ; le Marche sert uniquement a l'echange ; les unites de combat communes sont recrutees a la Caserne ; les unites speciales Kharzun utilisent leurs batiments speciaux lorsque precise.
+
+---
+
+# Resume
 
 | Element | Valeur |
 |---|---|
 | Nom | Clans Kharzun |
 | Archetype | Clans montagnards forgeurs |
-| Style de jeu | Defense, industrie lourde, siege |
+| Style de jeu | Defense, endurance, controle de zone, siege |
 | Rythme | Lent |
 | Difficulte | Moyenne |
-| Force principale | Resistance, fortifications, machines de siege |
-| Faiblesse principale | Mobilite faible et economie peu flexible |
+| Force principale | Resistance, fortifications, machines lourdes |
+| Faiblesse principale | Mobilite faible et reaction lente |
 
-## Identite de gameplay
+---
+
+# Identite de gameplay
 
 Les Kharzun gagnent en controlant les points strategiques, en fortifiant leurs positions et en forcant l'adversaire a venir mourir contre leurs lignes defensives.
 
 Leur gameplay repose sur trois piliers :
 
 - des unites tres resistantes ;
-- une economie orientee pierre et fer ;
-- une excellente capacite a detruire les defenses ennemies.
+- une excellente tenue de position ;
+- une capacite superieure a briser les defenses ennemies.
+
+Dans la nouvelle economie de Rusty Empires, leur theme de pierre, de fer et de forge n'est pas represente par des ressources separees. Il est represente par leurs bonus de batiments, leurs technologies, leurs unites lourdes et leurs couts eleves en or.
 
 Ils sont faibles quand ils doivent reagir vite a plusieurs attaques dispersees. Leur armee est puissante, mais lente, chere et parfois previsible.
 
 ## Forces
 
 - Infanterie lourde tres solide.
-- Bonus sur les terrains rocheux, collines et montagnes.
+- Bonus sur les collines, montagnes et positions fortifiees.
 - Batiments plus resistants.
 - Machines de siege puissantes.
 - Excellent controle de zone.
@@ -39,10 +47,10 @@ Ils sont faibles quand ils doivent reagir vite a plusieurs attaques dispersees. 
 ## Faiblesses
 
 - Faible mobilite generale.
-- Cavalerie limitee ou absente selon l'equilibrage final.
-- Peu d'outils d'exploration rapide.
-- Economie dependante de la pierre et du fer.
-- Vulnerable au harcelement et aux contournements.
+- Peu d'options de harcelement rapide.
+- Peu d'outils d'exploration.
+- Unites speciales couteuses en or.
+- Vulnerable au contournement et aux attaques dispersees.
 
 ---
 
@@ -52,20 +60,20 @@ Ils sont faibles quand ils doivent reagir vite a plusieurs attaques dispersees. 
 
 | Bonus | Effet |
 |---|---|
-| Maitres de la pierre | Les batiments ont +15% PV |
-| Forges profondes | Les villageois recoltant pierre ou fer rapportent +15% de ressources |
+| Maitres de la pierre | Les batiments Kharzun ont +15% PV |
 | Tenacite des clans | Les unites Kharzun gagnent +1 defense lorsqu'elles ne se sont pas deplacees ce tour-ci |
-| Siege ancestral | Les machines de siege infligent +20% de degats aux batiments |
+| Siege ancestral | Les unites de siege Kharzun infligent +20% de degats aux batiments |
 | Montagnards | Les unites Kharzun ignorent le malus de mouvement leger des collines |
+| Ouvrages profonds | Les Tours, Murs et Bastions Kharzun coutent 10% d'or en moins |
 
 ## Malus de civilisation
 
 | Malus | Effet |
 |---|---|
 | Marche lente | Les unites militaires terrestres ont -1 mouvement si leur mouvement de base est superieur a 3 |
-| Peu de cavalerie | La cavalerie coute 20% de nourriture et d'or en plus |
-| Commerce limite | Les technologies economiques liees a l'or coutent 15% plus cher |
-| Flotte maladroite | Les futures unites navales Kharzun subissent -1 mouvement |
+| Peu de cavalerie | Les unites rapides et montees coutent 20% de nourriture et d'or en plus si elles sont ajoutees au roster |
+| Commerce limite | Les echanges au Marche sont 10% moins efficaces |
+| Reactions lentes | Les unites Kharzun ne peuvent pas beneficier d'un mouvement bonus apres attaque |
 
 ## Capacite passive : Position inebranlable
 
@@ -76,6 +84,61 @@ Lorsqu'une unite Kharzun commence et termine son tour sans se deplacer, elle gag
 - immunite aux effets de recul simples.
 
 Cette capacite encourage le joueur a verrouiller une position et a forcer l'adversaire a engager le combat dans de mauvaises conditions.
+
+---
+
+# Heros de faction
+
+## Brokkar Main-de-Fer
+
+Brokkar est le heros des Clans Kharzun. C'est un seigneur-forgeron, chef de guerre et gardien des serments anciens.
+
+Il est concu pour tenir une ligne, proteger une position et transformer un point de passage en mur infranchissable. Il est tres fort lorsqu'il est bien place, mais il reagit mal aux menaces multiples et rapides.
+
+| Statistique | Valeur |
+|---|---:|
+| PV | 130 |
+| Attaque | 13 |
+| Defense | 7 |
+| Portee | 1 |
+| Mouvement | 2 |
+| Vision | 3 |
+| Population | 3 |
+
+Cout :
+
+| Ressource | Valeur |
+|---|---:|
+| Nourriture | 120 |
+| Or | 200 |
+
+Recrute par : Forum
+
+Prerequis : Universite
+
+Traits :
+
+- heros ;
+- infanterie lourde ;
+- defense ;
+- commandement de siege.
+
+Capacite speciale : Ancrage du clan
+
+Une fois tous les 3 tours, Brokkar peut ancrer une position dans un rayon de 2 cases.
+
+Effet pendant 1 tour :
+
+- les unites alliees dans la zone gagnent +2 defense si elles ne se deplacent pas ;
+- les Murs, Tours et Bastions dans la zone gagnent +1 defense ;
+- les unites affectees ne peuvent pas etre repoussees par des effets de recul simples.
+
+Role tactique :
+
+- verrouiller un choke point ;
+- proteger les machines de siege ;
+- absorber une attaque decisive ;
+- forcer l'adversaire a contourner plutot qu'a attaquer frontalement.
 
 ---
 
@@ -99,13 +162,12 @@ Cout :
 
 | Ressource | Valeur |
 |---|---:|
-| Nourriture | 55 |
-| Fer | 45 |
-| Or | 25 |
+| Nourriture | 70 |
+| Or | 65 |
 
-Produit par : Caserne
+Recrute par : Caserne
 
-Requis : Clans de la forge
+Prerequis : Clans de la forge
 
 Traits :
 
@@ -136,14 +198,12 @@ Cout :
 
 | Ressource | Valeur |
 |---|---:|
-| Nourriture | 60 |
-| Fer | 55 |
-| Pierre | 35 |
-| Or | 35 |
+| Nourriture | 75 |
+| Or | 90 |
 
-Produit par : Caserne
+Recrute par : Forge de clan
 
-Requis : Serments runiques
+Prerequis : Serments runiques
 
 Traits :
 
@@ -154,11 +214,11 @@ Traits :
 
 Capacite speciale : Serment de pierre
 
-Si la Garde runique est sur une colline, une montagne, une route fortifiee ou une case adjacente a un batiment allie, elle gagne +1 defense supplementaire.
+Si la Garde runique est sur une colline, une montagne, une case adjacente a un Mur, une Tour, un Bastion ou un autre batiment allie, elle gagne +1 defense supplementaire.
 
 ## Belier de fer
 
-Machine de siege unique remplacant le Belier standard. Plus lente, plus couteuse, mais beaucoup plus resistante.
+Machine de siege unique. Plus lente, plus couteuse, mais beaucoup plus resistante qu'une machine commune.
 
 | Statistique | Valeur |
 |---|---:|
@@ -174,13 +234,12 @@ Cout :
 
 | Ressource | Valeur |
 |---|---:|
-| Bois | 120 |
-| Fer | 110 |
-| Or | 45 |
+| Nourriture | 60 |
+| Or | 170 |
 
-Produit par : Atelier de siege
+Recrute par : Forge de clan
 
-Requis : Fonderies de siege
+Prerequis : Fonderies de siege
 
 Traits :
 
@@ -211,14 +270,12 @@ Cout :
 
 | Ressource | Valeur |
 |---|---:|
-| Bois | 140 |
-| Fer | 120 |
-| Pierre | 80 |
-| Or | 80 |
+| Nourriture | 70 |
+| Or | 220 |
 
-Produit par : Atelier de siege
+Recrute par : Forge de clan
 
-Requis : Poudre noire des mines
+Prerequis : Poudre noire des mines
 
 Traits :
 
@@ -229,7 +286,7 @@ Traits :
 
 Capacite speciale : Tir de demolition
 
-Inflige +30% de degats aux murs, tours et batiments defensifs. Les unites adjacentes a la cible subissent 40% des degats initiaux.
+Inflige +30% de degats aux Murs, Tours, Bastions et batiments defensifs. Les unites adjacentes a la cible subissent 40% des degats initiaux.
 
 ---
 
@@ -237,36 +294,40 @@ Inflige +30% de degats aux murs, tours et batiments defensifs. Les unites adjace
 
 ## Forge de clan
 
-Batiment economique et militaire propre aux Kharzun. Il remplace ou complete la Forge standard selon l'equilibrage final.
+Batiment militaire special propre aux Kharzun. Il represente leurs traditions de forge, d'armure et de siege.
 
 | Statistique | Valeur |
 |---|---:|
 | PV | 450 |
 | Defense | 3 |
 | Taille | 2x2 |
+| Vision | 2 |
 
 Cout :
 
 | Ressource | Valeur |
 |---|---:|
-| Bois | 120 |
-| Pierre | 120 |
-| Fer | 80 |
+| Nourriture | 90 |
+| Or | 240 |
 
-Requis : Forum
+Prerequis : Forum
 
-Recherches possibles :
+Produit :
 
-- Mines profondes ;
-- Clans de la forge ;
-- Armures gravees ;
-- Serments runiques.
+- Garde runique ;
+- Belier de fer ;
+- Mortier des profondeurs.
 
 Effets :
 
-- les technologies d'armure coutent 10% de fer en moins ;
-- les unites produites dans une Caserne adjacente gagnent +1 experience ;
-- agit comme depot pour le fer.
+- les unites Kharzun produites dans une Caserne adjacente gagnent +1 experience si un systeme d'experience est implemente ;
+- les unites de siege Kharzun adjacentes a la Forge de clan gagnent +1 defense ;
+- compte comme batiment special pour les prerequis de technologies Kharzun.
+
+Note de recrutement :
+
+- Le Brise-bouclier Kharzun est recrute a la Caserne commune apres Clans de la forge.
+- Les unites speciales lourdes et de siege sont recrutees a la Forge de clan.
 
 ## Bastion de pierre
 
@@ -284,10 +345,10 @@ Cout :
 
 | Ressource | Valeur |
 |---|---:|
-| Pierre | 260 |
-| Fer | 60 |
+| Or | 260 |
+| Nourriture | 80 |
 
-Requis : Architecture de montagne
+Prerequis : Architecture de montagne
 
 Fonctions :
 
@@ -304,16 +365,17 @@ Limite :
 
 # Technologies specifiques
 
+Toutes les recherches Kharzun sont lancees depuis l'Universite. Les batiments indiques sont des prerequis, pas les lieux de recherche.
+
 ## Mines profondes
 
-Les Kharzun exploitent les veines profondes de pierre et de fer mieux que les autres peuples.
+Les Kharzun optimisent leurs infrastructures autour des ressources essentielles.
 
 | Champ | Valeur |
 |---|---|
-| Batiment | Carriere ou Forge de clan |
-| Cout | 100 bois, 120 pierre, 80 or |
-| Prerequis | Aucun |
-| Effet | +15% recolte de pierre et de fer |
+| Cout | 120 points de technologie, 100 or |
+| Prerequis | Mine d'or ou Ferme |
+| Effet | Les Mines d'or et Fermes adjacentes a un batiment Kharzun produisent +10 ressources par tour |
 
 ## Architecture de montagne
 
@@ -321,10 +383,9 @@ Renforce les constructions Kharzun avec des techniques ancestrales.
 
 | Champ | Valeur |
 |---|---|
-| Batiment | Forge de clan |
-| Cout | 180 pierre, 100 fer, 100 or |
-| Prerequis | Mines profondes |
-| Effet | +15% PV pour les batiments, debloque Bastion de pierre |
+| Cout | 160 points de technologie, 140 or |
+| Prerequis | Mines profondes, Forge de clan |
+| Effet | +15% PV pour les batiments Kharzun, debloque Bastion de pierre |
 
 ## Clans de la forge
 
@@ -332,10 +393,9 @@ Organise les guerriers-forgerons en compagnies militaires.
 
 | Champ | Valeur |
 |---|---|
-| Batiment | Forge de clan |
-| Cout | 180 nourriture, 180 fer, 120 or |
-| Prerequis | Travail du fer |
-| Effet | Debloque Brise-bouclier Kharzun |
+| Cout | 180 points de technologie, 140 nourriture, 140 or |
+| Prerequis | Caserne, Discipline militaire |
+| Effet | Debloque Brise-bouclier Kharzun et Forge de clan |
 
 ## Armures gravees
 
@@ -343,10 +403,9 @@ Renforce les armures lourdes avec des plaques gravees et ajustees a chaque clan.
 
 | Champ | Valeur |
 |---|---|
-| Batiment | Forge de clan |
-| Cout | 240 fer, 160 pierre, 150 or |
-| Prerequis | Clans de la forge |
-| Effet | +1 defense pour l'infanterie lourde Kharzun |
+| Cout | 220 points de technologie, 200 or |
+| Prerequis | Clans de la forge, Forge de clan |
+| Effet | +1 defense pour les unites d'infanterie lourde Kharzun |
 
 ## Serments runiques
 
@@ -354,8 +413,7 @@ Les guerriers jurent de tenir leur position jusqu'a la mort.
 
 | Champ | Valeur |
 |---|---|
-| Batiment | Forge de clan |
-| Cout | 220 nourriture, 180 fer, 220 or |
+| Cout | 240 points de technologie, 160 nourriture, 220 or |
 | Prerequis | Armures gravees, Architecture de montagne |
 | Effet | Debloque Garde runique, ameliore Position inebranlable avec +5% resistance supplementaire |
 
@@ -365,10 +423,9 @@ Les Kharzun developpent des ateliers capables de produire des machines de siege 
 
 | Champ | Valeur |
 |---|---|
-| Batiment | Atelier de siege |
-| Cout | 220 bois, 240 fer, 160 or |
-| Prerequis | Ingenierie de siege, Clans de la forge |
-| Effet | Debloque Belier de fer, +10% PV pour les machines de siege |
+| Cout | 260 points de technologie, 260 or |
+| Prerequis | Forge de clan, Clans de la forge |
+| Effet | Debloque Belier de fer, +10% PV pour les unites de siege Kharzun |
 
 ## Poudre noire des mines
 
@@ -376,9 +433,8 @@ Une technologie dangereuse issue des profondeurs. Elle permet aux Kharzun de bri
 
 | Champ | Valeur |
 |---|---|
-| Batiment | Atelier de siege |
-| Cout | 260 pierre, 260 fer, 240 or |
-| Prerequis | Fonderies de siege, Balistique |
+| Cout | 320 points de technologie, 320 or |
+| Prerequis | Fonderies de siege, Fortifications |
 | Effet | Debloque Mortier des profondeurs |
 
 ## Chants des enclumes
@@ -387,10 +443,9 @@ Les forges rythment la marche des armees Kharzun et renforcent leur discipline.
 
 | Champ | Valeur |
 |---|---|
-| Batiment | Forge de clan |
-| Cout | 250 nourriture, 200 fer, 200 or |
+| Cout | 280 points de technologie, 180 nourriture, 240 or |
 | Prerequis | Serments runiques |
-| Effet | Les unites Kharzun adjacentes a une machine de siege alliee gagnent +1 attaque |
+| Effet | Les unites Kharzun adjacentes a une unite de siege alliee gagnent +1 attaque |
 
 ## Forteresses vivantes
 
@@ -398,43 +453,35 @@ Les positions defensives Kharzun deviennent presque impossibles a prendre sans s
 
 | Champ | Valeur |
 |---|---|
-| Batiment | Bastion de pierre |
-| Cout | 350 pierre, 220 fer, 250 or |
-| Prerequis | Architecture de montagne, Serments runiques |
-| Effet | Les Murs, Tours de guet et Bastions de pierre gagnent +20% PV et +1 defense |
+| Cout | 340 points de technologie, 300 or |
+| Prerequis | Architecture de montagne, Serments runiques, Bastion de pierre |
+| Effet | Les Murs, Tours de guet et Bastions de pierre Kharzun gagnent +20% PV et +1 defense |
 
 ---
 
 # Arbre technologique Kharzun
 
 ```text
-Carriere / Forge de clan
-└── Mines profondes
-    └── Architecture de montagne
-        ├── Bastion de pierre
-        └── Forteresses vivantes
-
-Forge
-└── Travail du fer
-    └── Clans de la forge
-        ├── Brise-bouclier Kharzun
-        ├── Armures gravees
-        │   └── Serments runiques
-        │       ├── Garde runique
-        │       ├── Chants des enclumes
-        │       └── Forteresses vivantes
-        └── Fonderies de siege
-            └── Belier de fer
-                └── Poudre noire des mines
-                    └── Mortier des profondeurs
-
-Forge
-└── Ingenierie de siege
-    └── Fonderies de siege
-
-Forge
-└── Balistique
-    └── Poudre noire des mines
+Universite
+├── Mines profondes
+│   └── Architecture de montagne ← Forge de clan
+│       ├── Bastion de pierre
+│       └── Forteresses vivantes
+│
+├── Clans de la forge ← Caserne + Discipline militaire
+│   ├── Brise-bouclier Kharzun
+│   ├── Forge de clan
+│   ├── Armures gravees
+│   │   └── Serments runiques
+│   │       ├── Garde runique
+│   │       ├── Chants des enclumes
+│   │       └── Forteresses vivantes
+│   └── Fonderies de siege
+│       └── Belier de fer
+│           └── Poudre noire des mines
+│               └── Mortier des profondeurs
+│
+└── Poudre noire des mines ← Fonderies de siege + Fortifications
 ```
 
 ---
@@ -443,26 +490,27 @@ Forge
 
 ## Debut de partie
 
-Les Kharzun doivent securiser rapidement la pierre et le fer. Leur debut de partie n'est pas explosif, mais il devient tres solide si leurs ressources minerales sont protegees.
+Les Kharzun doivent securiser rapidement leurs ressources proches et poser une base difficile a attaquer. Leur debut de partie n'est pas explosif, mais il devient tres solide si leurs positions economiques sont protegees.
 
 Objectifs :
 
-- construire rapidement Carriere et Forge de clan ;
-- rechercher Mines profondes ;
-- produire des Lanciers pour tenir les points d'acces ;
+- construire une Mine d'or ou une Ferme rapidement ;
+- poser une Caserne ;
+- rechercher Clans de la forge ;
+- produire des Soldats pour tenir les points d'acces ;
 - eviter de disperser les unites ;
 - utiliser le terrain pour ralentir l'adversaire.
 
 ## Milieu de partie
 
-Les Kharzun commencent a devenir dangereux avec Clans de la forge et Architecture de montagne.
+Les Kharzun commencent a devenir dangereux avec la Forge de clan et Architecture de montagne.
 
 Objectifs :
 
-- produire Brise-boucliers pour casser les lignes ennemies ;
+- produire des Brise-boucliers pour casser les lignes ennemies ;
 - construire un Bastion de pierre sur un point strategique ;
 - rechercher Armures gravees ;
-- preparer l'Atelier de siege ;
+- preparer Fonderies de siege ;
 - forcer l'adversaire a attaquer une position fortifiee.
 
 ## Fin de partie
@@ -474,6 +522,7 @@ Objectifs :
 - proteger les Beliers de fer avec Gardes runiques ;
 - utiliser les Mortiers des profondeurs contre les groupes et defenses ;
 - verrouiller les points de passage avec Bastions ;
+- utiliser Brokkar pour tenir les combats decisifs ;
 - progresser case par case plutot que chercher une attaque rapide.
 
 ---
@@ -503,6 +552,7 @@ Objectifs :
 # Notes d'equilibrage
 
 - Les Kharzun doivent etre excellents quand ils tiennent une position, mais mediocres quand ils doivent courir apres l'ennemi.
+- Brokkar doit rendre une position tres difficile a prendre, mais ne doit pas permettre de couvrir toute la carte.
 - Le Brise-bouclier ne doit pas remplacer toutes les unites melee : il doit etre fort contre les cibles defensives, pas universel.
 - La Garde runique doit etre impressionnante defensivement, mais punissable par le siege et le contournement.
 - Les machines de siege Kharzun doivent etre plus fortes que les machines communes, mais beaucoup plus lentes.
