@@ -4,7 +4,7 @@ const CAMERA_SPEED: f32 = 520.0;
 const EDGE_SCROLL_MARGIN: f32 = 24.0;
 const ZOOM_STEP: f32 = 0.12;
 const MIN_ZOOM: f32 = 0.55;
-const MAX_ZOOM: f32 = 2.2;
+const MAX_ZOOM: f32 = 1.35;
 
 pub(super) fn move_camera(
     keyboard: Res<ButtonInput<KeyCode>>,
