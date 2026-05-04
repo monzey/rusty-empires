@@ -1,6 +1,7 @@
 mod components;
 mod constants;
 mod grid;
+mod hud;
 mod input;
 mod plugin;
 mod resources;

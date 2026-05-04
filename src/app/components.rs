@@ -20,3 +20,6 @@ pub(super) struct Building {
     pub(super) camp: Camp,
     pub(super) kind: BuildingKind,
 }
+
+#[derive(Component)]
+pub(super) struct HudText;

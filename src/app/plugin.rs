@@ -1,6 +1,7 @@
 use bevy::{prelude::*, window::PresentMode};
 
 use super::constants::{MAP_HEIGHT, MAP_WIDTH};
+use super::hud::update_hud;
 use super::input::{handle_build_input, handle_end_turn_input, handle_human_input, run_ai_turn};
 use super::resources::{GameState, SelectedBuilding, SelectedUnit};
 use super::setup::setup;
@@ -37,6 +38,7 @@ impl Plugin for RustyEmpiresAppPlugin {
                     update_tile_visuals,
                     update_unit_visuals,
                     update_building_visuals,
+                    update_hud,
                 ),
             );
     }

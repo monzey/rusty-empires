@@ -1,6 +1,6 @@
 use bevy::prelude::*;
 
-use super::components::{Building, MapPosition, Tile, Unit};
+use super::components::{Building, HudText, MapPosition, Tile, Unit};
 use super::constants::{MAP_HEIGHT, MAP_WIDTH, TILE_SIZE};
 use super::grid::grid_to_world;
 use super::resources::GameState;
@@ -87,7 +87,29 @@ pub(super) fn setup(mut commands: Commands, game: Res<GameState>) {
             .expect("AI soldier should exist at game start"),
     );
 
+    spawn_hud(&mut commands);
+
     info!("Boucle initiale: clic sur une unite pour la selectionner, clic sur une case libre pour bouger, clic sur une unite ennemie a portee pour attaquer, B mine, F ferme, T forum, R caserne, M marche, U universite, S recruter soldat depuis caserne, A recruter archer depuis caserne, V recruter villageois depuis forum, G echanger or vers nourriture depuis marche, N echanger nourriture vers or depuis marche, Y rechercher entrainement militaire depuis universite, Espace/Entree pour finir le tour.");
+}
+
+fn spawn_hud(commands: &mut Commands) {
+    commands.spawn((
+        TextBundle::from_section(
+            "",
+            TextStyle {
+                font_size: 20.0,
+                color: Color::srgb(0.92, 0.94, 0.86),
+                ..default()
+            },
+        )
+        .with_style(Style {
+            position_type: PositionType::Absolute,
+            left: Val::Px(12.0),
+            top: Val::Px(12.0),
+            ..default()
+        }),
+        HudText,
+    ));
 }
 
 pub(super) fn spawn_unit(

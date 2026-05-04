@@ -241,6 +241,13 @@ impl Game {
             .map(|unit| unit.has_acted)
     }
 
+    pub fn unit_has_moved(&self, unit_id: UnitId) -> Option<bool> {
+        self.units
+            .iter()
+            .find(|unit| unit.id == unit_id)
+            .map(|unit| unit.has_moved)
+    }
+
     pub fn unit_health(&self, unit_id: UnitId) -> Option<i32> {
         self.units
             .iter()
