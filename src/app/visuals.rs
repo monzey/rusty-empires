@@ -53,15 +53,30 @@ pub(super) fn update_building_visuals(
 
 pub(super) fn update_tile_visuals(
     game: Res<GameState>,
+    selected_unit: Res<SelectedUnit>,
+    units: Query<(Entity, &Unit, &MapPosition), Without<Tile>>,
+    buildings: Query<(&Building, &MapPosition), Without<Tile>>,
     mut tiles: Query<(&MapPosition, &mut Sprite), With<Tile>>,
 ) {
     for (position, mut sprite) in &mut tiles {
-        sprite.color = tile_color(&game, position.0);
+        sprite.color = tile_color(&game, &selected_unit, &units, &buildings, position.0);
     }
 }
 
-fn tile_color(game: &GameState, position: GridPosition) -> Color {
+fn tile_color(
+    game: &GameState,
+    selected_unit: &SelectedUnit,
+    units: &Query<(Entity, &Unit, &MapPosition), Without<Tile>>,
+    buildings: &Query<(&Building, &MapPosition), Without<Tile>>,
+    position: GridPosition,
+) -> Color {
     if game.0.is_visible(Camp::Human, position) {
+        if let Some(highlight_color) =
+            highlight_color(game, selected_unit, units, buildings, position)
+        {
+            return highlight_color;
+        }
+
         return base_tile_color(game, position);
     }
 
@@ -74,6 +89,80 @@ fn tile_color(game: &GameState, position: GridPosition) -> Color {
     }
 
     Color::srgb(0.01, 0.012, 0.016)
+}
+
+fn highlight_color(
+    game: &GameState,
+    selected_unit: &SelectedUnit,
+    units: &Query<(Entity, &Unit, &MapPosition), Without<Tile>>,
+    buildings: &Query<(&Building, &MapPosition), Without<Tile>>,
+    position: GridPosition,
+) -> Option<Color> {
+    let selected_entity = selected_unit.0?;
+    let (_, selected, selected_position) = units.get(selected_entity).ok()?;
+
+    if selected.camp != Camp::Human || game.0.current_turn() != Camp::Human {
+        return None;
+    }
+
+    let Some(selected_state) = game.0.units.iter().find(|unit| unit.id == selected.id) else {
+        return None;
+    };
+
+    let distance = grid_distance(selected_position.0, position);
+    if distance == 0 {
+        return None;
+    }
+
+    if distance <= selected_state.attack_range
+        && (enemy_unit_at(units, position) || enemy_building_at(buildings, position))
+    {
+        return Some(Color::srgb(0.72, 0.18, 0.16));
+    }
+
+    if selected_state.has_moved || selected_state.has_acted {
+        return None;
+    }
+
+    if distance <= selected_state.move_range
+        && !unit_at(units, position)
+        && !enemy_building_at(buildings, position)
+    {
+        return Some(Color::srgb(0.16, 0.46, 0.28));
+    }
+
+    None
+}
+
+fn unit_at(
+    units: &Query<(Entity, &Unit, &MapPosition), Without<Tile>>,
+    position: GridPosition,
+) -> bool {
+    units
+        .iter()
+        .any(|(_, _, unit_position)| unit_position.0 == position)
+}
+
+fn enemy_unit_at(
+    units: &Query<(Entity, &Unit, &MapPosition), Without<Tile>>,
+    position: GridPosition,
+) -> bool {
+    units
+        .iter()
+        .any(|(_, unit, unit_position)| unit.camp != Camp::Human && unit_position.0 == position)
+}
+
+fn enemy_building_at(
+    buildings: &Query<(&Building, &MapPosition), Without<Tile>>,
+    position: GridPosition,
+) -> bool {
+    buildings.iter().any(|(building, building_position)| {
+        building.camp != Camp::Human && building_position.0 == position
+    })
+}
+
+fn grid_distance(a: GridPosition, b: GridPosition) -> i32 {
+    (a.x - b.x).abs() + (a.y - b.y).abs()
 }
 
 fn base_tile_color(game: &GameState, position: GridPosition) -> Color {

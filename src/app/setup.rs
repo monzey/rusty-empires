@@ -98,7 +98,7 @@ fn spawn_hud(commands: &mut Commands) {
         TextBundle::from_section(
             "",
             TextStyle {
-                font_size: 20.0,
+                font_size: 16.0,
                 color: Color::srgb(0.92, 0.94, 0.86),
                 ..default()
             },
