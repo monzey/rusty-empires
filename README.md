@@ -80,3 +80,7 @@ devenv shell lint
 ## Note
 
 Ce projet est un jeu original inspire par les jeux de strategie tactique historiques. Il n'utilise pas les assets, noms, marques ou contenus proprietaires d'Age of Empires.
+
+## Documentation technique
+
+- [Integration des sprites isometriques](docs/sprites.md)
