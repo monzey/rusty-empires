@@ -29,9 +29,13 @@ pub(super) struct ContextMenu {
 
 #[derive(Resource, Clone)]
 pub(super) struct AppMeshes {
-    pub(super) tile: Handle<Mesh>,
     pub(super) unit: Handle<Mesh>,
     pub(super) building: Handle<Mesh>,
+}
+
+#[derive(Resource, Clone)]
+pub(super) struct AppTextures {
+    pub(super) tile: Handle<Image>,
 }
 
 #[derive(Resource, Default)]

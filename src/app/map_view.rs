@@ -1,10 +1,12 @@
-use bevy::{prelude::*, sprite::MaterialMesh2dBundle, window::PrimaryWindow};
+use bevy::{prelude::*, window::PrimaryWindow};
 use std::collections::HashSet;
 
 use super::components::{MapPosition, Tile};
-use super::constants::{MAP_HEIGHT, MAP_WIDTH};
+use super::constants::{
+    MAP_HEIGHT, MAP_WIDTH, TILE_PNG_HEIGHT, TILE_PNG_WIDTH, TILE_SPRITE_SCALE, TILE_SPRITE_Y_OFFSET,
+};
 use super::grid::{grid_to_world, world_to_grid_unbounded};
-use super::resources::{ActiveTiles, AppMeshes};
+use super::resources::{ActiveTiles, AppTextures};
 use crate::GridPosition;
 
 const TILE_VIEW_MARGIN: i32 = 6;
@@ -13,9 +15,8 @@ pub(super) fn update_tile_viewport(
     mut commands: Commands,
     windows: Query<&Window, With<PrimaryWindow>>,
     cameras: Query<(&Camera, &GlobalTransform)>,
-    app_meshes: Res<AppMeshes>,
+    app_textures: Res<AppTextures>,
     mut active_tiles: ResMut<ActiveTiles>,
-    mut materials: ResMut<Assets<ColorMaterial>>,
 ) {
     let Some(visible_tiles) = visible_tile_positions(&windows, &cameras) else {
         return;
@@ -35,12 +36,20 @@ pub(super) fn update_tile_viewport(
             continue;
         }
 
+        let mut transform = Transform::from_translation(grid_to_world(position, 0.0));
+        transform.translation.y += TILE_SPRITE_Y_OFFSET;
+        transform.scale = Vec3::splat(TILE_SPRITE_SCALE);
+
         let entity = commands
             .spawn((
-                MaterialMesh2dBundle {
-                    mesh: app_meshes.tile.clone().into(),
-                    material: materials.add(Color::srgb(0.01, 0.012, 0.016)),
-                    transform: Transform::from_translation(grid_to_world(position, 0.0)),
+                SpriteBundle {
+                    texture: app_textures.tile.clone(),
+                    sprite: Sprite {
+                        color: Color::srgb(0.01, 0.012, 0.016),
+                        custom_size: Some(Vec2::new(TILE_PNG_WIDTH, TILE_PNG_HEIGHT)),
+                        ..default()
+                    },
+                    transform,
                     ..default()
                 },
                 Tile,

@@ -1,6 +1,7 @@
 use bevy::{ecs::query::QueryFilter, prelude::*};
 
 use super::components::{Building, MapPosition, Unit};
+use super::constants::UNIT_Y_OFFSET;
 use super::grid::grid_to_world;
 use super::setup::spawn_unit;
 use crate::Event;
@@ -19,6 +20,7 @@ pub(super) fn apply_game_events<F: QueryFilter>(
                     if unit.id == unit_id {
                         position.0 = to;
                         transform.translation = grid_to_world(to, 1.0);
+                        transform.translation.y += UNIT_Y_OFFSET;
                         break;
                     }
                 }

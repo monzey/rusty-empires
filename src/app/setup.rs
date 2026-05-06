@@ -6,16 +6,17 @@ use bevy::{
 
 use super::action_bar::spawn_action_bar;
 use super::components::{Building, MapPosition, SelectionPanelText, TopBarText, Unit};
-use super::constants::{TILE_HEIGHT, TILE_SIZE, TILE_WIDTH};
+use super::constants::{TILE_SIZE, UNIT_Y_OFFSET};
 use super::context_menu::spawn_context_menu;
 use super::grid::grid_to_world;
-use super::resources::{AppMeshes, GameState};
+use super::resources::{AppMeshes, AppTextures, GameState};
 use super::tooltip::{spawn_hover_info_panel, spawn_tooltip};
 use super::visuals::{building_color, unit_color};
 use crate::{BuildingKind, Camp, GridPosition, UnitId, UnitKind};
 
 pub(super) fn setup(
     mut commands: Commands,
+    asset_server: Res<AssetServer>,
     game: Res<GameState>,
     mut meshes: ResMut<Assets<Mesh>>,
     mut materials: ResMut<Assets<ColorMaterial>>,
@@ -29,13 +30,14 @@ pub(super) fn setup(
         transform: Transform::from_xyz(start_world.x, start_world.y, 999.9),
         ..default()
     });
-    let tile_mesh = meshes.add(tile_mesh());
     let unit_mesh = meshes.add(unit_mesh());
     let building_mesh = meshes.add(building_mesh());
     commands.insert_resource(AppMeshes {
-        tile: tile_mesh.clone(),
         unit: unit_mesh.clone(),
         building: building_mesh.clone(),
+    });
+    commands.insert_resource(AppTextures {
+        tile: asset_server.load("tile.png"),
     });
 
     spawn_unit(
@@ -100,31 +102,6 @@ pub(super) fn setup(
 
     info!("Choisis ta civilisation: 1 Valdorian, 2 Kharzun, 3 Sylvans, 4 Necrarchs.");
     info!("Apres choix: clic unite selection, clic droit menu contextuel, Echap deselection, clic case libre bouger, clic ennemi attaquer, B mine, F ferme, T forum, R caserne, M marche, U universite, O tour de guet, S soldat, A archer, C unite unique, V villageois, G/N commerce, H Agriculture, Y entrainement militaire, fleches camera, molette zoom, Espace/Entree finir tour.");
-}
-
-fn tile_mesh() -> Mesh {
-    let half_width = (TILE_WIDTH - 2.0) / 2.0;
-    let half_height = (TILE_HEIGHT - 2.0) / 2.0;
-    let mut mesh = Mesh::new(
-        PrimitiveTopology::TriangleList,
-        RenderAssetUsages::default(),
-    );
-
-    mesh.insert_attribute(
-        Mesh::ATTRIBUTE_POSITION,
-        vec![
-            [0.0, half_height, 0.0],
-            [half_width, 0.0, 0.0],
-            [0.0, -half_height, 0.0],
-            [-half_width, 0.0, 0.0],
-        ],
-    );
-    mesh.insert_attribute(
-        Mesh::ATTRIBUTE_UV_0,
-        vec![[0.5, 1.0], [1.0, 0.5], [0.5, 0.0], [0.0, 0.5]],
-    );
-    mesh.insert_indices(Indices::U32(vec![0, 1, 2, 0, 2, 3]));
-    mesh
 }
 
 fn unit_mesh() -> Mesh {
@@ -261,12 +238,13 @@ pub(super) fn spawn_unit(
         UnitKind::ElyrPathfinder => TILE_SIZE * 0.44,
         UnitKind::ObsidianBoneServant => TILE_SIZE * 0.42,
     };
+    let mut translation = grid_to_world(grid_position, 1.0);
+    translation.y += UNIT_Y_OFFSET;
     commands.spawn((
         MaterialMesh2dBundle {
             mesh: mesh.clone().into(),
             material: materials.add(unit_color(camp, kind, false, false)),
-            transform: Transform::from_translation(grid_to_world(grid_position, 1.0))
-                .with_scale(Vec3::splat(size)),
+            transform: Transform::from_translation(translation).with_scale(Vec3::splat(size)),
             ..default()
         },
         Unit { id, camp, kind },

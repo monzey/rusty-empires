@@ -70,14 +70,10 @@ pub(super) fn update_tile_visuals(
     selected_unit: Res<SelectedUnit>,
     units: Query<(Entity, &Unit, &MapPosition), Without<Tile>>,
     buildings: Query<(&Building, &MapPosition), Without<Tile>>,
-    tiles: Query<(&MapPosition, &Handle<ColorMaterial>), With<Tile>>,
-    mut materials: ResMut<Assets<ColorMaterial>>,
+    mut tiles: Query<(&MapPosition, &mut Sprite), With<Tile>>,
 ) {
-    for (position, material_handle) in &tiles {
-        let Some(material) = materials.get_mut(material_handle) else {
-            continue;
-        };
-        material.color = tile_color(&game, &selected_unit, &units, &buildings, position.0);
+    for (position, mut sprite) in &mut tiles {
+        sprite.color = tile_color(&game, &selected_unit, &units, &buildings, position.0);
     }
 }
 

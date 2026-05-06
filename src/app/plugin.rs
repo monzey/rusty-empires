@@ -37,15 +37,22 @@ impl Plugin for RustyEmpiresAppPlugin {
             .insert_resource(ContextMenu::default())
             .insert_resource(PendingContextAction::default())
             .insert_resource(ActiveTiles::default())
-            .add_plugins(DefaultPlugins.set(WindowPlugin {
-                primary_window: Some(Window {
-                    title: "Rusty Empires".to_string(),
-                    resolution: (1280.0, 720.0).into(),
-                    present_mode: PresentMode::AutoNoVsync,
-                    ..default()
-                }),
-                ..default()
-            }))
+            .add_plugins(
+                DefaultPlugins
+                    .set(AssetPlugin {
+                        file_path: ".".to_string(),
+                        ..default()
+                    })
+                    .set(WindowPlugin {
+                        primary_window: Some(Window {
+                            title: "Rusty Empires".to_string(),
+                            resolution: (1280.0, 720.0).into(),
+                            present_mode: PresentMode::AutoNoVsync,
+                            ..default()
+                        }),
+                        ..default()
+                    }),
+            )
             .add_systems(Startup, setup)
             .add_systems(
                 Update,

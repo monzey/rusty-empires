@@ -19,15 +19,11 @@ pub(super) fn cursor_grid_position(
 }
 
 pub(super) fn grid_to_world(position: GridPosition, z: f32) -> Vec3 {
-    let tile_x = position.x as f32 + 0.5;
-    let tile_y = position.y as f32 + 0.5;
-    let raw_x = (tile_x - tile_y) * TILE_WIDTH / 2.0;
-    let raw_y = -(tile_x + tile_y) * TILE_HEIGHT / 2.0;
-    let center_x = (MAP_WIDTH as f32 - MAP_HEIGHT as f32) * TILE_WIDTH / 4.0;
-    let center_y = -(MAP_WIDTH as f32 + MAP_HEIGHT as f32) * TILE_HEIGHT / 4.0;
+    let raw_x = (position.x - position.y) as f32 * TILE_WIDTH / 2.0;
+    let raw_y = -(position.x + position.y) as f32 * TILE_HEIGHT / 2.0;
     let draw_order = (position.x + position.y) as f32 * 0.01;
 
-    Vec3::new(raw_x - center_x, raw_y - center_y, z + draw_order)
+    Vec3::new(raw_x, raw_y, z + draw_order)
 }
 
 fn world_to_grid(position: Vec2) -> Option<GridPosition> {
@@ -37,14 +33,10 @@ fn world_to_grid(position: Vec2) -> Option<GridPosition> {
 }
 
 pub(super) fn world_to_grid_unbounded(position: Vec2) -> GridPosition {
-    let center_x = (MAP_WIDTH as f32 - MAP_HEIGHT as f32) * TILE_WIDTH / 4.0;
-    let center_y = -(MAP_WIDTH as f32 + MAP_HEIGHT as f32) * TILE_HEIGHT / 4.0;
-    let raw_x = position.x + center_x;
-    let raw_y = position.y + center_y;
-    let axis_x = raw_x / (TILE_WIDTH / 2.0);
-    let axis_y = -raw_y / (TILE_HEIGHT / 2.0);
-    let x = ((axis_x + axis_y) / 2.0).floor() as i32;
-    let y = ((axis_y - axis_x) / 2.0).floor() as i32;
+    let axis_x = position.x / (TILE_WIDTH / 2.0);
+    let axis_y = -position.y / (TILE_HEIGHT / 2.0);
+    let x = ((axis_x + axis_y) / 2.0 + 0.5).floor() as i32;
+    let y = ((axis_y - axis_x) / 2.0 + 0.5).floor() as i32;
     GridPosition { x, y }
 }
 
