@@ -1,3 +1,4 @@
+mod action_bar;
 mod action_runner;
 mod camera;
 mod components;
@@ -11,8 +12,10 @@ mod map_view;
 mod plugin;
 mod resources;
 mod selection;
+mod selection_panel;
 mod setup;
 mod sync;
+mod tooltip;
 mod visuals;
 
 pub use plugin::RustyEmpiresAppPlugin;

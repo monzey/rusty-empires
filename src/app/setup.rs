@@ -4,10 +4,13 @@ use bevy::{
     sprite::MaterialMesh2dBundle,
 };
 
-use super::components::{Building, ContextMenuText, HudText, MapPosition, Unit};
+use super::action_bar::spawn_action_bar;
+use super::components::{Building, MapPosition, SelectionPanelText, TopBarText, Unit};
 use super::constants::{TILE_HEIGHT, TILE_SIZE, TILE_WIDTH};
+use super::context_menu::spawn_context_menu;
 use super::grid::grid_to_world;
 use super::resources::{AppMeshes, GameState};
+use super::tooltip::spawn_tooltip;
 use super::visuals::{building_color, unit_color};
 use crate::{BuildingKind, Camp, GridPosition, UnitId, UnitKind};
 
@@ -88,8 +91,11 @@ pub(super) fn setup(
             .expect("AI soldier should exist at game start"),
     );
 
-    spawn_hud(&mut commands);
+    spawn_top_bar(&mut commands);
+    spawn_selection_panel(&mut commands);
+    spawn_action_bar(&mut commands);
     spawn_context_menu(&mut commands);
+    spawn_tooltip(&mut commands);
 
     info!("Choisis ta civilisation: 1 Valdorian, 2 Kharzun, 3 Sylvans, 4 Necrarchs.");
     info!("Apres choix: clic unite selection, clic droit menu contextuel, Echap deselection, clic case libre bouger, clic ennemi attaquer, B mine, F ferme, T forum, R caserne, M marche, U universite, O tour de guet, S soldat, A archer, C unite unique, V villageois, G/N commerce, H Agriculture, Y entrainement militaire, fleches camera, molette zoom, Espace/Entree finir tour.");
@@ -190,7 +196,7 @@ fn building_mesh() -> Mesh {
     mesh
 }
 
-fn spawn_hud(commands: &mut Commands) {
+fn spawn_top_bar(commands: &mut Commands) {
     commands.spawn((
         TextBundle::from_section(
             "",
@@ -203,34 +209,36 @@ fn spawn_hud(commands: &mut Commands) {
         .with_style(Style {
             position_type: PositionType::Absolute,
             left: Val::Px(12.0),
+            right: Val::Px(12.0),
             top: Val::Px(12.0),
+            padding: UiRect::all(Val::Px(10.0)),
             ..default()
-        }),
-        HudText,
+        })
+        .with_background_color(Color::srgba(0.03, 0.035, 0.045, 0.82)),
+        TopBarText,
     ));
 }
 
-fn spawn_context_menu(commands: &mut Commands) {
+fn spawn_selection_panel(commands: &mut Commands) {
     commands.spawn((
         TextBundle::from_section(
             "",
             TextStyle {
-                font_size: 15.0,
-                color: Color::srgb(0.98, 0.94, 0.78),
+                font_size: 16.0,
+                color: Color::srgb(0.92, 0.94, 0.86),
                 ..default()
             },
         )
         .with_style(Style {
-            display: Display::None,
             position_type: PositionType::Absolute,
-            left: Val::Px(0.0),
-            top: Val::Px(0.0),
+            left: Val::Px(12.0),
+            bottom: Val::Px(12.0),
+            width: Val::Px(336.0),
             padding: UiRect::all(Val::Px(10.0)),
-            border: UiRect::all(Val::Px(1.0)),
             ..default()
         })
-        .with_background_color(Color::srgba(0.03, 0.035, 0.045, 0.92)),
-        ContextMenuText,
+        .with_background_color(Color::srgba(0.03, 0.035, 0.045, 0.82)),
+        SelectionPanelText,
     ));
 }
 

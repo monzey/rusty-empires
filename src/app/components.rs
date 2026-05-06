@@ -22,7 +22,19 @@ pub(super) struct Building {
 }
 
 #[derive(Component)]
-pub(super) struct HudText;
+pub(super) struct SelectionPanelText;
+
+#[derive(Component)]
+pub(super) struct TopBarText;
 
 #[derive(Component)]
 pub(super) struct ContextMenuText;
+
+#[derive(Component)]
+pub(super) struct ContextMenuRoot;
+
+#[derive(Component)]
+pub(super) struct ContextMenuActionButton;
+
+#[derive(Component)]
+pub(super) struct TooltipText;
