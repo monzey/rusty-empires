@@ -19,7 +19,7 @@ use super::resources::{
 use super::selection::handle_deselect_input;
 use super::selection_panel::update_selection_panel;
 use super::setup::setup;
-use super::tooltip::update_hover_tooltip;
+use super::tooltip::{update_hover_info_panel, update_hover_tooltip};
 use super::visuals::{update_building_visuals, update_tile_visuals, update_unit_visuals};
 use crate::Game;
 
@@ -69,6 +69,7 @@ impl Plugin for RustyEmpiresAppPlugin {
                     update_selection_panel.run_if(selection_panel_needs_update),
                     update_context_menu.run_if(context_menu_needs_update),
                     update_hover_tooltip,
+                    update_hover_info_panel,
                 ),
             );
     }

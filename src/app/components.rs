@@ -38,3 +38,6 @@ pub(super) struct ContextMenuActionButton;
 
 #[derive(Component)]
 pub(super) struct TooltipText;
+
+#[derive(Component)]
+pub(super) struct HoverInfoPanelText;

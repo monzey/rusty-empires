@@ -10,7 +10,7 @@ use super::constants::{TILE_HEIGHT, TILE_SIZE, TILE_WIDTH};
 use super::context_menu::spawn_context_menu;
 use super::grid::grid_to_world;
 use super::resources::{AppMeshes, GameState};
-use super::tooltip::spawn_tooltip;
+use super::tooltip::{spawn_hover_info_panel, spawn_tooltip};
 use super::visuals::{building_color, unit_color};
 use crate::{BuildingKind, Camp, GridPosition, UnitId, UnitKind};
 
@@ -96,6 +96,7 @@ pub(super) fn setup(
     spawn_action_bar(&mut commands);
     spawn_context_menu(&mut commands);
     spawn_tooltip(&mut commands);
+    spawn_hover_info_panel(&mut commands);
 
     info!("Choisis ta civilisation: 1 Valdorian, 2 Kharzun, 3 Sylvans, 4 Necrarchs.");
     info!("Apres choix: clic unite selection, clic droit menu contextuel, Echap deselection, clic case libre bouger, clic ennemi attaquer, B mine, F ferme, T forum, R caserne, M marche, U universite, O tour de guet, S soldat, A archer, C unite unique, V villageois, G/N commerce, H Agriculture, Y entrainement militaire, fleches camera, molette zoom, Espace/Entree finir tour.");
