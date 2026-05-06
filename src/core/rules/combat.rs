@@ -5,6 +5,8 @@ use crate::core::buildings::{
     WATCHTOWER_ATTACK, WATCHTOWER_MAX_ATTACK_RANGE, WATCHTOWER_MIN_ATTACK_RANGE,
 };
 
+const ALLIED_BUILDING_DEFENSE_BONUS_PERCENT: i32 = 40;
+
 pub(crate) fn attack_unit(
     game: &mut Game,
     attacker_id: UnitId,
@@ -44,7 +46,8 @@ pub(crate) fn attack_unit(
         return Err(CombatError::OutOfRange);
     }
 
-    let damage = (attacker.attack - target.defense).max(1);
+    let effective_defense = effective_defense(game, target.position, target.camp, target.defense);
+    let damage = (attacker.attack - effective_defense).max(1);
     let remaining_health = (target.health - damage).max(0);
     let defeated = remaining_health == 0;
 
@@ -191,7 +194,8 @@ pub(crate) fn attack_with_building(
         return Err(CombatError::OutOfRange);
     }
 
-    let damage = (WATCHTOWER_ATTACK - target.defense).max(1);
+    let effective_defense = effective_defense(game, target.position, target.camp, target.defense);
+    let damage = (WATCHTOWER_ATTACK - effective_defense).max(1);
     let remaining_health = (target.health - damage).max(0);
     let defeated = remaining_health == 0;
     let camp = building.camp;
@@ -222,4 +226,33 @@ pub(crate) fn attack_with_building(
     }
 
     Ok(events)
+}
+
+fn effective_defense(
+    game: &Game,
+    position: GridPosition,
+    camp: crate::core::Camp,
+    base_defense: i32,
+) -> i32 {
+    let modifier_percent = terrain_defense_modifier_percent(game, position, camp);
+    let scaled_defense = base_defense * (100 + modifier_percent);
+
+    (scaled_defense.max(0) + 99) / 100
+}
+
+fn terrain_defense_modifier_percent(
+    game: &Game,
+    position: GridPosition,
+    camp: crate::core::Camp,
+) -> i32 {
+    // Plain tiles have no modifier. An allied building on the tile provides cover.
+    if game
+        .buildings
+        .iter()
+        .any(|building| building.position == position && building.camp == camp)
+    {
+        ALLIED_BUILDING_DEFENSE_BONUS_PERCENT
+    } else {
+        0
+    }
 }

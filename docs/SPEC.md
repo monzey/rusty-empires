@@ -61,6 +61,15 @@ Certaines tuiles contiennent une ressource exploitable :
 
 Ces ressources naturelles conditionnent le placement de certains batiments economiques.
 
+### Bonus et malus de terrain
+
+Le terrain peut modifier les statistiques defensives d'une unite presente sur la tuile.
+
+- Plaine : aucun bonus ni malus.
+- Batiment allie sur la tuile : +40% de defense pour l'unite qui occupe cette tuile.
+
+Les bonus ou malus de defense sont appliques a la defense de la cible avant le calcul des degats.
+
 ## Ressources
 
 Le jeu utilise les ressources principales suivantes :
@@ -211,6 +220,7 @@ La resolution de combat prend en compte au minimum :
 
 - L'attaque de l'unite attaquante.
 - La defense de l'unite cible.
+- Les bonus ou malus de terrain de la tuile de la cible.
 - Les effets de capacites speciales.
 - Les bonus ou malus de technologies.
 - Les eventuels bonus de faction.

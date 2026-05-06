@@ -36,6 +36,40 @@ fn human_soldier_uses_soldier_combat_stats() {
 }
 
 #[test]
+fn allied_building_gives_defender_a_defense_bonus() {
+    let mut game = Game::new_single_player_vs_ai(10, 8);
+    let human_soldier = game
+        .soldier_id(Camp::Human)
+        .expect("human soldier should exist at game start");
+    let ai_villager = game
+        .villager_id(Camp::Ai)
+        .expect("AI villager should exist at game start");
+    build_ai_forum_next_to_human_soldier(&mut game);
+
+    let events = game
+        .apply(Action::AttackUnit {
+            attacker_id: human_soldier,
+            target_id: ai_villager,
+        })
+        .expect("human soldier should be able to attack the defender on its allied forum");
+
+    assert_eq!(
+        events,
+        vec![
+            Event::UnitDamaged {
+                unit_id: ai_villager,
+                amount: 4,
+                remaining_health: 2,
+            },
+            Event::UnitActed {
+                unit_id: human_soldier,
+            },
+        ]
+    );
+    assert_eq!(game.unit_health(ai_villager), Some(2));
+}
+
+#[test]
 fn human_can_attack_adjacent_enemy_unit() {
     let mut game = Game::new_single_player_vs_ai(10, 8);
     let human_villager = game
