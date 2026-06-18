@@ -345,6 +345,34 @@ impl Game {
             .map(|unit| unit.health)
     }
 
+    pub fn unit_attack(&self, unit_id: UnitId) -> Option<i32> {
+        self.units
+            .iter()
+            .find(|unit| unit.id == unit_id)
+            .map(|unit| unit.attack)
+    }
+
+    pub fn unit_defense(&self, unit_id: UnitId) -> Option<i32> {
+        self.units
+            .iter()
+            .find(|unit| unit.id == unit_id)
+            .map(|unit| unit.defense)
+    }
+
+    pub fn unit_attack_range(&self, unit_id: UnitId) -> Option<i32> {
+        self.units
+            .iter()
+            .find(|unit| unit.id == unit_id)
+            .map(|unit| unit.attack_range)
+    }
+
+    pub fn unit_move_range(&self, unit_id: UnitId) -> Option<i32> {
+        self.units
+            .iter()
+            .find(|unit| unit.id == unit_id)
+            .map(|unit| unit.move_range)
+    }
+
     pub fn unit_kind(&self, unit_id: UnitId) -> Option<UnitKind> {
         self.units
             .iter()
@@ -364,6 +392,20 @@ impl Game {
             .iter()
             .find(|building| building.position == position)
             .map(|building| (building.camp, building.kind))
+    }
+
+    pub fn building_health(&self, position: GridPosition) -> Option<i32> {
+        self.buildings
+            .iter()
+            .find(|building| building.position == position)
+            .map(|building| building.health)
+    }
+
+    pub fn building_has_acted(&self, position: GridPosition) -> Option<bool> {
+        self.buildings
+            .iter()
+            .find(|building| building.position == position)
+            .map(|building| building.has_acted)
     }
 
     pub fn gold(&self, camp: Camp) -> i32 {

@@ -5,7 +5,7 @@ use super::resources::{AppMeshes, FactionSelection, GameState, SelectedBuilding,
 use super::selection::clear_selection;
 use super::setup::spawn_building;
 use super::sync::{apply_game_events, log_resource_events};
-use crate::{Action, BuildingKind, Camp, Event, GridPosition};
+use crate::{Action, BuildingKind, Camp, Event, GridPosition, UnitKind};
 
 const NORMAL_BUTTON: Color = Color::srgb(0.12, 0.14, 0.18);
 const HOVERED_BUTTON: Color = Color::srgb(0.2, 0.24, 0.32);
@@ -13,6 +13,9 @@ const PRESSED_BUTTON: Color = Color::srgb(0.32, 0.38, 0.5);
 
 #[derive(Component, Clone, Copy)]
 pub(super) struct ActionBarButton(ActionBarAction);
+
+#[derive(Component)]
+pub(super) struct ActionBarRoot;
 
 #[derive(Clone, Copy)]
 enum ActionBarAction {
@@ -30,21 +33,25 @@ enum ActionBarAction {
 
 pub(super) fn spawn_action_bar(commands: &mut Commands) {
     commands
-        .spawn(NodeBundle {
-            style: Style {
-                position_type: PositionType::Absolute,
-                left: Val::Px(372.0),
-                right: Val::Px(12.0),
-                bottom: Val::Px(12.0),
-                padding: UiRect::all(Val::Px(8.0)),
-                column_gap: Val::Px(6.0),
-                row_gap: Val::Px(6.0),
-                flex_wrap: FlexWrap::Wrap,
+        .spawn((
+            NodeBundle {
+                style: Style {
+                    display: Display::None,
+                    position_type: PositionType::Absolute,
+                    left: Val::Px(372.0),
+                    right: Val::Px(12.0),
+                    bottom: Val::Px(12.0),
+                    padding: UiRect::all(Val::Px(8.0)),
+                    column_gap: Val::Px(6.0),
+                    row_gap: Val::Px(6.0),
+                    flex_wrap: FlexWrap::Wrap,
+                    ..default()
+                },
+                background_color: Color::srgba(0.03, 0.035, 0.045, 0.82).into(),
                 ..default()
             },
-            background_color: Color::srgba(0.03, 0.035, 0.045, 0.82).into(),
-            ..default()
-        })
+            ActionBarRoot,
+        ))
         .with_children(|parent| {
             spawn_button(
                 parent,
@@ -87,6 +94,101 @@ pub(super) fn spawn_action_bar(commands: &mut Commands) {
             );
             spawn_button(parent, "Fin tour", ActionBarAction::EndTurn);
         });
+}
+
+pub(super) fn update_action_bar(
+    faction_selection: Res<FactionSelection>,
+    selected_unit: Res<SelectedUnit>,
+    selected_building: Res<SelectedBuilding>,
+    units: Query<&Unit>,
+    buildings: Query<&Building>,
+    mut styles: ParamSet<(
+        Query<&mut Style, With<ActionBarRoot>>,
+        Query<(&ActionBarButton, &mut Style), With<Button>>,
+    )>,
+) {
+    let mut has_visible_button = false;
+    {
+        let mut buttons = styles.p1();
+        for (button, mut button_style) in &mut buttons {
+            let visible = !faction_selection.0
+                && action_available(
+                    button.0,
+                    &selected_unit,
+                    &selected_building,
+                    &units,
+                    &buildings,
+                );
+            button_style.display = if visible {
+                has_visible_button = true;
+                Display::Flex
+            } else {
+                Display::None
+            };
+        }
+    }
+
+    let mut roots = styles.p0();
+    let Ok(mut root_style) = roots.get_single_mut() else {
+        return;
+    };
+    root_style.display = if has_visible_button {
+        Display::Flex
+    } else {
+        Display::None
+    };
+}
+
+fn action_available(
+    action: ActionBarAction,
+    selected_unit: &SelectedUnit,
+    selected_building: &SelectedBuilding,
+    units: &Query<&Unit>,
+    buildings: &Query<&Building>,
+) -> bool {
+    match action {
+        ActionBarAction::Build(_) => {
+            selected_unit_kind(selected_unit, units) == Some(UnitKind::Villager)
+        }
+        ActionBarAction::RecruitSoldier
+        | ActionBarAction::RecruitArcher
+        | ActionBarAction::RecruitUniqueUnit => {
+            selected_building_kind(selected_building, buildings) == Some(BuildingKind::Barracks)
+        }
+        ActionBarAction::RecruitVillager => {
+            selected_building_kind(selected_building, buildings) == Some(BuildingKind::Forum)
+        }
+        ActionBarAction::TradeGoldForFood | ActionBarAction::TradeFoodForGold => {
+            selected_building_kind(selected_building, buildings) == Some(BuildingKind::Market)
+        }
+        ActionBarAction::ResearchAgriculture | ActionBarAction::ResearchMilitaryTraining => {
+            selected_building_kind(selected_building, buildings) == Some(BuildingKind::University)
+        }
+        ActionBarAction::EndTurn => selected_unit.0.is_some() || selected_building.0.is_some(),
+    }
+}
+
+fn selected_unit_kind(selected_unit: &SelectedUnit, units: &Query<&Unit>) -> Option<UnitKind> {
+    let selected_entity = selected_unit.0?;
+    let unit = units.get(selected_entity).ok()?;
+    if unit.camp == Camp::Human {
+        Some(unit.kind)
+    } else {
+        None
+    }
+}
+
+fn selected_building_kind(
+    selected_building: &SelectedBuilding,
+    buildings: &Query<&Building>,
+) -> Option<BuildingKind> {
+    let selected_entity = selected_building.0?;
+    let building = buildings.get(selected_entity).ok()?;
+    if building.camp == Camp::Human {
+        Some(building.kind)
+    } else {
+        None
+    }
 }
 
 fn spawn_button(parent: &mut ChildBuilder, label: &'static str, action: ActionBarAction) {

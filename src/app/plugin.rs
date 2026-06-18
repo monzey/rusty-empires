@@ -1,6 +1,6 @@
 use bevy::{prelude::*, window::PresentMode};
 
-use super::action_bar::handle_action_bar_buttons;
+use super::action_bar::{handle_action_bar_buttons, update_action_bar};
 use super::camera::{move_camera, zoom_camera};
 use super::constants::{MAP_HEIGHT, MAP_WIDTH};
 use super::context_menu::{
@@ -78,6 +78,14 @@ impl Plugin for RustyEmpiresAppPlugin {
                     update_hover_tooltip,
                     update_hover_info_panel,
                 ),
+            )
+            .add_systems(
+                Update,
+                update_action_bar
+                    .after(handle_faction_selection_input)
+                    .after(handle_human_input)
+                    .after(handle_deselect_input)
+                    .after(handle_action_bar_buttons),
             );
     }
 }

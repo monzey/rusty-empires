@@ -208,6 +208,7 @@ fn spawn_selection_panel(commands: &mut Commands) {
             },
         )
         .with_style(Style {
+            display: Display::None,
             position_type: PositionType::Absolute,
             left: Val::Px(12.0),
             bottom: Val::Px(12.0),
